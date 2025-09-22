@@ -10,12 +10,13 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="5">
+          <list size="6">
             <item index="0" class="java.lang.String" itemvalue="field" />
             <item index="1" class="java.lang.String" itemvalue="spinnerMode" />
             <item index="2" class="java.lang.String" itemvalue="placeholder" />
             <item index="3" class="java.lang.String" itemvalue="optionLabel" />
             <item index="4" class="java.lang.String" itemvalue="optionValue" />
+            <item index="5" class="java.lang.String" itemvalue="header" />
           </list>
         </value>
       </option>

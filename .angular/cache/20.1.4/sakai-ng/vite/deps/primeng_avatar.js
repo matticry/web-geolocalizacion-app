@@ -1,12 +1,14 @@
 import {
   BaseComponent
-} from "./chunk-5X2MONKZ.js";
+} from "./chunk-UATRX62T.js";
 import {
   BaseStyle
-} from "./chunk-4LA7VCF3.js";
+} from "./chunk-NRL4H4XV.js";
 import {
   SharedModule
-} from "./chunk-VNF5KQ42.js";
+} from "./chunk-DE5WPBDG.js";
+import "./chunk-YTZ24RPK.js";
+import "./chunk-J3SRS7RM.js";
 import {
   CommonModule,
   NgClass,
@@ -52,11 +54,9 @@ import {
   ɵɵtext,
   ɵɵtextInterpolate
 } from "./chunk-6I4SEJNY.js";
-import "./chunk-YVXMBCE5.js";
 import "./chunk-G6ECYYJH.js";
+import "./chunk-YVXMBCE5.js";
 import "./chunk-RTGP7ALM.js";
-import "./chunk-YTZ24RPK.js";
-import "./chunk-J3SRS7RM.js";
 import "./chunk-3OV72XIM.js";
 
 // node_modules/@primeuix/styles/dist/avatar/index.mjs

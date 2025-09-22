@@ -19,10 +19,36 @@ import { UserService } from '@/core/services/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { GeocercaDto, VendedorDto } from '@/core/models/Geocercas/VendedorDto';
 import { Tooltip } from 'primeng/tooltip';
+import { Badge } from 'primeng/badge';
+import { CustomerService } from '@/core/services/customer.service';
+import { Select } from 'primeng/select';
+import { CustomerResponseDto } from '@/core/models/Customer/CustomerResponseDto';
 
 @Component({
     selector: 'app-item-detail',
-    imports: [Accordion, AccordionContent, FormsModule, DatePicker, ToggleSwitch, NgClass, MultiSelect, PrimeTemplate, Checkbox, Button, TableModule, IconField, InputIcon, InputText, AccordionPanel, AccordionHeader, DatePipe, CurrencyPipe, Tooltip],
+    imports: [
+        Accordion,
+        AccordionContent,
+        FormsModule,
+        DatePicker,
+        ToggleSwitch,
+        NgClass,
+        MultiSelect,
+        PrimeTemplate,
+        Checkbox,
+        Button,
+        TableModule,
+        IconField,
+        InputIcon,
+        InputText,
+        AccordionPanel,
+        AccordionHeader,
+        DatePipe,
+        CurrencyPipe,
+        Tooltip,
+        Badge,
+        Select
+    ],
     templateUrl: './item-detail.component.html',
     styleUrl: './item-detail.component.scss',
     standalone: true,
@@ -33,6 +59,9 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Subject para manejo de subscripciones
     private destroy$ = new Subject<void>();
+
+    active: number = 0;
+    activeIndex: number | undefined = 0;
 
     // Propiedades de usuarios
     users: UserDto[] = [];
@@ -83,14 +112,16 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Opciones para multiselects
     vendorOptions: any[] = [];
-    selectedVendors: any[] = [];
-    clientOptions: any[] = [];
-    selectedClients: any[] = [];
+    customerOptions: any[] = [];
+    selectedCustomer: string | null = null;
+    loadingCustomers: boolean = false;
+
 
     constructor(
         private readonly userService: UserService,
         private readonly msgService: MessageService,
-        private readonly mapService: MapService
+        private readonly mapService: MapService,
+        private readonly customerService: CustomerService
     ) {}
 
     //region Lifecycle Hooks
@@ -128,6 +159,69 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
+    getCustomersByCodeVendor(vendorCode: string): void {
+        this.loadingCustomers = true;
+
+        this.customerService.getCustomersByCodeVendor(vendorCode).subscribe({
+            next: (customers: CustomerResponseDto[]) => {
+                this.mapCustomersToOptions(customers);
+                this.loadingCustomers = false;
+
+                this.msgService.add({
+                    severity: 'success',
+                    summary: 'Clientes cargados',
+                    detail: `${customers.length} clientes encontrados`,
+                    life: 2000
+                });
+            },
+            error: (error: HttpErrorResponse) => {
+                console.error('Error al cargar clientes:', error);
+                this.loadingCustomers = false;
+                this.customerOptions = [];
+
+                this.msgService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No se pudieron cargar los clientes del vendedor'
+                });
+            }
+        });
+    }
+
+    // Mapear clientes a opciones
+    private mapCustomersToOptions(customers: CustomerResponseDto[]): void {
+        this.customerOptions = customers.map(customer => ({
+            label: customer.dirnombre,
+            value: customer.dirclave,
+            customer: customer,
+            subtitle: `${customer.dirruc} • Código: ${customer.dirclave}`
+        }));
+    }
+
+    // Método para manejar cambios en la selección de clientes (ahora selección única)
+    onCustomerChange(event: any): void {
+        const selectedCode = event.value;
+
+        if (selectedCode) {
+            const selectedCustomer = this.customerOptions.find(option => option.value === selectedCode);
+
+            this.msgService.add({
+                severity: 'info',
+                summary: 'Cliente seleccionado',
+                detail: `Cliente: ${selectedCustomer?.label || selectedCode}`,
+                life: 2000
+            });
+        } else {
+            this.msgService.add({
+                severity: 'info',
+                summary: 'Selección removida',
+                detail: 'Ningún cliente seleccionado',
+                life: 2000
+            });
+        }
+    }
+
+
     getAllUsers(): void {
         this.loading = true;
         this.userService.getAllListUser().subscribe({
@@ -136,6 +230,7 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.filteredUsers = [...this.users];
                 this.updatePagination();
                 this.loading = false;
+                this.mapUsersToVendorOptions(this.users);
 
                 // Si el mapa está inicializado, agregar marcadores
                 if (this.mapInitialized) {
@@ -152,6 +247,17 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
                 });
             }
         });
+    }
+
+    // Nuevo método para mapear usuarios a opciones
+
+    private mapUsersToVendorOptions(users: UserDto[]): void {
+        this.vendorOptions = users.map((user) => ({
+            label: user.usunombre,
+            value: user.usucodv,
+            user: user, // Guardar referencia completa del usuario
+            subtitle: `${user.usuemail || 'Sin correo electrónico'}`
+        }));
     }
 
     /*
@@ -187,7 +293,65 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
+    // Métodos de tabla
+    clearTableFilters(dt: any): void {
+        dt.clear();
+        this.msgService.add({
+            severity: 'info',
+            summary: 'Filtros de tabla',
+            detail: 'Filtros de tabla limpiados'
+        });
+    }
+
+    onGlobalFilter(dt: any, event: Event): void {
+        dt.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+    }
+
+    onVendorChange(event: any): void {
+        const selectedCode = event.value; // Ahora es un string único
+
+        if (selectedCode) {
+            const selectedUser = this.users.find(user => user.usucodv === selectedCode);
+
+            if (selectedUser) {
+                // Limpiar clientes anteriores
+                this.customerOptions = [];
+                this.selectedCustomer = null;
+
+                // Cargar clientes del vendedor seleccionado
+                this.getCustomersByCodeVendor(selectedCode);
+
+                // Actualizar mapa con el vendedor seleccionado
+                this.mapService.clearUserMarkers();
+                this.mapService.addUserMarkers([selectedUser]);
+                this.mapService.focusOnUser(selectedUser);
+
+                this.msgService.add({
+                    severity: 'success',
+                    summary: 'Vendedor seleccionado',
+                    detail: `Cargando clientes de ${selectedUser.usunombre}`,
+                    life: 3000
+                });
+            }
+        } else {
+            // Si no hay selección, mostrar todos los usuarios
+            this.customerOptions = [];
+            this.selectedCustomer = null;
+            this.mapService.clearUserMarkers();
+            this.mapService.addUserMarkers(this.users);
+
+            this.msgService.add({
+                severity: 'info',
+                summary: 'Selección removida',
+                detail: 'Mostrando todos los vendedores',
+                life: 2000
+            });
+        }
+    }
+
+
     // Método para manejar cambios en la selección
+
     onGeofencesChange(event: any): void {
         const selectedCodes = event.value; // Array de códigos seleccionados
 
@@ -208,6 +372,38 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
                 severity: 'warn',
                 summary: 'Sin filtro',
                 detail: 'No hay geocercas seleccionadas para mostrar',
+                life: 2000
+            });
+        }
+    }
+
+    // Método para manejar cambios en la selección de vendedores
+    onVendorsChange(event: any): void {
+        const selectedCodes = event.value; // Array de códigos seleccionados
+
+        // Filtrar usuarios seleccionados
+        const selectedUsers = this.users.filter((user) => selectedCodes.includes(user.usucod));
+
+        if (selectedUsers.length > 0) {
+            // Actualizar marcadores en el mapa
+            this.mapService.clearUserMarkers();
+            this.mapService.addUserMarkers(selectedUsers);
+
+            this.msgService.add({
+                severity: 'success',
+                summary: 'Vendedores filtrados',
+                detail: `Mostrando ${selectedUsers.length} de ${this.users.length} vendedor${selectedUsers.length === 1 ? '' : 'es'}`,
+                life: 3000
+            });
+        } else {
+            // Mostrar todos los usuarios si no hay selección
+            this.mapService.clearUserMarkers();
+            this.mapService.addUserMarkers(this.users);
+
+            this.msgService.add({
+                severity: 'info',
+                summary: 'Filtro removido',
+                detail: 'Mostrando todos los vendedores',
                 life: 2000
             });
         }
@@ -291,21 +487,43 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     clearFilters(): void {
+        // Filtros temporales
         this.filterFrom = null;
+        this.filterTo = null;
         this.selectedTimeUnit = null;
         this.timeValue = null;
+
+        // Filtros de vendedor y clientes
+        this.selectedVendor = null;
+        this.selectedCustomer = null;
+        this.customerOptions = [];
+
+        // Filtros espaciales
         this.geofenceEnabled = false;
         this.selectedGeofence = [];
+
+        // Filtros de transacciones
         this.pedidosEnabled = false;
         this.collectionsEnabled = false;
+
+        // Filtros de clientes (si los tienes)
         this.clientesNone = false;
         this.clientesAll = false;
         this.clientesAssigned = false;
 
+        // Restaurar vista del mapa con todos los usuarios
+        if (this.users.length > 0) {
+            this.mapService.clearUserMarkers();
+            this.mapService.addUserMarkers(this.users);
+            this.mapService.resetMapView();
+        }
+
         this.msgService.add({
             severity: 'info',
-            summary: 'Filtros',
-            detail: 'Todos los filtros han sido limpiados'
+            summary: 'Filtros limpiados',
+            detail: 'Todos los filtros han sido reiniciados'
         });
     }
+
+    exportToExcel() {}
 }

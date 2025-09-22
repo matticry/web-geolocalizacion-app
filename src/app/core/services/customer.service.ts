@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '@/core/services/auth.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { CustomerResponseDto } from '@/core/models/Customer/CustomerResponseDto';
 import { Observable } from 'rxjs';
 import { CustomerAreaRequestDto } from '@/core/models/Customer/CustomerAreaRequestDto';
@@ -38,6 +38,17 @@ export class CustomerService {
             requestDto,
             { headers }
         );
+    }
+
+    getCustomersByCodeVendor(codvendedor: string): Observable<CustomerResponseDto[]> {
+        const token = this.authService.getToken();
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        });
+        const params = new HttpParams().set('codvendedor', codvendedor);
+        return this.http.get<CustomerResponseDto[]>(`${this.baseUrl}/clientes/weblistacompletafiltro`, { headers, params });
+
     }
 
 
