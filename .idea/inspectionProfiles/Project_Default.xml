@@ -1,0 +1,50 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <Languages>
+        <language minSize="165" name="TypeScript" />
+      </Languages>
+    </inspection_tool>
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="5">
+            <item index="0" class="java.lang.String" itemvalue="field" />
+            <item index="1" class="java.lang.String" itemvalue="spinnerMode" />
+            <item index="2" class="java.lang.String" itemvalue="placeholder" />
+            <item index="3" class="java.lang.String" itemvalue="optionLabel" />
+            <item index="4" class="java.lang.String" itemvalue="optionValue" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="16">
+            <item index="0" class="java.lang.String" itemvalue="nobr" />
+            <item index="1" class="java.lang.String" itemvalue="noembed" />
+            <item index="2" class="java.lang.String" itemvalue="comment" />
+            <item index="3" class="java.lang.String" itemvalue="noscript" />
+            <item index="4" class="java.lang.String" itemvalue="embed" />
+            <item index="5" class="java.lang.String" itemvalue="script" />
+            <item index="6" class="java.lang.String" itemvalue="p-confirmdialog" />
+            <item index="7" class="java.lang.String" itemvalue="p-iconField" />
+            <item index="8" class="java.lang.String" itemvalue="p-inputIcon" />
+            <item index="9" class="java.lang.String" itemvalue="p-dropdown" />
+            <item index="10" class="java.lang.String" itemvalue="p-toggleSwitch" />
+            <item index="11" class="java.lang.String" itemvalue="p-autocomplete" />
+            <item index="12" class="java.lang.String" itemvalue="p-inputSwitch" />
+            <item index="13" class="java.lang.String" itemvalue="p-datepicker" />
+            <item index="14" class="java.lang.String" itemvalue="p-accordionTab" />
+            <item index="15" class="java.lang.String" itemvalue="p-multiselect" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+  </profile>
+</component>
