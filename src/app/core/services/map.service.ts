@@ -288,49 +288,62 @@ export class MapService {
      * Agrega marcadores de clientes al mapa
      */
     addCustomerMarkers(customers: CustomerResponseDto[]): void {
-        if (!this.map) return;
+        if (!this.map || !this.L) {
+            console.warn('Mapa o Leaflet no están inicializados');
+            return;
+        }
 
-        this.clearCustomerMarkers();
-        this.initializeCustomerCluster();
+        try {
+            this.clearCustomerMarkers();
+            this.initializeCustomerCluster();
 
-        customers.forEach((customer) => {
-            if (customer.latitud && customer.longitud) {
-                try {
-                    const marker = this.createCustomerMarker(customer);
-                    this.customerMarkers.set(customer.dirclave, marker);
-                    this.customerClusterGroup?.addLayer(marker);
-                } catch (error) {
-                    console.error('❌ Error al agregar marcador de cliente:', error);
+            customers.forEach((customer) => {
+                if (customer.latitud && customer.longitud) {
+                    try {
+                        const marker = this.createCustomerMarker(customer);
+                        this.customerMarkers.set(customer.dirclave, marker);
+                        this.customerClusterGroup?.addLayer(marker);
+                    } catch (error) {
+                        console.error('❌ Error al agregar marcador de cliente:', error, customer);
+                    }
                 }
-            }
-        });
-        setTimeout(() => {
-            this.map?.invalidateSize();
-        }, 100);
-    }
+            });
 
+            setTimeout(() => {
+                this.map?.invalidateSize();
+            }, 100);
+
+        } catch (error) {
+            console.error('❌ Error general en addCustomerMarkers:', error);
+            this.msgService?.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Error al agregar marcadores de clientes'
+            });
+        }
+    }
     /**
      * Inicializa el cluster de clientes
      */
     private initializeCustomerCluster(): void {
-        if (!this.map) return;
+        if (!this.map || !this.L) return;
 
         if (this.customerClusterGroup) {
             this.map.removeLayer(this.customerClusterGroup);
             this.customerClusterGroup = null;
         }
 
-        if (!L.markerClusterGroup) {
+        if (!this.L.markerClusterGroup) {
             throw new Error('leaflet.markercluster no está inicializado');
         }
 
-        this.customerClusterGroup = L.markerClusterGroup({
+        this.customerClusterGroup = this.L.markerClusterGroup({
             showCoverageOnHover: false,
             maxClusterRadius: 40,
             spiderfyOnMaxZoom: true,
-            iconCreateFunction: (cluster) => {
+            iconCreateFunction: (cluster: any) => {
                 const count = cluster.getChildCount();
-                return L.divIcon({
+                return this.L.divIcon({
                     html: `<div class="w-8 h-8 bg-purple-500 rounded-full border-2 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold">${count}</div>`,
                     className: 'custom-customer-cluster',
                     iconSize: [32, 32],
@@ -339,16 +352,20 @@ export class MapService {
             }
         });
 
-        this.map.addLayer(this.customerClusterGroup);
+        this.map.addLayer(this.customerClusterGroup!);
     }
 
 
     /**
      * Crea marcador para cliente
      */
-    private createCustomerMarker(customer: CustomerResponseDto): L.Marker {
+    private createCustomerMarker(customer: CustomerResponseDto): any {
+        if (!this.L) {
+            throw new Error('Leaflet no está cargado');
+        }
+
         const customIcon = this.createCustomerIcon(customer.asignado);
-        const marker = L.marker([customer.latitud, customer.longitud], {
+        const marker = this.L.marker([customer.latitud, customer.longitud], {
             icon: customIcon
         });
 
@@ -378,20 +395,24 @@ export class MapService {
     /**
      * Crea icono para cliente
      */
-    private createCustomerIcon(isAssigned: boolean): L.DivIcon {
+    private createCustomerIcon(isAssigned: boolean): any {
+        if (!this.L) {
+            throw new Error('Leaflet no está cargado');
+        }
+
         const bgColor = isAssigned ? 'bg-green-500' : 'bg-red-500';
         const indicatorColor = isAssigned ? 'bg-green-400' : 'bg-yellow-400';
 
-        return L.divIcon({
+        return this.L.divIcon({
             html: `
-            <div class="relative">
-                <div class="w-10 h-10 ${bgColor} rounded-full border-2 border-white shadow-md flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-                    </svg>
-                </div>
-                <div class="absolute -top-0.5 -right-0.5 w-3 h-3 ${indicatorColor} border border-white rounded-full"></div>
-            </div>`,
+        <div class="relative">
+            <div class="w-10 h-10 ${bgColor} rounded-full border-2 border-white shadow-md flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                </svg>
+            </div>
+            <div class="absolute -top-0.5 -right-0.5 w-3 h-3 ${indicatorColor} border border-white rounded-full"></div>
+        </div>`,
             className: 'custom-customer-marker',
             iconSize: [40, 40],
             iconAnchor: [20, 20]
@@ -1261,85 +1282,124 @@ export class MapService {
      * Agrega marcadores de tracking (ubicaciones del vendedor) al mapa
      */
     addTrackingMarkers(userLocations: UserLocationDto[]): void {
-        if (!this.map || userLocations.length === 0) return;
+        if (!this.map || !this.L || userLocations.length === 0) {
+            console.warn('Mapa, Leaflet o ubicaciones no están disponibles');
+            return;
+        }
 
-        this.clearTrackingMarkers();
-        this.initializeTrackingCluster();
+        try {
+            this.clearTrackingMarkers();
+            this.initializeTrackingCluster();
 
-        const userLocation = userLocations[0]; // Solo un usuario
-        const locations = userLocation.ubicaciones;
+            const userLocation = userLocations[0]; // Solo un usuario
+            const locations = userLocation.ubicaciones;
 
-        // Crear marcadores para cada ubicación
-        locations.forEach((location, index) => {
-            if (location.latitud && location.longitud) {
-                try {
-                    const marker = this.createTrackingMarker(location, index, locations.length);
-                    const markerId = `${location.latitud}-${location.longitud}-${location.tiempo}`;
-                    this.trackingMarkers.set(markerId, marker);
-                    this.trackingClusterGroup?.addLayer(marker);
-                } catch (error) {
-                    console.error('Error al agregar marcador de tracking:', error);
+            // Crear marcadores para cada ubicación
+            locations.forEach((location, index) => {
+                if (location.latitud && location.longitud) {
+                    try {
+                        const marker = this.createTrackingMarker(location, index, locations.length);
+                        const markerId = `${location.latitud}-${location.longitud}-${location.tiempo}`;
+                        this.trackingMarkers.set(markerId, marker);
+                        this.trackingClusterGroup?.addLayer(marker);
+                    } catch (error) {
+                        console.error('Error al agregar marcador de tracking:', error, location);
+                    }
                 }
-            }
-        });
+            });
 
-        this.createTrackingPath(userLocations);
+            this.createTrackingPath(userLocations);
 
-        setTimeout(() => {
-            this.map?.invalidateSize();
-        }, 100);
+            setTimeout(() => {
+                this.map?.invalidateSize();
+            }, 100);
+
+        } catch (error) {
+            console.error('Error general en addTrackingMarkers:', error);
+            this.msgService?.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Error al agregar marcadores de tracking'
+            });
+        }
     }
 
     /**
      * Agrega marcadores de cobros al mapa
      */
     addChargeMarkers(charges: ChargeDto[]): void {
-        if (!this.map) return;
+        if (!this.map || !this.L) {
+            console.warn('Mapa o Leaflet no están inicializados');
+            return;
+        }
 
-        this.clearChargeMarkers();
-        this.initializeChargeCluster();
+        try {
+            this.clearChargeMarkers();
+            this.initializeChargeCluster();
 
-        charges.forEach((charge) => {
-            if (charge.cablat && charge.cablon) {
-                try {
-                    const marker = this.createChargeMarker(charge);
-                    this.chargeMarkers.set(charge.cabnumero.toString(), marker);
-                    this.chargeClusterGroup?.addLayer(marker);
-                } catch (error) {
-                    console.error('❌ Error al agregar marcador de cobro:', error);
+            charges.forEach((charge) => {
+                if (charge.cablat && charge.cablon) {
+                    try {
+                        const marker = this.createChargeMarker(charge);
+                        this.chargeMarkers.set(charge.cabnumero.toString(), marker);
+                        this.chargeClusterGroup?.addLayer(marker);
+                    } catch (error) {
+                        console.error('❌ Error al agregar marcador de cobro:', error, charge);
+                    }
                 }
-            }
-        });
+            });
 
-        setTimeout(() => {
-            this.map?.invalidateSize();
-        }, 100);
+            setTimeout(() => {
+                this.map?.invalidateSize();
+            }, 100);
+
+        } catch (error) {
+            console.error('❌ Error general en addChargeMarkers:', error);
+            this.msgService?.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Error al agregar marcadores de cobros'
+            });
+        }
     }
 
     /**
      * Agrega marcadores de pedidos al mapa
      */
     addOrderMarkers(orders: OrderDto[]): void {
-        if (!this.map) return;
+        if (!this.map || !this.L) {
+            console.warn('Mapa o Leaflet no están inicializados');
+            return;
+        }
 
-        this.clearOrderMarkers();
-        this.initializeOrderCluster();
+        try {
+            this.clearOrderMarkers();
+            this.initializeOrderCluster();
 
-        orders.forEach((order) => {
-            if (order.pdtlat && order.pdtlon) {
-                try {
-                    const marker = this.createOrderMarker(order);
-                    this.orderMarkers.set(order.pdtfactura.toString(), marker);
-                    this.orderClusterGroup?.addLayer(marker);
-                } catch (error) {
-                    console.error('❌ Error al agregar marcador de pedido:', error);
+            orders.forEach((order) => {
+                if (order.pdtlat && order.pdtlon) {
+                    try {
+                        const marker = this.createOrderMarker(order);
+                        this.orderMarkers.set(order.pdtfactura.toString(), marker);
+                        this.orderClusterGroup?.addLayer(marker);
+                    } catch (error) {
+                        console.error('❌ Error al agregar marcador de pedido:', error, order);
+                    }
                 }
-            }
-        });
+            });
 
-        setTimeout(() => {
-            this.map?.invalidateSize();
-        }, 100);
+            setTimeout(() => {
+                this.map?.invalidateSize();
+            }, 100);
+
+        } catch (error) {
+            console.error('❌ Error general en addOrderMarkers:', error);
+            this.msgService?.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Error al agregar marcadores de pedidos'
+            });
+        }
     }
 
     // ============= MÉTODOS PRIVADOS PARA CREAR MARCADORES =============
@@ -1366,9 +1426,13 @@ export class MapService {
     /**
      * Crea marcador para cobro
      */
-    private createChargeMarker(charge: ChargeDto): L.Marker {
+    private createChargeMarker(charge: ChargeDto): any {
+        if (!this.L) {
+            throw new Error('Leaflet no está cargado');
+        }
+
         const customIcon = this.createChargeIcon();
-        const marker = L.marker([charge.cablat, charge.cablon], {
+        const marker = this.L.marker([charge.cablat, charge.cablon], {
             icon: customIcon
         });
 
@@ -1384,9 +1448,13 @@ export class MapService {
     /**
      * Crea marcador para pedido
      */
-    private createOrderMarker(order: OrderDto): L.Marker {
+    private createOrderMarker(order: OrderDto): any {
+        if (!this.L) {
+            throw new Error('Leaflet no está cargado');
+        }
+
         const customIcon = this.createOrderIcon();
-        const marker = L.marker([order.pdtlat, order.pdtlon], {
+        const marker = this.L.marker([order.pdtlat, order.pdtlon], {
             icon: customIcon
         });
 
@@ -1429,13 +1497,13 @@ export class MapService {
     private createDeliveryPersonIcon(): L.DivIcon {
         return L.divIcon({
             html: `
-<div class="relative">
-    <div class="w-10 h-10 bg-blue-500 rounded-full border-2 border-white shadow-lg flex items-center justify-center">
-        <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
-        </svg>
-    </div>
-</div>`,
+                <div class="relative">
+                    <div class="w-10 h-10 bg-blue-500 rounded-full border-2 border-white shadow-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+                        </svg>
+                    </div>
+                </div>`,
             className: 'custom-delivery-person-marker',
             iconSize: [40, 40],
             iconAnchor: [20, 20]
@@ -1445,8 +1513,12 @@ export class MapService {
     /**
      * Crea icono para cobro
      */
-    private createChargeIcon(): L.DivIcon {
-        return L.divIcon({
+    private createChargeIcon(): any {
+        if (!this.L) {
+            throw new Error('Leaflet no está cargado');
+        }
+
+        return this.L.divIcon({
             html: `
         <div class="relative">
             <div class="w-10 h-10 bg-green-600 rounded-full border-2 border-white shadow-md flex items-center justify-center">
@@ -1467,8 +1539,12 @@ export class MapService {
     /**
      * Crea icono para pedido
      */
-    private createOrderIcon(): L.DivIcon {
-        return L.divIcon({
+    private createOrderIcon(): any {
+        if (!this.L) {
+            throw new Error('Leaflet no está cargado');
+        }
+
+        return this.L.divIcon({
             html: `
             <div class="relative">
                 <div class="w-10 h-10 bg-purple-500 rounded-full border-2 border-white shadow-md flex items-center justify-center">
@@ -1651,13 +1727,17 @@ export class MapService {
      * Inicializa cluster para marcadores de tracking
      */
     private initializeTrackingCluster(): void {
-        if (!this.map) return;
+        if (!this.map || !this.L) return;
 
-        this.trackingClusterGroup = new L.MarkerClusterGroup({
+        if (!this.L.MarkerClusterGroup) {
+            throw new Error('leaflet.markercluster no está disponible');
+        }
+
+        this.trackingClusterGroup = new this.L.MarkerClusterGroup({
             disableClusteringAtZoom: 0,
-            iconCreateFunction: (cluster) => {
+            iconCreateFunction: (cluster: any) => {
                 const count = cluster.getChildCount();
-                return L.divIcon({
+                return this.L.divIcon({
                     html: `<div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-semibold text-sm shadow-lg border-2 border-white">${count}</div>`,
                     className: 'custom-tracking-cluster',
                     iconSize: [40, 40]
@@ -1668,19 +1748,23 @@ export class MapService {
             zoomToBoundsOnClick: true
         });
 
-        this.map.addLayer(this.trackingClusterGroup);
+        this.map.addLayer(this.trackingClusterGroup!);
     }
 
     /**
      * Inicializa cluster para marcadores de cobros
      */
     private initializeChargeCluster(): void {
-        if (!this.map) return;
+        if (!this.map || !this.L) return;
 
-        this.chargeClusterGroup = new L.MarkerClusterGroup({
-            iconCreateFunction: (cluster) => {
+        if (!this.L.MarkerClusterGroup) {
+            throw new Error('leaflet.markercluster no está disponible');
+        }
+
+        this.chargeClusterGroup = new this.L.MarkerClusterGroup({
+            iconCreateFunction: (cluster: any) => {
                 const count = cluster.getChildCount();
-                return L.divIcon({
+                return this.L.divIcon({
                     html: `<div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-semibold text-sm shadow-lg border-2 border-white">${count}</div>`,
                     className: 'custom-charge-cluster',
                     iconSize: [40, 40]
@@ -1691,19 +1775,23 @@ export class MapService {
             zoomToBoundsOnClick: true
         });
 
-        this.map.addLayer(this.chargeClusterGroup);
+        this.map.addLayer(this.chargeClusterGroup!);
     }
 
     /**
      * Inicializa cluster para marcadores de pedidos
      */
     private initializeOrderCluster(): void {
-        if (!this.map) return;
+        if (!this.map || !this.L) return;
 
-        this.orderClusterGroup = new L.MarkerClusterGroup({
-            iconCreateFunction: (cluster) => {
+        if (!this.L.MarkerClusterGroup) {
+            throw new Error('leaflet.markercluster no está disponible');
+        }
+
+        this.orderClusterGroup = new this.L.MarkerClusterGroup({
+            iconCreateFunction: (cluster: any) => {
                 const count = cluster.getChildCount();
-                return L.divIcon({
+                return this.L.divIcon({
                     html: `<div class="bg-orange-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-semibold text-sm shadow-lg border-2 border-white">${count}</div>`,
                     className: 'custom-order-cluster',
                     iconSize: [40, 40]
@@ -1714,33 +1802,37 @@ export class MapService {
             zoomToBoundsOnClick: true
         });
 
-        this.map.addLayer(this.orderClusterGroup);
+        this.map.addLayer(this.orderClusterGroup!);
     }
 
     /**
      * Crea línea de recorrido del vendedor
      */
     private createTrackingPath(userLocations: UserLocationDto[]): void {
-        if (!this.map || userLocations.length === 0) return;
+        if (!this.map || !this.L || userLocations.length === 0) return;
 
         const userLocation = userLocations[0]; // Solo un usuario
         if (userLocation.ubicaciones.length < 2) return;
 
         // Ordenar ubicaciones por tiempo
-        const sortedLocations = userLocation.ubicaciones.sort((a, b) => new Date(a.tiempo).getTime() - new Date(b.tiempo).getTime());
+        const sortedLocations = userLocation.ubicaciones.sort((a, b) =>
+            new Date(a.tiempo).getTime() - new Date(b.tiempo).getTime()
+        );
 
         // Crear coordenadas para la línea
-        const pathCoordinates: [number, number][] = sortedLocations.map((location) => [location.latitud, location.longitud]);
+        const pathCoordinates: [number, number][] = sortedLocations.map((location) =>
+            [location.latitud, location.longitud]
+        );
 
-        // Crear polyline
-        this.trackingPath = L.polyline(pathCoordinates, {
+        // Crear polyline usando this.L
+        this.trackingPath = this.L.polyline(pathCoordinates, {
             color: '#3B82F6',
             weight: 3,
             opacity: 0.7,
             smoothFactor: 1
         });
 
-        this.trackingPath.addTo(this.map);
+        this.trackingPath?.addTo(this.map);
     }
 
     /**
