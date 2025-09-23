@@ -6,21 +6,21 @@ import {
   InfoCircleIcon,
   TimesCircleIcon,
   TimesIcon
-} from "./chunk-YI5LZVZP.js";
+} from "./chunk-PD6XAUYO.js";
 import {
   CheckIcon
-} from "./chunk-MTZLKF46.js";
+} from "./chunk-ZL7OOC7V.js";
 import {
   BaseComponent
-} from "./chunk-5X2MONKZ.js";
+} from "./chunk-YEX4MAK4.js";
 import {
   BaseStyle
-} from "./chunk-4LA7VCF3.js";
+} from "./chunk-BNHHZATE.js";
 import {
   MessageService,
   PrimeTemplate,
   SharedModule
-} from "./chunk-VNF5KQ42.js";
+} from "./chunk-UO2L2VL5.js";
 import "./chunk-34SEQYFO.js";
 import {
   animate,
@@ -31,6 +31,12 @@ import {
   transition,
   trigger
 } from "./chunk-7R335IKT.js";
+import "./chunk-DDZM7I5D.js";
+import {
+  Kt,
+  a,
+  s3 as s
+} from "./chunk-LEDTVQ4Z.js";
 import {
   CommonModule,
   NgClass,
@@ -93,15 +99,9 @@ import {
   ɵɵtextInterpolate,
   ɵɵtextInterpolate1
 } from "./chunk-6I4SEJNY.js";
-import "./chunk-YVXMBCE5.js";
 import "./chunk-G6ECYYJH.js";
+import "./chunk-YVXMBCE5.js";
 import "./chunk-RTGP7ALM.js";
-import "./chunk-YTZ24RPK.js";
-import {
-  Kt,
-  a,
-  s3 as s
-} from "./chunk-J3SRS7RM.js";
 import "./chunk-3OV72XIM.js";
 
 // node_modules/@primeuix/styles/dist/toast/index.mjs
@@ -889,6 +889,7 @@ var Toast = class _Toast extends BaseComponent {
     if (!this.styleElement) {
       this.styleElement = this.renderer.createElement("style");
       this.styleElement.type = "text/css";
+      Kt(this.styleElement, "nonce", this.config?.csp()?.nonce);
       this.renderer.appendChild(this.document.head, this.styleElement);
       let innerHTML = "";
       for (let breakpoint in this.breakpoints) {

@@ -1,67 +1,73 @@
 import {
   SelectButtonModule
-} from "./chunk-VGO232MS.js";
-import "./chunk-IDNFTBBO.js";
+} from "./chunk-5DXX567T.js";
+import "./chunk-PBBEVYUG.js";
 import {
   RadioButton,
   RadioButtonModule
-} from "./chunk-5WSYX3TD.js";
-import {
-  Paginator,
-  PaginatorModule
-} from "./chunk-JAUAMC2Q.js";
-import {
-  Select,
-  SelectModule
-} from "./chunk-BMAWQO4Y.js";
-import "./chunk-ZUBBX2Y4.js";
-import "./chunk-QDML5Q37.js";
-import {
-  InputNumber,
-  InputNumberModule
-} from "./chunk-PDY2BYGV.js";
+} from "./chunk-4Z4EVIO4.js";
 import {
   DatePicker,
   DatePickerModule
-} from "./chunk-PLO5LS75.js";
-import "./chunk-Y5A5TWH7.js";
+} from "./chunk-ZZEX2M7C.js";
+import {
+  Paginator,
+  PaginatorModule
+} from "./chunk-5SVRCHYV.js";
+import {
+  Select,
+  SelectModule
+} from "./chunk-WJCE7XDE.js";
+import {
+  InputNumber,
+  InputNumberModule
+} from "./chunk-INHTDQTO.js";
+import "./chunk-RFP3WUZZ.js";
+import "./chunk-FL72JW5Y.js";
 import {
   Checkbox,
   CheckboxModule
-} from "./chunk-7CMWDTWR.js";
-import "./chunk-7ELLEN2D.js";
-import {
-  Scroller,
-  ScrollerModule
-} from "./chunk-3YNM3CTZ.js";
-import "./chunk-4WXO2AZO.js";
-import {
-  InputText,
-  InputTextModule
-} from "./chunk-VC6JZDOE.js";
-import "./chunk-X5TJV67V.js";
-import "./chunk-YCZYHR5I.js";
+} from "./chunk-FBYOFCDZ.js";
 import {
   Button,
   ButtonModule
-} from "./chunk-7XUP6FAV.js";
+} from "./chunk-RJEOE4L7.js";
 import {
   Badge,
   BadgeModule
-} from "./chunk-CP7GHPY6.js";
-import "./chunk-DLKLMQ7O.js";
+} from "./chunk-6PKE5NOH.js";
+import "./chunk-C3DHAZD3.js";
+import "./chunk-Y7A4MQHO.js";
+import {
+  Scroller,
+  ScrollerModule
+} from "./chunk-HIHANVLT.js";
+import "./chunk-3LCQYV26.js";
+import {
+  InputText,
+  InputTextModule
+} from "./chunk-HXCHP2DK.js";
+import "./chunk-NXHNAJZU.js";
+import "./chunk-ULNQLA3A.js";
+import "./chunk-CH6YFQRL.js";
 import "./chunk-6PBBDZZF.js";
-import "./chunk-5ZCGGAVE.js";
+import "./chunk-2JI7GPWQ.js";
 import {
   ConnectedOverlayScrollHandler,
   DomHandler
-} from "./chunk-BEP57GJV.js";
+} from "./chunk-XEFMFDI3.js";
+import {
+  FormsModule,
+  NgControlStatus,
+  NgModel,
+  RequiredValidator
+} from "./chunk-7TU5XIN2.js";
+import "./chunk-74KHGCW6.js";
 import {
   ObjectUtils,
   UniqueComponentId,
   zindexutils
 } from "./chunk-CMVOE67Z.js";
-import "./chunk-AMEJV2KY.js";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -73,16 +79,16 @@ import {
   SortAmountUpAltIcon,
   SpinnerIcon,
   TrashIcon
-} from "./chunk-YI5LZVZP.js";
+} from "./chunk-PD6XAUYO.js";
 import {
   BaseIcon
-} from "./chunk-MTZLKF46.js";
+} from "./chunk-ZL7OOC7V.js";
 import {
   BaseComponent
-} from "./chunk-5X2MONKZ.js";
+} from "./chunk-YEX4MAK4.js";
 import {
   BaseStyle
-} from "./chunk-4LA7VCF3.js";
+} from "./chunk-BNHHZATE.js";
 import {
   FilterMatchMode,
   FilterOperator,
@@ -91,7 +97,7 @@ import {
   PrimeTemplate,
   SharedModule,
   TranslationKeys
-} from "./chunk-VNF5KQ42.js";
+} from "./chunk-UO2L2VL5.js";
 import "./chunk-34SEQYFO.js";
 import {
   animate,
@@ -99,12 +105,8 @@ import {
   transition,
   trigger
 } from "./chunk-7R335IKT.js";
-import {
-  FormsModule,
-  NgControlStatus,
-  NgModel,
-  RequiredValidator
-} from "./chunk-7TU5XIN2.js";
+import "./chunk-DDZM7I5D.js";
+import "./chunk-LEDTVQ4Z.js";
 import {
   CommonModule,
   NgClass,
@@ -196,13 +198,11 @@ import {
   ɵɵtwoWayProperty,
   ɵɵviewQuery
 } from "./chunk-6I4SEJNY.js";
-import "./chunk-YVXMBCE5.js";
 import "./chunk-G6ECYYJH.js";
+import "./chunk-YVXMBCE5.js";
 import {
   Subject
 } from "./chunk-RTGP7ALM.js";
-import "./chunk-YTZ24RPK.js";
-import "./chunk-J3SRS7RM.js";
 import {
   __spreadProps,
   __spreadValues
@@ -4598,6 +4598,7 @@ var Table = class _Table extends BaseComponent {
   createStyleElement() {
     this.styleElement = this.renderer.createElement("style");
     this.styleElement.type = "text/css";
+    DomHandler.setAttribute(this.styleElement, "nonce", this.config?.csp()?.nonce);
     this.renderer.appendChild(this.document.head, this.styleElement);
     DomHandler.setAttribute(this.styleElement, "nonce", this.config?.csp()?.nonce);
   }
@@ -4612,6 +4613,7 @@ var Table = class _Table extends BaseComponent {
       if (!this.responsiveStyleElement) {
         this.responsiveStyleElement = this.renderer.createElement("style");
         this.responsiveStyleElement.type = "text/css";
+        DomHandler.setAttribute(this.responsiveStyleElement, "nonce", this.config?.csp()?.nonce);
         this.renderer.appendChild(this.document.head, this.responsiveStyleElement);
         let innerHTML = `
     @media screen and (max-width: ${this.breakpoint}) {

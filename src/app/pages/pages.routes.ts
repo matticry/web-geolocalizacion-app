@@ -7,6 +7,7 @@ import { GeocercasListComponent } from '@/pages/geocercas/geocercas-list/geocerc
 import { VendedoresComponent } from '@/pages/vendedores/vendedores.component';
 import { OnlyGeocercasComponent } from '@/pages/onlygeocercas/only-geocercas.component';
 import { ItemDetailComponent } from '@/pages/item-detail/item-detail.component';
+import { ChangeAddressReviewComponent } from '@/pages/change-address-review/change-address-review.component';
 
 export default [
     { path: 'documentation', component: Documentation },
@@ -17,5 +18,6 @@ export default [
     { path: 'geocercas-vendedores', component: VendedoresComponent },
     { path: 'only-geocercas', component: OnlyGeocercasComponent },
     { path: 'item-detail', component: ItemDetailComponent },
+    { path: 'change-address-review', component: ChangeAddressReviewComponent },
     { path: '**', redirectTo: '/notfound' }
 ] as Routes;

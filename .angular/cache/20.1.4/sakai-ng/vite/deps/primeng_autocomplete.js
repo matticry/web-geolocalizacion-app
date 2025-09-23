@@ -1,53 +1,64 @@
 import {
   Overlay
-} from "./chunk-7ELLEN2D.js";
+} from "./chunk-Y7A4MQHO.js";
 import {
   Scroller
-} from "./chunk-3YNM3CTZ.js";
+} from "./chunk-HIHANVLT.js";
 import {
   BaseInput
-} from "./chunk-4WXO2AZO.js";
+} from "./chunk-3LCQYV26.js";
 import {
   InputText
-} from "./chunk-VC6JZDOE.js";
+} from "./chunk-HXCHP2DK.js";
+import "./chunk-NXHNAJZU.js";
+import "./chunk-ULNQLA3A.js";
 import {
   Chip
-} from "./chunk-J7HSGKEL.js";
-import "./chunk-X5TJV67V.js";
-import "./chunk-YCZYHR5I.js";
-import "./chunk-DLKLMQ7O.js";
+} from "./chunk-RBGFHBEA.js";
+import "./chunk-CH6YFQRL.js";
 import "./chunk-6PBBDZZF.js";
 import {
   AutoFocus
-} from "./chunk-5ZCGGAVE.js";
-import "./chunk-BEP57GJV.js";
-import "./chunk-CMVOE67Z.js";
+} from "./chunk-2JI7GPWQ.js";
+import "./chunk-XEFMFDI3.js";
+import {
+  NG_VALUE_ACCESSOR
+} from "./chunk-7TU5XIN2.js";
 import {
   Ripple
-} from "./chunk-AMEJV2KY.js";
+} from "./chunk-74KHGCW6.js";
+import "./chunk-CMVOE67Z.js";
 import {
   ChevronDownIcon,
   SpinnerIcon,
   TimesCircleIcon,
   TimesIcon
-} from "./chunk-YI5LZVZP.js";
-import "./chunk-MTZLKF46.js";
-import "./chunk-5X2MONKZ.js";
+} from "./chunk-PD6XAUYO.js";
+import "./chunk-ZL7OOC7V.js";
+import "./chunk-YEX4MAK4.js";
 import {
   BaseStyle,
   PrimeNG
-} from "./chunk-4LA7VCF3.js";
+} from "./chunk-BNHHZATE.js";
 import {
   OverlayService,
   PrimeTemplate,
   SharedModule,
   TranslationKeys
-} from "./chunk-VNF5KQ42.js";
+} from "./chunk-UO2L2VL5.js";
 import "./chunk-34SEQYFO.js";
 import "./chunk-7R335IKT.js";
+import "./chunk-DDZM7I5D.js";
 import {
-  NG_VALUE_ACCESSOR
-} from "./chunk-7TU5XIN2.js";
+  M,
+  a,
+  bt,
+  c,
+  k,
+  s,
+  s3 as s2,
+  z2 as z
+} from "./chunk-LEDTVQ4Z.js";
 import {
   CommonModule,
   NgClass,
@@ -123,20 +134,9 @@ import {
   ɵɵtwoWayProperty,
   ɵɵviewQuery
 } from "./chunk-6I4SEJNY.js";
-import "./chunk-YVXMBCE5.js";
 import "./chunk-G6ECYYJH.js";
+import "./chunk-YVXMBCE5.js";
 import "./chunk-RTGP7ALM.js";
-import "./chunk-YTZ24RPK.js";
-import {
-  M,
-  a,
-  bt,
-  c,
-  k,
-  s,
-  s3 as s2,
-  z2 as z
-} from "./chunk-J3SRS7RM.js";
 import "./chunk-3OV72XIM.js";
 
 // node_modules/@primeuix/styles/dist/autocomplete/index.mjs
@@ -1895,8 +1895,10 @@ var AutoComplete = class _AutoComplete extends BaseInput {
   onEnterKey(event) {
     if (!this.typeahead) {
       if (this.multiple) {
-        this.updateModel([...this.modelValue() || [], event.target.value]);
-        this.inputEL.nativeElement.value = "";
+        if (!this.isSelected(event.target.value)) {
+          this.updateModel([...this.modelValue() || [], event.target.value]);
+          this.inputEL.nativeElement.value = "";
+        }
       }
     }
     if (!this.overlayVisible) {

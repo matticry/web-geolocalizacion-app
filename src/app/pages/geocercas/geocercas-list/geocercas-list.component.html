@@ -219,8 +219,7 @@
                             <div
                                 #scrollContainer
                                 class="space-y-3 p-3 custom-scrollbar"
-                                [class]="paginatedUsers.length > 5 ? 'max-h-[70rem] overflow-y-auto' : ''"
-                                (scroll)="onScroll($event)">
+                                [class]="paginatedUsers.length > 8 ? 'max-h-[70rem] overflow-y-auto' : ''">
 
                                 @for (user of paginatedUsers; track user) {
                                     <div

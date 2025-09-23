@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { CustomerAreaRequestDto } from '@/core/models/Customer/CustomerAreaRequestDto';
 import { FilterRequest } from '@/core/models/Filter/FilterRequest';
 import { TrackingResponse } from '@/core/models/Filter/TrackingResponse';
+import { CustomerUpdateInfo } from '@/core/models/Customer/CustomerUpdateInfo';
 
 @Injectable({
     providedIn: 'root'
@@ -48,7 +49,15 @@ export class CustomerService {
         });
         const params = new HttpParams().set('codvendedor', codvendedor);
         return this.http.get<CustomerResponseDto[]>(`${this.baseUrl}/clientes/weblistacompletafiltro`, { headers, params });
+    }
 
+    getListChangeAddressRequest(): Observable<CustomerUpdateInfo[]> {
+        const token = this.authService.getToken();
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        });
+        return this.http.get<CustomerUpdateInfo[]>(`${this.baseUrl}/usuarios/websolicitudactualziarcliente`, { headers });
     }
 
 

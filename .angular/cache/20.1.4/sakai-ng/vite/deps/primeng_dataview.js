@@ -1,44 +1,48 @@
 import {
   Paginator,
   PaginatorModule
-} from "./chunk-JAUAMC2Q.js";
-import "./chunk-BMAWQO4Y.js";
-import "./chunk-ZUBBX2Y4.js";
-import "./chunk-QDML5Q37.js";
-import "./chunk-PDY2BYGV.js";
-import "./chunk-Y5A5TWH7.js";
-import "./chunk-7ELLEN2D.js";
-import "./chunk-3YNM3CTZ.js";
-import "./chunk-4WXO2AZO.js";
-import "./chunk-VC6JZDOE.js";
-import "./chunk-X5TJV67V.js";
-import "./chunk-YCZYHR5I.js";
-import "./chunk-DLKLMQ7O.js";
+} from "./chunk-5SVRCHYV.js";
+import "./chunk-WJCE7XDE.js";
+import "./chunk-INHTDQTO.js";
+import "./chunk-RFP3WUZZ.js";
+import "./chunk-FL72JW5Y.js";
+import "./chunk-C3DHAZD3.js";
+import "./chunk-Y7A4MQHO.js";
+import "./chunk-HIHANVLT.js";
+import "./chunk-3LCQYV26.js";
+import "./chunk-HXCHP2DK.js";
+import "./chunk-NXHNAJZU.js";
+import "./chunk-ULNQLA3A.js";
+import "./chunk-CH6YFQRL.js";
 import "./chunk-6PBBDZZF.js";
-import "./chunk-5ZCGGAVE.js";
-import "./chunk-BEP57GJV.js";
+import "./chunk-2JI7GPWQ.js";
+import "./chunk-XEFMFDI3.js";
+import "./chunk-7TU5XIN2.js";
+import "./chunk-74KHGCW6.js";
 import "./chunk-CMVOE67Z.js";
-import "./chunk-AMEJV2KY.js";
 import {
   SpinnerIcon
-} from "./chunk-YI5LZVZP.js";
-import "./chunk-MTZLKF46.js";
+} from "./chunk-PD6XAUYO.js";
+import "./chunk-ZL7OOC7V.js";
 import {
   BaseComponent
-} from "./chunk-5X2MONKZ.js";
+} from "./chunk-YEX4MAK4.js";
 import {
   BaseStyle
-} from "./chunk-4LA7VCF3.js";
+} from "./chunk-BNHHZATE.js";
 import {
   FilterService,
   Footer,
   Header,
   SharedModule,
   TranslationKeys
-} from "./chunk-VNF5KQ42.js";
+} from "./chunk-UO2L2VL5.js";
 import "./chunk-34SEQYFO.js";
 import "./chunk-7R335IKT.js";
-import "./chunk-7TU5XIN2.js";
+import "./chunk-DDZM7I5D.js";
+import {
+  c
+} from "./chunk-LEDTVQ4Z.js";
 import {
   CommonModule,
   NgIf,
@@ -98,13 +102,9 @@ import {
   ɵɵtext,
   ɵɵtextInterpolate1
 } from "./chunk-6I4SEJNY.js";
-import "./chunk-YVXMBCE5.js";
 import "./chunk-G6ECYYJH.js";
+import "./chunk-YVXMBCE5.js";
 import "./chunk-RTGP7ALM.js";
-import "./chunk-YTZ24RPK.js";
-import {
-  c
-} from "./chunk-J3SRS7RM.js";
 import "./chunk-3OV72XIM.js";
 
 // node_modules/@primeuix/styles/dist/dataview/index.mjs
@@ -133,7 +133,7 @@ var _c14 = (a0) => ({
 var _c15 = () => ({
   position: "bottom"
 });
-function DataView_div_0_i_2_Template(rf, ctx) {
+function DataView_Conditional_0_Conditional_2_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵelement(0, "i");
   }
@@ -142,42 +142,34 @@ function DataView_div_0_i_2_Template(rf, ctx) {
     ɵɵclassMap(ctx_r0.cn(ctx_r0.cx("loadingIcon"), "pi-spin" + ctx_r0.loadingIcon));
   }
 }
-function DataView_div_0_ng_container_3__svg_svg_1_Template(rf, ctx) {
+function DataView_Conditional_0_Conditional_3_2_ng_template_0_Template(rf, ctx) {
+}
+function DataView_Conditional_0_Conditional_3_2_Template(rf, ctx) {
   if (rf & 1) {
-    ɵɵnamespaceSVG();
-    ɵɵelement(0, "svg", 6);
-  }
-  if (rf & 2) {
-    const ctx_r0 = ɵɵnextContext(3);
-    ɵɵclassMap(ctx_r0.cx("loadingIcon"));
-    ɵɵproperty("spin", true);
+    ɵɵtemplate(0, DataView_Conditional_0_Conditional_3_2_ng_template_0_Template, 0, 0, "ng-template");
   }
 }
-function DataView_div_0_ng_container_3_2_ng_template_0_Template(rf, ctx) {
-}
-function DataView_div_0_ng_container_3_2_Template(rf, ctx) {
-  if (rf & 1) {
-    ɵɵtemplate(0, DataView_div_0_ng_container_3_2_ng_template_0_Template, 0, 0, "ng-template");
-  }
-}
-function DataView_div_0_ng_container_3_Template(rf, ctx) {
+function DataView_Conditional_0_Conditional_3_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵelementContainerStart(0);
-    ɵɵtemplate(1, DataView_div_0_ng_container_3__svg_svg_1_Template, 1, 3, "svg", 4)(2, DataView_div_0_ng_container_3_2_Template, 1, 0, null, 5);
+    ɵɵnamespaceSVG();
+    ɵɵelement(1, "svg", 3);
+    ɵɵtemplate(2, DataView_Conditional_0_Conditional_3_2_Template, 1, 0, null, 4);
     ɵɵelementContainerEnd();
   }
   if (rf & 2) {
     const ctx_r0 = ɵɵnextContext(2);
     ɵɵadvance();
-    ɵɵproperty("ngIf", !ctx_r0.loadingicon);
+    ɵɵclassMap(ctx_r0.cx("loadingIcon"));
+    ɵɵproperty("spin", true);
     ɵɵadvance();
     ɵɵproperty("ngTemplateOutlet", ctx_r0.loadingicon);
   }
 }
-function DataView_div_0_Template(rf, ctx) {
+function DataView_Conditional_0_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵelementStart(0, "div")(1, "div");
-    ɵɵtemplate(2, DataView_div_0_i_2_Template, 1, 2, "i", 1)(3, DataView_div_0_ng_container_3_Template, 3, 2, "ng-container", 3);
+    ɵɵconditionalCreate(2, DataView_Conditional_0_Conditional_2_Template, 1, 2, "i", 1)(3, DataView_Conditional_0_Conditional_3_Template, 3, 4, "ng-container");
     ɵɵelementEnd()();
   }
   if (rf & 2) {
@@ -186,21 +178,19 @@ function DataView_div_0_Template(rf, ctx) {
     ɵɵadvance();
     ɵɵclassMap(ctx_r0.cx("loadingOverlay"));
     ɵɵadvance();
-    ɵɵproperty("ngIf", ctx_r0.loadingIcon);
-    ɵɵadvance();
-    ɵɵproperty("ngIf", !ctx_r0.loadingIcon);
+    ɵɵconditional(ctx_r0.loadingIcon ? 2 : 3);
   }
 }
-function DataView_div_1_ng_container_2_Template(rf, ctx) {
+function DataView_Conditional_1_ng_container_2_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵelementContainer(0);
   }
 }
-function DataView_div_1_Template(rf, ctx) {
+function DataView_Conditional_1_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵelementStart(0, "div");
     ɵɵprojection(1);
-    ɵɵtemplate(2, DataView_div_1_ng_container_2_Template, 1, 0, "ng-container", 5);
+    ɵɵtemplate(2, DataView_Conditional_1_ng_container_2_Template, 1, 0, "ng-container", 4);
     ɵɵelementEnd();
   }
   if (rf & 2) {
@@ -210,11 +200,11 @@ function DataView_div_1_Template(rf, ctx) {
     ɵɵproperty("ngTemplateOutlet", ctx_r0.headerTemplate);
   }
 }
-function DataView_p_paginator_2_Template(rf, ctx) {
+function DataView_Conditional_2_Template(rf, ctx) {
   if (rf & 1) {
     const _r2 = ɵɵgetCurrentView();
-    ɵɵelementStart(0, "p-paginator", 7);
-    ɵɵlistener("onPageChange", function DataView_p_paginator_2_Template_p_paginator_onPageChange_0_listener($event) {
+    ɵɵelementStart(0, "p-paginator", 5);
+    ɵɵlistener("onPageChange", function DataView_Conditional_2_Template_p_paginator_onPageChange_0_listener($event) {
       ɵɵrestoreView(_r2);
       const ctx_r0 = ɵɵnextContext();
       return ɵɵresetView(ctx_r0.paginate($event));
@@ -223,7 +213,7 @@ function DataView_p_paginator_2_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r0 = ɵɵnextContext();
-    ɵɵproperty("rows", ctx_r0.rows)("first", ctx_r0.first)("totalRecords", ctx_r0.totalRecords)("pageLinkSize", ctx_r0.pageLinks)("alwaysShow", ctx_r0.alwaysShowPaginator)("styleClass", ctx_r0.cx("pcPaginator", ɵɵpureFunction0(18, _c13)))("rowsPerPageOptions", ctx_r0.rowsPerPageOptions)("appendTo", ctx_r0.paginatorDropdownAppendTo)("dropdownScrollHeight", ctx_r0.paginatorDropdownScrollHeight)("templateLeft", ctx_r0.paginatorleft)("templateRight", ctx_r0.paginatorright)("currentPageReportTemplate", ctx_r0.currentPageReportTemplate)("showFirstLastIcon", ctx_r0.showFirstLastIcon)("dropdownItemTemplate", ctx_r0.paginatordropdownitem)("showCurrentPageReport", ctx_r0.showCurrentPageReport)("showJumpToPageDropdown", ctx_r0.showJumpToPageDropdown)("showPageLinks", ctx_r0.showPageLinks)("styleClass", ctx_r0.paginatorStyleClass);
+    ɵɵproperty("rows", ctx_r0.rows)("first", ctx_r0.first)("totalRecords", ctx_r0.totalRecords)("pageLinkSize", ctx_r0.pageLinks)("alwaysShow", ctx_r0.alwaysShowPaginator)("rowsPerPageOptions", ctx_r0.rowsPerPageOptions)("appendTo", ctx_r0.paginatorDropdownAppendTo)("dropdownScrollHeight", ctx_r0.paginatorDropdownScrollHeight)("templateLeft", ctx_r0.paginatorleft)("templateRight", ctx_r0.paginatorright)("currentPageReportTemplate", ctx_r0.currentPageReportTemplate)("showFirstLastIcon", ctx_r0.showFirstLastIcon)("dropdownItemTemplate", ctx_r0.paginatordropdownitem)("showCurrentPageReport", ctx_r0.showCurrentPageReport)("showJumpToPageDropdown", ctx_r0.showJumpToPageDropdown)("showPageLinks", ctx_r0.showPageLinks)("styleClass", ctx_r0.cn(ctx_r0.cx("pcPaginator", ɵɵpureFunction0(17, _c13)), ctx_r0.paginatorStyleClass));
   }
 }
 function DataView_Conditional_4_ng_container_0_Template(rf, ctx) {
@@ -233,7 +223,7 @@ function DataView_Conditional_4_ng_container_0_Template(rf, ctx) {
 }
 function DataView_Conditional_4_Template(rf, ctx) {
   if (rf & 1) {
-    ɵɵtemplate(0, DataView_Conditional_4_ng_container_0_Template, 1, 0, "ng-container", 8);
+    ɵɵtemplate(0, DataView_Conditional_4_ng_container_0_Template, 1, 0, "ng-container", 6);
     ɵɵpipe(1, "slice");
   }
   if (rf & 2) {
@@ -248,7 +238,7 @@ function DataView_Conditional_5_ng_container_0_Template(rf, ctx) {
 }
 function DataView_Conditional_5_Template(rf, ctx) {
   if (rf & 1) {
-    ɵɵtemplate(0, DataView_Conditional_5_ng_container_0_Template, 1, 0, "ng-container", 8);
+    ɵɵtemplate(0, DataView_Conditional_5_ng_container_0_Template, 1, 0, "ng-container", 6);
     ɵɵpipe(1, "slice");
   }
   if (rf & 2) {
@@ -256,7 +246,7 @@ function DataView_Conditional_5_Template(rf, ctx) {
     ɵɵproperty("ngTemplateOutlet", ctx_r0.gridTemplate)("ngTemplateOutletContext", ɵɵpureFunction1(6, _c14, ctx_r0.paginator ? ɵɵpipeBind3(1, 2, ctx_r0.filteredValue || ctx_r0.value, ctx_r0.lazy ? 0 : ctx_r0.first, (ctx_r0.lazy ? 0 : ctx_r0.first) + ctx_r0.rows) : ctx_r0.filteredValue || ctx_r0.value));
   }
 }
-function DataView_div_6_ng_container_2_Template(rf, ctx) {
+function DataView_Conditional_6_ng_container_1_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵelementContainerStart(0);
     ɵɵtext(1);
@@ -268,20 +258,19 @@ function DataView_div_6_ng_container_2_Template(rf, ctx) {
     ɵɵtextInterpolate1(" ", ctx_r0.emptyMessageLabel, " ");
   }
 }
-function DataView_div_6_ng_container_3_Template(rf, ctx) {
+function DataView_Conditional_6_ng_container_2_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵelementContainer(0, null, 0);
   }
 }
-function DataView_div_6_Template(rf, ctx) {
+function DataView_Conditional_6_Template(rf, ctx) {
   if (rf & 1) {
-    ɵɵelementStart(0, "div")(1, "div");
-    ɵɵtemplate(2, DataView_div_6_ng_container_2_Template, 2, 1, "ng-container", 9)(3, DataView_div_6_ng_container_3_Template, 2, 0, "ng-container", 5);
-    ɵɵelementEnd()();
+    ɵɵelementStart(0, "div");
+    ɵɵtemplate(1, DataView_Conditional_6_ng_container_1_Template, 2, 1, "ng-container", 7)(2, DataView_Conditional_6_ng_container_2_Template, 2, 0, "ng-container", 4);
+    ɵɵelementEnd();
   }
   if (rf & 2) {
     const ctx_r0 = ɵɵnextContext();
-    ɵɵadvance();
     ɵɵclassMap(ctx_r0.cx("emptyMessage"));
     ɵɵadvance();
     ɵɵproperty("ngIf", !ctx_r0.emptymessageTemplate)("ngIfElse", ctx_r0.empty);
@@ -289,11 +278,11 @@ function DataView_div_6_Template(rf, ctx) {
     ɵɵproperty("ngTemplateOutlet", ctx_r0.emptymessageTemplate);
   }
 }
-function DataView_p_paginator_7_Template(rf, ctx) {
+function DataView_Conditional_7_Template(rf, ctx) {
   if (rf & 1) {
     const _r3 = ɵɵgetCurrentView();
-    ɵɵelementStart(0, "p-paginator", 7);
-    ɵɵlistener("onPageChange", function DataView_p_paginator_7_Template_p_paginator_onPageChange_0_listener($event) {
+    ɵɵelementStart(0, "p-paginator", 5);
+    ɵɵlistener("onPageChange", function DataView_Conditional_7_Template_p_paginator_onPageChange_0_listener($event) {
       ɵɵrestoreView(_r3);
       const ctx_r0 = ɵɵnextContext();
       return ɵɵresetView(ctx_r0.paginate($event));
@@ -302,19 +291,19 @@ function DataView_p_paginator_7_Template(rf, ctx) {
   }
   if (rf & 2) {
     const ctx_r0 = ɵɵnextContext();
-    ɵɵproperty("rows", ctx_r0.rows)("first", ctx_r0.first)("totalRecords", ctx_r0.totalRecords)("pageLinkSize", ctx_r0.pageLinks)("alwaysShow", ctx_r0.alwaysShowPaginator)("styleClass", ctx_r0.cx("pcPaginator", ɵɵpureFunction0(18, _c15)))("rowsPerPageOptions", ctx_r0.rowsPerPageOptions)("appendTo", ctx_r0.paginatorDropdownAppendTo)("dropdownScrollHeight", ctx_r0.paginatorDropdownScrollHeight)("templateLeft", ctx_r0.paginatorleft)("templateRight", ctx_r0.paginatorright)("currentPageReportTemplate", ctx_r0.currentPageReportTemplate)("showFirstLastIcon", ctx_r0.showFirstLastIcon)("dropdownItemTemplate", ctx_r0.paginatordropdownitem)("showCurrentPageReport", ctx_r0.showCurrentPageReport)("showJumpToPageDropdown", ctx_r0.showJumpToPageDropdown)("showPageLinks", ctx_r0.showPageLinks)("styleClass", ctx_r0.paginatorStyleClass);
+    ɵɵproperty("rows", ctx_r0.rows)("first", ctx_r0.first)("totalRecords", ctx_r0.totalRecords)("pageLinkSize", ctx_r0.pageLinks)("alwaysShow", ctx_r0.alwaysShowPaginator)("rowsPerPageOptions", ctx_r0.rowsPerPageOptions)("appendTo", ctx_r0.paginatorDropdownAppendTo)("dropdownScrollHeight", ctx_r0.paginatorDropdownScrollHeight)("templateLeft", ctx_r0.paginatorleft)("templateRight", ctx_r0.paginatorright)("currentPageReportTemplate", ctx_r0.currentPageReportTemplate)("showFirstLastIcon", ctx_r0.showFirstLastIcon)("dropdownItemTemplate", ctx_r0.paginatordropdownitem)("showCurrentPageReport", ctx_r0.showCurrentPageReport)("showJumpToPageDropdown", ctx_r0.showJumpToPageDropdown)("showPageLinks", ctx_r0.showPageLinks)("styleClass", ctx_r0.cn(ctx_r0.cx("pcPaginator", ɵɵpureFunction0(17, _c15)), ctx_r0.paginatorStyleClass));
   }
 }
-function DataView_div_8_ng_container_2_Template(rf, ctx) {
+function DataView_Conditional_8_ng_container_2_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵelementContainer(0);
   }
 }
-function DataView_div_8_Template(rf, ctx) {
+function DataView_Conditional_8_Template(rf, ctx) {
   if (rf & 1) {
     ɵɵelementStart(0, "div");
     ɵɵprojection(1, 1);
-    ɵɵtemplate(2, DataView_div_8_ng_container_2_Template, 1, 0, "ng-container", 5);
+    ɵɵtemplate(2, DataView_Conditional_8_ng_container_2_Template, 1, 0, "ng-container", 4);
     ɵɵelementEnd();
   }
   if (rf & 2) {
@@ -818,24 +807,27 @@ var DataView = class _DataView extends BaseComponent {
     ngContentSelectors: _c12,
     decls: 9,
     vars: 10,
-    consts: [["empty", ""], [3, "class", 4, "ngIf"], [3, "rows", "first", "totalRecords", "pageLinkSize", "alwaysShow", "styleClass", "rowsPerPageOptions", "appendTo", "dropdownScrollHeight", "templateLeft", "templateRight", "currentPageReportTemplate", "showFirstLastIcon", "dropdownItemTemplate", "showCurrentPageReport", "showJumpToPageDropdown", "showPageLinks", "onPageChange", 4, "ngIf"], [4, "ngIf"], ["data-p-icon", "spinner", 3, "spin", "class", 4, "ngIf"], [4, "ngTemplateOutlet"], ["data-p-icon", "spinner", 3, "spin"], [3, "onPageChange", "rows", "first", "totalRecords", "pageLinkSize", "alwaysShow", "styleClass", "rowsPerPageOptions", "appendTo", "dropdownScrollHeight", "templateLeft", "templateRight", "currentPageReportTemplate", "showFirstLastIcon", "dropdownItemTemplate", "showCurrentPageReport", "showJumpToPageDropdown", "showPageLinks"], [4, "ngTemplateOutlet", "ngTemplateOutletContext"], [4, "ngIf", "ngIfElse"]],
+    consts: [["empty", ""], [3, "class"], [3, "rows", "first", "totalRecords", "pageLinkSize", "alwaysShow", "rowsPerPageOptions", "appendTo", "dropdownScrollHeight", "templateLeft", "templateRight", "currentPageReportTemplate", "showFirstLastIcon", "dropdownItemTemplate", "showCurrentPageReport", "showJumpToPageDropdown", "showPageLinks", "styleClass"], ["data-p-icon", "spinner", 3, "spin"], [4, "ngTemplateOutlet"], [3, "onPageChange", "rows", "first", "totalRecords", "pageLinkSize", "alwaysShow", "rowsPerPageOptions", "appendTo", "dropdownScrollHeight", "templateLeft", "templateRight", "currentPageReportTemplate", "showFirstLastIcon", "dropdownItemTemplate", "showCurrentPageReport", "showJumpToPageDropdown", "showPageLinks", "styleClass"], [4, "ngTemplateOutlet", "ngTemplateOutletContext"], [4, "ngIf", "ngIfElse"]],
     template: function DataView_Template(rf, ctx) {
       if (rf & 1) {
         ɵɵprojectionDef(_c11);
-        ɵɵtemplate(0, DataView_div_0_Template, 4, 6, "div", 1)(1, DataView_div_1_Template, 3, 3, "div", 1)(2, DataView_p_paginator_2_Template, 1, 19, "p-paginator", 2);
+        ɵɵconditionalCreate(0, DataView_Conditional_0_Template, 4, 5, "div", 1);
+        ɵɵconditionalCreate(1, DataView_Conditional_1_Template, 3, 3, "div", 1);
+        ɵɵconditionalCreate(2, DataView_Conditional_2_Template, 1, 18, "p-paginator", 2);
         ɵɵelementStart(3, "div");
         ɵɵconditionalCreate(4, DataView_Conditional_4_Template, 2, 8, "ng-container");
         ɵɵconditionalCreate(5, DataView_Conditional_5_Template, 2, 8, "ng-container");
-        ɵɵtemplate(6, DataView_div_6_Template, 4, 5, "div", 3);
+        ɵɵconditionalCreate(6, DataView_Conditional_6_Template, 3, 5, "div", 1);
         ɵɵelementEnd();
-        ɵɵtemplate(7, DataView_p_paginator_7_Template, 1, 19, "p-paginator", 2)(8, DataView_div_8_Template, 3, 3, "div", 1);
+        ɵɵconditionalCreate(7, DataView_Conditional_7_Template, 1, 18, "p-paginator", 2);
+        ɵɵconditionalCreate(8, DataView_Conditional_8_Template, 3, 3, "div", 1);
       }
       if (rf & 2) {
-        ɵɵproperty("ngIf", ctx.loading);
+        ɵɵconditional(ctx.loading ? 0 : -1);
         ɵɵadvance();
-        ɵɵproperty("ngIf", ctx.header || ctx.headerTemplate);
+        ɵɵconditional(ctx.header || ctx.headerTemplate ? 1 : -1);
         ɵɵadvance();
-        ɵɵproperty("ngIf", ctx.paginator && (ctx.paginatorPosition === "top" || ctx.paginatorPosition == "both"));
+        ɵɵconditional(ctx.paginator && (ctx.paginatorPosition === "top" || ctx.paginatorPosition == "both") ? 2 : -1);
         ɵɵadvance();
         ɵɵclassMap(ctx.cx("content"));
         ɵɵadvance();
@@ -843,11 +835,11 @@ var DataView = class _DataView extends BaseComponent {
         ɵɵadvance();
         ɵɵconditional(ctx.layout === "grid" ? 5 : -1);
         ɵɵadvance();
-        ɵɵproperty("ngIf", ctx.isEmpty() && !ctx.loading);
+        ɵɵconditional(ctx.isEmpty() && !ctx.loading ? 6 : -1);
         ɵɵadvance();
-        ɵɵproperty("ngIf", ctx.paginator && (ctx.paginatorPosition === "bottom" || ctx.paginatorPosition == "both"));
+        ɵɵconditional(ctx.paginator && (ctx.paginatorPosition === "bottom" || ctx.paginatorPosition == "both") ? 7 : -1);
         ɵɵadvance();
-        ɵɵproperty("ngIf", ctx.footer || ctx.footerTemplate);
+        ɵɵconditional(ctx.footer || ctx.footerTemplate ? 8 : -1);
       }
     },
     dependencies: [CommonModule, NgIf, NgTemplateOutlet, PaginatorModule, Paginator, SpinnerIcon, SharedModule, SlicePipe],
@@ -863,42 +855,48 @@ var DataView = class _DataView extends BaseComponent {
       standalone: true,
       imports: [CommonModule, PaginatorModule, SpinnerIcon, SharedModule],
       template: `
-        <div [class]="cx('loading')" *ngIf="loading">
-            <div [class]="cx('loadingOverlay')">
-                <i *ngIf="loadingIcon" [class]="cn(cx('loadingIcon'), 'pi-spin' + loadingIcon)"></i>
-                <ng-container *ngIf="!loadingIcon">
-                    <svg data-p-icon="spinner" *ngIf="!loadingicon" [spin]="true" [class]="cx('loadingIcon')" />
-                    <ng-template *ngTemplateOutlet="loadingicon"></ng-template>
-                </ng-container>
+        @if (loading) {
+            <div [class]="cx('loading')">
+                <div [class]="cx('loadingOverlay')">
+                    @if (loadingIcon) {
+                        <i [class]="cn(cx('loadingIcon'), 'pi-spin' + loadingIcon)"></i>
+                    } @else {
+                        <ng-container>
+                            <svg data-p-icon="spinner" [spin]="true" [class]="cx('loadingIcon')" />
+                            <ng-template *ngTemplateOutlet="loadingicon"></ng-template>
+                        </ng-container>
+                    }
+                </div>
             </div>
-        </div>
-        <div [class]="cx('header')" *ngIf="header || headerTemplate">
-            <ng-content select="p-header"></ng-content>
-            <ng-container *ngTemplateOutlet="headerTemplate"></ng-container>
-        </div>
-        <p-paginator
-            [rows]="rows"
-            [first]="first"
-            [totalRecords]="totalRecords"
-            [pageLinkSize]="pageLinks"
-            [alwaysShow]="alwaysShowPaginator"
-            (onPageChange)="paginate($event)"
-            [styleClass]="cx('pcPaginator', { position: 'top' })"
-            [rowsPerPageOptions]="rowsPerPageOptions"
-            *ngIf="paginator && (paginatorPosition === 'top' || paginatorPosition == 'both')"
-            [appendTo]="paginatorDropdownAppendTo"
-            [dropdownScrollHeight]="paginatorDropdownScrollHeight"
-            [templateLeft]="paginatorleft"
-            [templateRight]="paginatorright"
-            [currentPageReportTemplate]="currentPageReportTemplate"
-            [showFirstLastIcon]="showFirstLastIcon"
-            [dropdownItemTemplate]="paginatordropdownitem"
-            [showCurrentPageReport]="showCurrentPageReport"
-            [showJumpToPageDropdown]="showJumpToPageDropdown"
-            [showPageLinks]="showPageLinks"
-            [styleClass]="paginatorStyleClass"
-        ></p-paginator>
-
+        }
+        @if (header || headerTemplate) {
+            <div [class]="cx('header')">
+                <ng-content select="p-header"></ng-content>
+                <ng-container *ngTemplateOutlet="headerTemplate"></ng-container>
+            </div>
+        }
+        @if (paginator && (paginatorPosition === 'top' || paginatorPosition == 'both')) {
+            <p-paginator
+                [rows]="rows"
+                [first]="first"
+                [totalRecords]="totalRecords"
+                [pageLinkSize]="pageLinks"
+                [alwaysShow]="alwaysShowPaginator"
+                (onPageChange)="paginate($event)"
+                [rowsPerPageOptions]="rowsPerPageOptions"
+                [appendTo]="paginatorDropdownAppendTo"
+                [dropdownScrollHeight]="paginatorDropdownScrollHeight"
+                [templateLeft]="paginatorleft"
+                [templateRight]="paginatorright"
+                [currentPageReportTemplate]="currentPageReportTemplate"
+                [showFirstLastIcon]="showFirstLastIcon"
+                [dropdownItemTemplate]="paginatordropdownitem"
+                [showCurrentPageReport]="showCurrentPageReport"
+                [showJumpToPageDropdown]="showJumpToPageDropdown"
+                [showPageLinks]="showPageLinks"
+                [styleClass]="cn(cx('pcPaginator', { position: 'top' }), paginatorStyleClass)"
+            ></p-paginator>
+        }
         <div [class]="cx('content')">
             @if (layout === 'list') {
                 <ng-container
@@ -920,41 +918,43 @@ var DataView = class _DataView extends BaseComponent {
                     "
                 ></ng-container>
             }
-            <div *ngIf="isEmpty() && !loading">
+            @if (isEmpty() && !loading) {
                 <div [class]="cx('emptyMessage')">
                     <ng-container *ngIf="!emptymessageTemplate; else empty">
                         {{ emptyMessageLabel }}
                     </ng-container>
                     <ng-container #empty *ngTemplateOutlet="emptymessageTemplate"></ng-container>
                 </div>
+            }
+        </div>
+        @if (paginator && (paginatorPosition === 'bottom' || paginatorPosition == 'both')) {
+            <p-paginator
+                [rows]="rows"
+                [first]="first"
+                [totalRecords]="totalRecords"
+                [pageLinkSize]="pageLinks"
+                [alwaysShow]="alwaysShowPaginator"
+                (onPageChange)="paginate($event)"
+                [rowsPerPageOptions]="rowsPerPageOptions"
+                [appendTo]="paginatorDropdownAppendTo"
+                [dropdownScrollHeight]="paginatorDropdownScrollHeight"
+                [templateLeft]="paginatorleft"
+                [templateRight]="paginatorright"
+                [currentPageReportTemplate]="currentPageReportTemplate"
+                [showFirstLastIcon]="showFirstLastIcon"
+                [dropdownItemTemplate]="paginatordropdownitem"
+                [showCurrentPageReport]="showCurrentPageReport"
+                [showJumpToPageDropdown]="showJumpToPageDropdown"
+                [showPageLinks]="showPageLinks"
+                [styleClass]="cn(cx('pcPaginator', { position: 'bottom' }), paginatorStyleClass)"
+            ></p-paginator>
+        }
+        @if (footer || footerTemplate) {
+            <div [class]="cx('footer')">
+                <ng-content select="p-footer"></ng-content>
+                <ng-container *ngTemplateOutlet="footerTemplate"></ng-container>
             </div>
-        </div>
-        <p-paginator
-            [rows]="rows"
-            [first]="first"
-            [totalRecords]="totalRecords"
-            [pageLinkSize]="pageLinks"
-            [alwaysShow]="alwaysShowPaginator"
-            (onPageChange)="paginate($event)"
-            [styleClass]="cx('pcPaginator', { position: 'bottom' })"
-            [rowsPerPageOptions]="rowsPerPageOptions"
-            *ngIf="paginator && (paginatorPosition === 'bottom' || paginatorPosition == 'both')"
-            [appendTo]="paginatorDropdownAppendTo"
-            [dropdownScrollHeight]="paginatorDropdownScrollHeight"
-            [templateLeft]="paginatorleft"
-            [templateRight]="paginatorright"
-            [currentPageReportTemplate]="currentPageReportTemplate"
-            [showFirstLastIcon]="showFirstLastIcon"
-            [dropdownItemTemplate]="paginatordropdownitem"
-            [showCurrentPageReport]="showCurrentPageReport"
-            [showJumpToPageDropdown]="showJumpToPageDropdown"
-            [showPageLinks]="showPageLinks"
-            [styleClass]="paginatorStyleClass"
-        ></p-paginator>
-        <div [class]="cx('footer')" *ngIf="footer || footerTemplate">
-            <ng-content select="p-footer"></ng-content>
-            <ng-container *ngTemplateOutlet="footerTemplate"></ng-container>
-        </div>
+        }
     `,
       changeDetection: ChangeDetectionStrategy.OnPush,
       encapsulation: ViewEncapsulation.None,

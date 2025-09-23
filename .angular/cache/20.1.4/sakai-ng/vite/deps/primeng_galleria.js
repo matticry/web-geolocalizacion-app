@@ -1,34 +1,34 @@
 import {
   FocusTrap
-} from "./chunk-T4CZFQ5D.js";
+} from "./chunk-54AZG2MY.js";
 import {
   blockBodyScroll,
   unblockBodyScroll
-} from "./chunk-BEP57GJV.js";
+} from "./chunk-XEFMFDI3.js";
+import {
+  Ripple
+} from "./chunk-74KHGCW6.js";
 import {
   zindexutils
 } from "./chunk-CMVOE67Z.js";
-import {
-  Ripple
-} from "./chunk-AMEJV2KY.js";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronUpIcon,
   TimesIcon
-} from "./chunk-YI5LZVZP.js";
-import "./chunk-MTZLKF46.js";
+} from "./chunk-PD6XAUYO.js";
+import "./chunk-ZL7OOC7V.js";
 import {
   BaseComponent
-} from "./chunk-5X2MONKZ.js";
+} from "./chunk-YEX4MAK4.js";
 import {
   BaseStyle
-} from "./chunk-4LA7VCF3.js";
+} from "./chunk-BNHHZATE.js";
 import {
   PrimeTemplate,
   SharedModule
-} from "./chunk-VNF5KQ42.js";
+} from "./chunk-UO2L2VL5.js";
 import "./chunk-34SEQYFO.js";
 import {
   animate,
@@ -36,6 +36,17 @@ import {
   transition,
   trigger
 } from "./chunk-7R335IKT.js";
+import "./chunk-DDZM7I5D.js";
+import {
+  Kt,
+  O,
+  Q2 as Q,
+  W,
+  Y2 as Y,
+  bt,
+  s3 as s,
+  z2 as z
+} from "./chunk-LEDTVQ4Z.js";
 import {
   CommonModule,
   NgClass,
@@ -105,20 +116,9 @@ import {
   ɵɵtemplateRefExtractor,
   ɵɵviewQuery
 } from "./chunk-6I4SEJNY.js";
-import "./chunk-YVXMBCE5.js";
 import "./chunk-G6ECYYJH.js";
+import "./chunk-YVXMBCE5.js";
 import "./chunk-RTGP7ALM.js";
-import "./chunk-YTZ24RPK.js";
-import {
-  Kt,
-  O,
-  Q2 as Q,
-  W,
-  Y2 as Y,
-  bt,
-  s3 as s,
-  z2 as z
-} from "./chunk-J3SRS7RM.js";
 import "./chunk-3OV72XIM.js";
 
 // node_modules/@primeuix/styles/dist/galleria/index.mjs
@@ -2327,6 +2327,7 @@ var GalleriaThumbnails = class _GalleriaThumbnails extends BaseComponent {
   createStyle() {
     if (!this.thumbnailsStyle) {
       this.thumbnailsStyle = this.document.createElement("style");
+      Kt(this.thumbnailsStyle, "nonce", this.galleria.config?.csp()?.nonce);
       this.document.body.appendChild(this.thumbnailsStyle);
     }
     let innerHTML = `

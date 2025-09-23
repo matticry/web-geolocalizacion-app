@@ -2,50 +2,56 @@ import {
   DragDropModule,
   Listbox,
   moveItemInArray
-} from "./chunk-IYFTEOOZ.js";
-import "./chunk-ZUBBX2Y4.js";
-import "./chunk-QDML5Q37.js";
-import "./chunk-7CMWDTWR.js";
-import "./chunk-3YNM3CTZ.js";
-import "./chunk-VC6JZDOE.js";
-import "./chunk-X5TJV67V.js";
-import "./chunk-YCZYHR5I.js";
+} from "./chunk-PDJSSMEQ.js";
+import "./chunk-RFP3WUZZ.js";
+import "./chunk-FL72JW5Y.js";
+import "./chunk-FBYOFCDZ.js";
 import {
   ButtonDirective,
   ButtonIcon,
   ButtonModule
-} from "./chunk-7XUP6FAV.js";
-import "./chunk-CP7GHPY6.js";
-import "./chunk-DLKLMQ7O.js";
+} from "./chunk-RJEOE4L7.js";
+import "./chunk-6PKE5NOH.js";
+import "./chunk-HIHANVLT.js";
+import "./chunk-HXCHP2DK.js";
+import "./chunk-NXHNAJZU.js";
+import "./chunk-ULNQLA3A.js";
+import "./chunk-CH6YFQRL.js";
 import "./chunk-6PBBDZZF.js";
-import "./chunk-5ZCGGAVE.js";
-import "./chunk-BEP57GJV.js";
-import {
-  Ripple
-} from "./chunk-AMEJV2KY.js";
-import {
-  AngleDoubleDownIcon,
-  AngleDoubleUpIcon,
-  AngleDownIcon,
-  AngleUpIcon
-} from "./chunk-YI5LZVZP.js";
-import "./chunk-MTZLKF46.js";
-import {
-  BaseComponent
-} from "./chunk-5X2MONKZ.js";
-import {
-  BaseStyle
-} from "./chunk-4LA7VCF3.js";
-import {
-  FilterService,
-  PrimeTemplate,
-  SharedModule
-} from "./chunk-VNF5KQ42.js";
+import "./chunk-2JI7GPWQ.js";
+import "./chunk-XEFMFDI3.js";
 import {
   FormsModule,
   NgControlStatus,
   NgModel
 } from "./chunk-7TU5XIN2.js";
+import {
+  Ripple
+} from "./chunk-74KHGCW6.js";
+import {
+  AngleDoubleDownIcon,
+  AngleDoubleUpIcon,
+  AngleDownIcon,
+  AngleUpIcon
+} from "./chunk-PD6XAUYO.js";
+import "./chunk-ZL7OOC7V.js";
+import {
+  BaseComponent
+} from "./chunk-YEX4MAK4.js";
+import {
+  BaseStyle
+} from "./chunk-BNHHZATE.js";
+import {
+  FilterService,
+  PrimeTemplate,
+  SharedModule
+} from "./chunk-UO2L2VL5.js";
+import "./chunk-DDZM7I5D.js";
+import {
+  C,
+  Kt,
+  s3 as s
+} from "./chunk-LEDTVQ4Z.js";
 import {
   CommonModule,
   NgIf,
@@ -102,15 +108,9 @@ import {
   ɵɵtwoWayProperty,
   ɵɵviewQuery
 } from "./chunk-6I4SEJNY.js";
-import "./chunk-YVXMBCE5.js";
 import "./chunk-G6ECYYJH.js";
+import "./chunk-YVXMBCE5.js";
 import "./chunk-RTGP7ALM.js";
-import "./chunk-YTZ24RPK.js";
-import {
-  C,
-  Kt,
-  s3 as s
-} from "./chunk-J3SRS7RM.js";
 import {
   __spreadValues
 } from "./chunk-3OV72XIM.js";
@@ -827,6 +827,7 @@ var OrderList = class _OrderList extends BaseComponent {
         this.renderer.setAttribute(this.el.nativeElement.children[0], this.id, "");
         this.styleElement = this.renderer.createElement("style");
         this.renderer.setAttribute(this.styleElement, "type", "text/css");
+        Kt(this.styleElement, "nonce", this.config?.csp()?.nonce);
         this.renderer.appendChild(this.document.head, this.styleElement);
         let innerHTML = `
                     @media screen and (max-width: ${this.breakpoint}) {

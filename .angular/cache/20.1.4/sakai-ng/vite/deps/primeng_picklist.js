@@ -4,27 +4,32 @@ import {
   Listbox,
   moveItemInArray,
   transferArrayItem
-} from "./chunk-IYFTEOOZ.js";
-import "./chunk-ZUBBX2Y4.js";
-import "./chunk-QDML5Q37.js";
-import "./chunk-7CMWDTWR.js";
-import "./chunk-3YNM3CTZ.js";
-import "./chunk-VC6JZDOE.js";
-import "./chunk-X5TJV67V.js";
-import "./chunk-YCZYHR5I.js";
+} from "./chunk-PDJSSMEQ.js";
+import "./chunk-RFP3WUZZ.js";
+import "./chunk-FL72JW5Y.js";
+import "./chunk-FBYOFCDZ.js";
 import {
   ButtonDirective,
   ButtonIcon,
   ButtonModule
-} from "./chunk-7XUP6FAV.js";
-import "./chunk-CP7GHPY6.js";
-import "./chunk-DLKLMQ7O.js";
+} from "./chunk-RJEOE4L7.js";
+import "./chunk-6PKE5NOH.js";
+import "./chunk-HIHANVLT.js";
+import "./chunk-HXCHP2DK.js";
+import "./chunk-NXHNAJZU.js";
+import "./chunk-ULNQLA3A.js";
+import "./chunk-CH6YFQRL.js";
 import "./chunk-6PBBDZZF.js";
-import "./chunk-5ZCGGAVE.js";
-import "./chunk-BEP57GJV.js";
+import "./chunk-2JI7GPWQ.js";
+import "./chunk-XEFMFDI3.js";
+import {
+  FormsModule,
+  NgControlStatus,
+  NgModel
+} from "./chunk-7TU5XIN2.js";
 import {
   Ripple
-} from "./chunk-AMEJV2KY.js";
+} from "./chunk-74KHGCW6.js";
 import {
   AngleDoubleDownIcon,
   AngleDoubleLeftIcon,
@@ -34,24 +39,27 @@ import {
   AngleLeftIcon,
   AngleRightIcon,
   AngleUpIcon
-} from "./chunk-YI5LZVZP.js";
-import "./chunk-MTZLKF46.js";
+} from "./chunk-PD6XAUYO.js";
+import "./chunk-ZL7OOC7V.js";
 import {
   BaseComponent
-} from "./chunk-5X2MONKZ.js";
+} from "./chunk-YEX4MAK4.js";
 import {
   BaseStyle
-} from "./chunk-4LA7VCF3.js";
+} from "./chunk-BNHHZATE.js";
 import {
   FilterService,
   PrimeTemplate,
   SharedModule
-} from "./chunk-VNF5KQ42.js";
+} from "./chunk-UO2L2VL5.js";
+import "./chunk-DDZM7I5D.js";
 import {
-  FormsModule,
-  NgControlStatus,
-  NgModel
-} from "./chunk-7TU5XIN2.js";
+  C,
+  Kt,
+  Y2 as Y,
+  a,
+  s3 as s
+} from "./chunk-LEDTVQ4Z.js";
 import {
   CommonModule,
   NgIf,
@@ -114,17 +122,9 @@ import {
   ɵɵtwoWayProperty,
   ɵɵviewQuery
 } from "./chunk-6I4SEJNY.js";
-import "./chunk-YVXMBCE5.js";
 import "./chunk-G6ECYYJH.js";
+import "./chunk-YVXMBCE5.js";
 import "./chunk-RTGP7ALM.js";
-import "./chunk-YTZ24RPK.js";
-import {
-  C,
-  Kt,
-  Y2 as Y,
-  a,
-  s3 as s
-} from "./chunk-J3SRS7RM.js";
 import {
   __spreadValues
 } from "./chunk-3OV72XIM.js";
@@ -984,6 +984,16 @@ var PickList = class _PickList extends BaseComponent {
    * @group Props
    */
   bottomButtonAriaLabel;
+  /**
+   * Defines a string that labels the source list.
+   * @group Props
+   */
+  sourceAriaLabel;
+  /**
+   * Defines a string that labels the target list.
+   * @group Props
+   */
+  targetAriaLabel;
   /**
    * Text for the target list caption
    * @group Props
@@ -1981,6 +1991,7 @@ var PickList = class _PickList extends BaseComponent {
         this.renderer.setAttribute(this.el.nativeElement.children[0], this.id, "");
         this.styleElement = this.renderer.createElement("style");
         this.renderer.setAttribute(this.styleElement, "type", "text/css");
+        Kt(this.styleElement, "nonce", this.config?.csp()?.nonce);
         this.renderer.appendChild(this.document.head, this.styleElement);
         let innerHTML = `
                 @media screen and (max-width: ${this.breakpoint}) {
@@ -2115,6 +2126,8 @@ var PickList = class _PickList extends BaseComponent {
       downButtonAriaLabel: "downButtonAriaLabel",
       topButtonAriaLabel: "topButtonAriaLabel",
       bottomButtonAriaLabel: "bottomButtonAriaLabel",
+      sourceAriaLabel: "sourceAriaLabel",
+      targetAriaLabel: "targetAriaLabel",
       targetHeader: "targetHeader",
       responsive: [2, "responsive", "responsive", booleanAttribute],
       filterBy: "filterBy",
@@ -2171,8 +2184,8 @@ var PickList = class _PickList extends BaseComponent {
     },
     features: [ɵɵProvidersFeature([PickListStyle]), ɵɵInheritDefinitionFeature],
     decls: 34,
-    vars: 103,
-    consts: [["sourcelist", ""], ["targetlist", ""], ["header", ""], ["filter", ""], ["item", ""], ["empty", ""], ["emptyfilter", ""], ["cdkDropListGroup", "", 3, "ngStyle"], [3, "class", 4, "ngIf"], ["optionLabel", "name", 3, "ngModelChange", "onFocus", "onBlur", "onChange", "onDblClick", "onDrop", "onFilter", "multiple", "options", "ngModel", "id", "listStyle", "striped", "tabindex", "disabled", "optionDisabled", "metaKeySelection", "scrollHeight", "autoOptionFocus", "filter", "filterBy", "filterLocale", "filterMatchMode", "filterPlaceHolder", "dragdrop"], [4, "ngIf"], ["type", "button", "pButton", "", "pRipple", "", "severity", "secondary", 3, "click", "disabled", "buttonProps"], [4, "ngTemplateOutlet", "ngTemplateOutletContext"], ["data-p-icon", "angle-up", "pButtonIcon", "", 4, "ngIf"], [4, "ngTemplateOutlet"], ["data-p-icon", "angle-double-up", "pButtonIcon", "", 4, "ngIf"], ["data-p-icon", "angle-down", "pButtonIcon", "", 4, "ngIf"], ["data-p-icon", "angle-double-down", "pButtonIcon", "", 4, "ngIf"], ["data-p-icon", "angle-up", "pButtonIcon", ""], ["data-p-icon", "angle-double-up", "pButtonIcon", ""], ["data-p-icon", "angle-down", "pButtonIcon", ""], ["data-p-icon", "angle-double-down", "pButtonIcon", ""], ["data-p-icon", "angle-right", "pButtonIcon", "", 4, "ngIf"], ["data-p-icon", "angle-right", "pButtonIcon", ""], ["data-p-icon", "angle-double-right", "pButtonIcon", "", 4, "ngIf"], ["data-p-icon", "angle-double-right", "pButtonIcon", ""], ["data-p-icon", "angle-left", "pButtonIcon", "", 4, "ngIf"], ["data-p-icon", "angle-left", "pButtonIcon", ""], ["data-p-icon", "angle-double-left", "pButtonIcon", "", 4, "ngIf"], ["data-p-icon", "angle-double-left", "pButtonIcon", ""], ["type", "button", "pButton", "", "pRipple", "", "severity", "secondary", 1, "p-button-icon-only", 3, "click", "disabled", "buttonProps"]],
+    vars: 105,
+    consts: [["sourcelist", ""], ["targetlist", ""], ["header", ""], ["filter", ""], ["item", ""], ["empty", ""], ["emptyfilter", ""], ["cdkDropListGroup", "", 3, "ngStyle"], [3, "class", 4, "ngIf"], ["optionLabel", "name", 3, "ngModelChange", "onFocus", "onBlur", "onChange", "onDblClick", "onDrop", "onFilter", "ariaLabel", "multiple", "options", "ngModel", "id", "listStyle", "striped", "tabindex", "disabled", "optionDisabled", "metaKeySelection", "scrollHeight", "autoOptionFocus", "filter", "filterBy", "filterLocale", "filterMatchMode", "filterPlaceHolder", "dragdrop"], [4, "ngIf"], ["type", "button", "pButton", "", "pRipple", "", "severity", "secondary", 3, "click", "disabled", "buttonProps"], [4, "ngTemplateOutlet", "ngTemplateOutletContext"], ["data-p-icon", "angle-up", "pButtonIcon", "", 4, "ngIf"], [4, "ngTemplateOutlet"], ["data-p-icon", "angle-double-up", "pButtonIcon", "", 4, "ngIf"], ["data-p-icon", "angle-down", "pButtonIcon", "", 4, "ngIf"], ["data-p-icon", "angle-double-down", "pButtonIcon", "", 4, "ngIf"], ["data-p-icon", "angle-up", "pButtonIcon", ""], ["data-p-icon", "angle-double-up", "pButtonIcon", ""], ["data-p-icon", "angle-down", "pButtonIcon", ""], ["data-p-icon", "angle-double-down", "pButtonIcon", ""], ["data-p-icon", "angle-right", "pButtonIcon", "", 4, "ngIf"], ["data-p-icon", "angle-right", "pButtonIcon", ""], ["data-p-icon", "angle-double-right", "pButtonIcon", "", 4, "ngIf"], ["data-p-icon", "angle-double-right", "pButtonIcon", ""], ["data-p-icon", "angle-left", "pButtonIcon", "", 4, "ngIf"], ["data-p-icon", "angle-left", "pButtonIcon", ""], ["data-p-icon", "angle-double-left", "pButtonIcon", "", 4, "ngIf"], ["data-p-icon", "angle-double-left", "pButtonIcon", ""], ["type", "button", "pButton", "", "pRipple", "", "severity", "secondary", 1, "p-button-icon-only", 3, "click", "disabled", "buttonProps"]],
     template: function PickList_Template(rf, ctx) {
       if (rf & 1) {
         const _r1 = ɵɵgetCurrentView();
@@ -2273,7 +2286,7 @@ var PickList = class _PickList extends BaseComponent {
         ɵɵclassMap(ctx.cx("sourceListContainer"));
         ɵɵattribute("data-pc-section", "sourceWrapper")("data-pc-group-section", "listWrapper");
         ɵɵadvance();
-        ɵɵproperty("multiple", true)("options", ctx.source);
+        ɵɵproperty("ariaLabel", ctx.sourceAriaLabel)("multiple", true)("options", ctx.source);
         ɵɵtwoWayProperty("ngModel", ctx.selectedItemsSource);
         ɵɵproperty("id", ctx.idSource + "_list")("listStyle", ctx.sourceStyle)("striped", ctx.stripedRows)("tabindex", ctx.tabindex)("disabled", ctx.disabled)("optionDisabled", ctx.sourceOptionDisabled)("metaKeySelection", ctx.metaKeySelection)("scrollHeight", ctx.scrollHeight)("autoOptionFocus", ctx.autoOptionFocus)("filter", ctx.filterBy)("filterBy", ctx.filterBy)("filterLocale", ctx.filterLocale)("filterMatchMode", ctx.filterMatchMode)("filterPlaceHolder", ctx.sourceFilterPlaceholder)("dragdrop", ctx.dragdrop);
         ɵɵadvance(2);
@@ -2297,33 +2310,33 @@ var PickList = class _PickList extends BaseComponent {
         ɵɵadvance();
         ɵɵproperty("ngIf", !ctx.moveToTargetIconTemplate && !ctx._moveToTargetIconTemplate);
         ɵɵadvance();
-        ɵɵproperty("ngTemplateOutlet", ctx.moveToTargetIconTemplate || ctx._moveToTargetIconTemplate)("ngTemplateOutletContext", ɵɵpureFunction1(95, _c21, ctx.viewChanged));
+        ɵɵproperty("ngTemplateOutlet", ctx.moveToTargetIconTemplate || ctx._moveToTargetIconTemplate)("ngTemplateOutletContext", ɵɵpureFunction1(97, _c21, ctx.viewChanged));
         ɵɵadvance();
         ɵɵproperty("disabled", ctx.moveAllRightDisabled())("buttonProps", ctx.getButtonProps("movealltotarget"));
         ɵɵattribute("aria-label", ctx.moveAllToTargetAriaLabel)("data-pc-section", "moveAllToTargetButton");
         ɵɵadvance();
         ɵɵproperty("ngIf", !ctx.moveAllToTargetIconTemplate && !ctx._moveAllToTargetIconTemplate);
         ɵɵadvance();
-        ɵɵproperty("ngTemplateOutlet", ctx.moveAllToTargetIconTemplate || ctx._moveAllToTargetIconTemplate)("ngTemplateOutletContext", ɵɵpureFunction1(97, _c21, ctx.viewChanged));
+        ɵɵproperty("ngTemplateOutlet", ctx.moveAllToTargetIconTemplate || ctx._moveAllToTargetIconTemplate)("ngTemplateOutletContext", ɵɵpureFunction1(99, _c21, ctx.viewChanged));
         ɵɵadvance();
         ɵɵproperty("disabled", ctx.moveLeftDisabled())("buttonProps", ctx.getButtonProps("movetosource"));
         ɵɵattribute("aria-label", ctx.moveToSourceAriaLabel)("data-pc-section", "moveToSourceButton");
         ɵɵadvance();
         ɵɵproperty("ngIf", !ctx.moveToSourceIconTemplate && !ctx._moveToSourceIconTemplate);
         ɵɵadvance();
-        ɵɵproperty("ngTemplateOutlet", ctx.moveToSourceIconTemplate || ctx._moveToSourceIconTemplate)("ngTemplateOutletContext", ɵɵpureFunction1(99, _c21, ctx.viewChanged));
+        ɵɵproperty("ngTemplateOutlet", ctx.moveToSourceIconTemplate || ctx._moveToSourceIconTemplate)("ngTemplateOutletContext", ɵɵpureFunction1(101, _c21, ctx.viewChanged));
         ɵɵadvance();
         ɵɵproperty("disabled", ctx.moveAllLeftDisabled())("buttonProps", ctx.getButtonProps("movealltosource"));
         ɵɵattribute("aria-label", ctx.moveAllToSourceAriaLabel)("data-pc-section", "moveAllToSourceButton");
         ɵɵadvance();
         ɵɵproperty("ngIf", !ctx.moveAllToSourceIconTemplate && !ctx._moveAllToSourceIconTemplate);
         ɵɵadvance();
-        ɵɵproperty("ngTemplateOutlet", ctx.moveAllToSourceIconTemplate || ctx._moveAllToSourceIconTemplate)("ngTemplateOutletContext", ɵɵpureFunction1(101, _c21, ctx.viewChanged));
+        ɵɵproperty("ngTemplateOutlet", ctx.moveAllToSourceIconTemplate || ctx._moveAllToSourceIconTemplate)("ngTemplateOutletContext", ɵɵpureFunction1(103, _c21, ctx.viewChanged));
         ɵɵadvance();
         ɵɵclassMap(ctx.cx("targetListContainer"));
         ɵɵattribute("data-pc-section", "targetWrapper")("data-pc-group-section", "listwrapper");
         ɵɵadvance();
-        ɵɵproperty("multiple", true)("options", ctx.target);
+        ɵɵproperty("ariaLabel", ctx.targetAriaLabel)("multiple", true)("options", ctx.target);
         ɵɵtwoWayProperty("ngModel", ctx.selectedItemsTarget);
         ɵɵproperty("id", ctx.idTarget + "_list")("listStyle", ctx.targetStyle)("striped", ctx.stripedRows)("tabindex", ctx.tabindex)("disabled", ctx.disabled)("optionDisabled", ctx.targetOptionDisabled)("metaKeySelection", ctx.metaKeySelection)("scrollHeight", ctx.scrollHeight)("autoOptionFocus", ctx.autoOptionFocus)("filter", ctx.filterBy)("filterBy", ctx.filterBy)("filterLocale", ctx.filterLocale)("filterMatchMode", ctx.filterMatchMode)("filterPlaceHolder", ctx.targetFilterPlaceholder)("dragdrop", ctx.dragdrop);
         ɵɵadvance(2);
@@ -2417,6 +2430,7 @@ var PickList = class _PickList extends BaseComponent {
             <div [class]="cx('sourceListContainer')" [attr.data-pc-section]="'sourceWrapper'" [attr.data-pc-group-section]="'listWrapper'">
                 <p-listbox
                     #sourcelist
+                    [ariaLabel]="sourceAriaLabel"
                     [multiple]="true"
                     [options]="source"
                     [(ngModel)]="selectedItemsSource"
@@ -2547,6 +2561,7 @@ var PickList = class _PickList extends BaseComponent {
             <div [class]="cx('targetListContainer')" [attr.data-pc-section]="'targetWrapper'" [attr.data-pc-group-section]="'listwrapper'">
                 <p-listbox
                     #targetlist
+                    [ariaLabel]="targetAriaLabel"
                     [multiple]="true"
                     [options]="target"
                     [(ngModel)]="selectedItemsTarget"
@@ -2707,6 +2722,12 @@ var PickList = class _PickList extends BaseComponent {
       type: Input
     }],
     bottomButtonAriaLabel: [{
+      type: Input
+    }],
+    sourceAriaLabel: [{
+      type: Input
+    }],
+    targetAriaLabel: [{
       type: Input
     }],
     targetHeader: [{

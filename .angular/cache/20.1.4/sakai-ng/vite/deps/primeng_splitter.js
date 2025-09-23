@@ -1,13 +1,24 @@
 import {
   BaseComponent
-} from "./chunk-5X2MONKZ.js";
+} from "./chunk-YEX4MAK4.js";
 import {
   BaseStyle
-} from "./chunk-4LA7VCF3.js";
+} from "./chunk-BNHHZATE.js";
 import {
   PrimeTemplate,
   SharedModule
-} from "./chunk-VNF5KQ42.js";
+} from "./chunk-UO2L2VL5.js";
+import "./chunk-DDZM7I5D.js";
+import {
+  C2 as C,
+  O,
+  R,
+  Rt,
+  Tt,
+  V,
+  W,
+  v
+} from "./chunk-LEDTVQ4Z.js";
 import {
   CommonModule,
   NgForOf,
@@ -59,20 +70,9 @@ import {
   ɵɵrestoreView,
   ɵɵtemplate
 } from "./chunk-6I4SEJNY.js";
-import "./chunk-YVXMBCE5.js";
 import "./chunk-G6ECYYJH.js";
+import "./chunk-YVXMBCE5.js";
 import "./chunk-RTGP7ALM.js";
-import "./chunk-YTZ24RPK.js";
-import {
-  C2 as C,
-  O,
-  R,
-  Rt,
-  Tt,
-  V,
-  W,
-  v
-} from "./chunk-J3SRS7RM.js";
 import "./chunk-3OV72XIM.js";
 
 // node_modules/@primeuix/styles/dist/splitter/index.mjs

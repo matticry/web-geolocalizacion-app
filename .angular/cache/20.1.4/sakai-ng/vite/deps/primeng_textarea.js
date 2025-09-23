@@ -1,18 +1,20 @@
 import {
   BaseModelHolder
-} from "./chunk-YCZYHR5I.js";
+} from "./chunk-ULNQLA3A.js";
 import {
   Fluid
-} from "./chunk-DLKLMQ7O.js";
+} from "./chunk-CH6YFQRL.js";
 import "./chunk-6PBBDZZF.js";
-import "./chunk-5X2MONKZ.js";
-import {
-  BaseStyle
-} from "./chunk-4LA7VCF3.js";
-import "./chunk-VNF5KQ42.js";
 import {
   NgControl
 } from "./chunk-7TU5XIN2.js";
+import "./chunk-YEX4MAK4.js";
+import {
+  BaseStyle
+} from "./chunk-BNHHZATE.js";
+import "./chunk-UO2L2VL5.js";
+import "./chunk-DDZM7I5D.js";
+import "./chunk-LEDTVQ4Z.js";
 import "./chunk-Z4V6G3YM.js";
 import "./chunk-636JCMZ5.js";
 import {
@@ -38,11 +40,9 @@ import {
   ɵɵgetInheritedFactory,
   ɵɵlistener
 } from "./chunk-6I4SEJNY.js";
-import "./chunk-YVXMBCE5.js";
 import "./chunk-G6ECYYJH.js";
+import "./chunk-YVXMBCE5.js";
 import "./chunk-RTGP7ALM.js";
-import "./chunk-YTZ24RPK.js";
-import "./chunk-J3SRS7RM.js";
 import "./chunk-3OV72XIM.js";
 
 // node_modules/@primeuix/styles/dist/textarea/index.mjs
@@ -150,7 +150,6 @@ var Textarea = class _Textarea extends BaseModelHolder {
    * @group Emits
    */
   onResize = new EventEmitter();
-  ngModelSubscription;
   ngControlSubscription;
   _componentStyle = inject(TextareaStyle);
   ngControl = inject(NgControl, {
@@ -179,7 +178,10 @@ var Textarea = class _Textarea extends BaseModelHolder {
     this.cd.detectChanges();
   }
   ngAfterViewChecked() {
-    if (this.autoResize) this.resize();
+    if (this.autoResize) {
+      this.resize();
+    }
+    this.writeModelValue(this.ngControl?.value ?? this.el.nativeElement.value);
   }
   onInput(e) {
     this.writeModelValue(e.target["value"]);
@@ -202,9 +204,6 @@ var Textarea = class _Textarea extends BaseModelHolder {
     }
   }
   ngOnDestroy() {
-    if (this.ngModelSubscription) {
-      this.ngModelSubscription.unsubscribe();
-    }
     if (this.ngControlSubscription) {
       this.ngControlSubscription.unsubscribe();
     }

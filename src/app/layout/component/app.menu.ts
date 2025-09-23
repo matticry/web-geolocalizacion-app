@@ -68,6 +68,19 @@ export class AppMenu {
                     },
                 ]
             },
+            {
+                label: 'TRANSACCIONES',
+                items: [
+                    {
+                        label: 'Geolocalización',
+                        isAuthenticated: true,
+                        icon: 'pi pi-fw pi-cog',
+                        items: [
+                            { label: 'Solicitudes de Cambio', isAuthenticated: true, icon: 'pi pi-address-book', routerLink: ['/pages/change-address-review'] },
+                        ]
+                    },
+                ]
+            },
 
 
             {

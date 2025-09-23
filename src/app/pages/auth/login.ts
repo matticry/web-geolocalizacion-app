@@ -115,12 +115,6 @@ import { CommonModule } from '@angular/common';
                                                     <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-100 mb-2 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-300">
                                                         {{ empresa.nomempresa }}
                                                     </h3>
-                                                    <div class="flex items-center gap-2">
-                                                        <i class="pi pi-tag text-surface-400 dark:text-surface-500 text-xs"></i>
-                                                        <p class="text-sm text-surface-500 dark:text-surface-400 truncate">
-                                                            ID: {{ empresa.id }}
-                                                        </p>
-                                                    </div>
                                                 </div>
 
                                                 <!-- Flecha de acceso -->

@@ -9,6 +9,7 @@ import { CustomerResponseDto } from '@/core/models/Customer/CustomerResponseDto'
 import { GeocercaDto } from '@/core/models/Geocercas/VendedorDto';
 import { GeofenceDto } from '@/core/models/Geocercas/GeocercaValidationResponseDto';
 import { ChargeDto, LocationDto, OrderDto, UserLocationDto } from '../models/Filter/TrackingResponse';
+import { CustomerUpdateInfo } from '@/core/models/Customer/CustomerUpdateInfo';
 
 
 //===== INTERFACES ======//
@@ -283,6 +284,11 @@ export class MapService {
         }
         this.geocercasMarkers.clear();
     }
+    /**
+     * Agrega marcadores de la nueva direccion de los clientes
+     */
+
+
 
     /**
      * Agrega marcadores de clientes al mapa
@@ -798,6 +804,8 @@ export class MapService {
 
         this.map.addLayer(this.markerClusterGroup!);
     }
+
+
 
     /**
      * Agrega marcadores de usuarios al mapa
