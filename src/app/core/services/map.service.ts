@@ -2,7 +2,7 @@ import { ElementRef, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { MessageService } from 'primeng/api';
-import { L } from '../../layout/component/leaflet.config';
+import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { UserDto } from '@/core/models/UserDto';
 import { CustomerResponseDto } from '@/core/models/Customer/CustomerResponseDto';
@@ -37,13 +37,14 @@ export interface RangeDisplayInfo {
     range: UserRange;
     bounds: L.LatLngBounds;
 }
-//====================================//
-
 
 @Injectable({
     providedIn: 'root'
 })
 export class MapService {
+
+    private L: any = null;
+
     //Variables para el filtrado de Especial
     private trackingMarkers = new Map<string, L.Marker>();
     private chargeMarkers = new Map<string, L.Marker>();
@@ -88,12 +89,42 @@ export class MapService {
     constructor(
         private http: HttpClient,
         private msgService: MessageService
-    ) {
-        this.configureLeafletIcons();
-    }
+    ) {}
 
     get currentUserRange$(): Observable<RangeDisplayInfo | null> {
         return this.userRange$.asObservable();
+    }
+
+    private async loadLeafletLibraries(): Promise<void> {
+        if (this.L && this.markerClusterLoaded) return;
+
+        try {
+            // Solo en navegador
+            if (typeof window !== 'undefined') {
+                // Importar Leaflet de manera correcta
+                const leafletModule = await import('leaflet');
+                this.L = leafletModule.default || leafletModule;
+
+                // Verificar que se cargó correctamente
+                if (!this.L || !this.L.map) {
+                    console.error('Error al cargar Leaflet');
+                }
+
+                // Cargar markercluster
+                await import('leaflet.markercluster');
+                this.markerClusterLoaded = true;
+
+                // Configurar iconos DESPUÉS de verificar que L existe
+                setTimeout(() => {
+                    this.configureLeafletIcons();
+                }, 100);
+
+                console.log('Leaflet cargado exitosamente');
+            }
+        } catch (error) {
+            console.error('Error cargando librerías de Leaflet:', error);
+            throw error;
+        }
     }
 
     displayVendorGeocercas(geocercas: GeocercaDto[]): void {
@@ -591,56 +622,63 @@ export class MapService {
      * Inicializa el mapa en el contenedor especificado
      */
     async initializeMap(container: ElementRef, config?: Partial<MapConfig>): Promise<boolean> {
-        return new Promise((resolve, reject) => {
-            try {
-                const mapConfig = { ...this.defaultConfig, ...config };
-                const element = container.nativeElement;
+        try {
+            // Cargar librerías primero
+            await this.loadLeafletLibraries();
 
-                if (!element) {
-                    this.showMapFallback(container);
-                    resolve(false);
-                }
-
-                this.map = L.map(element, {
-                    center: mapConfig.center,
-                    zoom: mapConfig.zoom,
-                    zoomControl: mapConfig.zoomControl
-                });
-
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: '© OpenStreetMap contributors'
-                }).addTo(this.map);
-
-                const mapInstance = this.map;
-                mapInstance.on('moveend zoomend', () => {
-                    const bounds = mapInstance.getBounds();
-                    this.boundsSubject.next(bounds); // Emitir cambios
-                    console.log('Nuevas coordenadas:', {
-                        southWest: bounds.getSouthWest(),
-                        northEast: bounds.getNorthEast()
-                    });
-                });
-
-                const mainMarker = L.marker(mapConfig.center).addTo(this.map);
-                mainMarker.bindPopup(`<b>${mapConfig.defaultLocation}</b><br>Ubicación principal`).openPopup();
-
-                this.initializeMarkerCluster();
-
-                setTimeout(() => {
-                    this.map?.invalidateSize();
-                }, 100);
-
-                this.mapInitialized$.next(true);
-                console.log('Mapa inicializado correctamente');
-                resolve(true);
-            } catch (error) {
-                console.error('Error inicializando el mapa:', error);
-                this.showMapFallback(container);
-                this.mapInitialized$.next(false);
-                reject(error);
+            if (!this.L) {
+                throw new Error('Leaflet no se cargó correctamente');
             }
-        });
+
+            const mapConfig = { ...this.defaultConfig, ...config };
+            const element = container.nativeElement;
+
+            if (!element) {
+                this.showMapFallback(container);
+                return false;
+            }
+
+            // Usar this.L en lugar de L directamente
+            this.map = this.L.map(element, {
+                center: mapConfig.center,
+                zoom: mapConfig.zoom,
+                zoomControl: mapConfig.zoomControl
+            });
+
+            this.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(this.map);
+
+            const mapInstance = this.map!;
+            mapInstance.on('moveend zoomend', () => {
+                const bounds = mapInstance.getBounds();
+                this.boundsSubject.next(bounds);
+                console.log('Nuevas coordenadas:', {
+                    southWest: bounds.getSouthWest(),
+                    northEast: bounds.getNorthEast()
+                });
+            });
+
+            const mainMarker = this.L.marker(mapConfig.center).addTo(this.map);
+            mainMarker.bindPopup(`<b>${mapConfig.defaultLocation}</b><br>Ubicación principal`).openPopup();
+
+            await this.initializeMarkerCluster();
+
+            setTimeout(() => {
+                this.map?.invalidateSize();
+            }, 100);
+
+            this.mapInitialized$.next(true);
+            console.log('Mapa inicializado correctamente');
+            return true;
+
+        } catch (error) {
+            console.error('Error inicializando el mapa:', error);
+            this.showMapFallback(container);
+            this.mapInitialized$.next(false);
+            throw error;
+        }
     }
 
     addSearchAreaButton(onSearchClick: (bounds: L.LatLngBounds) => void): void {
@@ -703,24 +741,41 @@ export class MapService {
      * Configura los iconos de Leaflet
      */
     private configureLeafletIcons(): void {
-        delete (L.Icon.Default.prototype as any)._getIconUrl;
-        L.Icon.Default.mergeOptions({
-            iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-            iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png'
-        });
+        try {
+            if (!this.L || !this.L.Icon || !this.L.Icon.Default) {
+                console.warn('L.Icon.Default no está disponible, omitiendo configuración de iconos');
+                return;
+            }
+
+            delete (this.L.Icon.Default.prototype as any)._getIconUrl;
+            this.L.Icon.Default.mergeOptions({
+                iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+                iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png'
+            });
+
+            console.log('Iconos de Leaflet configurados');
+        } catch (error) {
+            console.error('Error configurando iconos:', error);
+            // No lanzar el error, solo registrarlo
+        }
     }
 
-    private initializeMarkerCluster(): void {
-        if (!this.map) return;
+    private async initializeMarkerCluster(): Promise<void> {
+        if (!this.map || !this.L) return;
 
-        this.markerClusterGroup = L.markerClusterGroup({
+        // Verificar que markerClusterGroup esté disponible
+        if (!this.L.markerClusterGroup) {
+            throw new Error('leaflet.markercluster no está disponible');
+        }
+
+        this.markerClusterGroup = this.L.markerClusterGroup({
             showCoverageOnHover: false,
             maxClusterRadius: 50,
             spiderfyOnMaxZoom: true
         });
 
-        this.map.addLayer(this.markerClusterGroup);
+        this.map.addLayer(this.markerClusterGroup!);
     }
 
     /**
@@ -802,23 +857,23 @@ export class MapService {
     /**
      * Crea el icono personalizado para usuarios
      */
-    private createUserIcon(): L.DivIcon {
-        return L.divIcon({
+    private createUserIcon(): any {
+        return this.L?.divIcon({
             html: `
-        <div class="relative">
-          <div class="w-8 h-8 bg-blue-500 rounded-full border-2 border-white shadow-lg flex items-center justify-center">
-            <svg class="w-4 h-4 text-white" viewBox="0 0 20 20">
-              <path
-                fill="currentColor"
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-              />
-            </svg>
-          </div>
-          <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 border border-white rounded-full"></div>
-        </div>
-      `,
+            <div class="relative">
+              <div class="w-8 h-8 bg-blue-500 rounded-full border-2 border-white shadow-lg flex items-center justify-center">
+                <svg class="w-4 h-4 text-white" viewBox="0 0 20 20">
+                  <path
+                    fill="currentColor"
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                  />
+                </svg>
+              </div>
+              <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 border border-white rounded-full"></div>
+            </div>
+          `,
             className: 'custom-user-marker',
             iconSize: [32, 32],
             iconAnchor: [16, 16]

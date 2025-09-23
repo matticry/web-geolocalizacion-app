@@ -23,7 +23,7 @@ import { catchError, finalize, of, retry, startWith, Subject, switchMap, takeUnt
 import { UserDto } from '@/core/models/UserDto';
 import { UserService } from '@/core/services/user.service';
 import { MapService, RangeDisplayInfo, SearchResult } from '@/core/services/map.service';
-import { L } from '../../../layout/component/leaflet.config';
+import * as L from 'leaflet';
 import { CustomerResponseDto } from '@/core/models/Customer/CustomerResponseDto';
 import { CustomerService } from '@/core/services/customer.service';
 import { CustomerAreaRequestDto } from '@/core/models/Customer/CustomerAreaRequestDto';

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { MessageService } from 'primeng/api';
-import { L } from '../../layout/component/leaflet.config';
+import * as L from 'leaflet';
+import 'leaflet.markercluster';
 import { GeocercaDrawing, GeocercaDrawingState } from '@/core/models/Draw/DrawingCoordinate';
 
 @Injectable({

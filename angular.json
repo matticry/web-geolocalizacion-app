@@ -39,7 +39,8 @@
                         ],
                         "scripts": [
                             "node_modules/leaflet/dist/leaflet.js",
-                            "node_modules/leaflet.markercluster/dist/leaflet.markercluster.js"                        ],
+                            "node_modules/leaflet.markercluster/dist/leaflet.markercluster.js"
+                        ],
                         "allowedCommonJsDependencies": [
                             "leaflet",
                             "leaflet.markercluster"
@@ -48,6 +49,10 @@
                     "configurations": {
                         "production": {
                             "outputHashing": "all",
+                            "optimization": true,
+                            "sourceMap": false,
+                            "namedChunks": false,
+                            "extractLicenses": true,
                             "budgets": [
                                 {
                                     "type": "initial",
@@ -66,10 +71,10 @@
                             "extractLicenses": false,
                             "sourceMap": true,
                             "fileReplacements": [
-                              {
-                                "replace": "src/environments/environment.ts",
-                                "with": "src/environments/environment.development.ts"
-                              }
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.development.ts"
+                                }
                             ]
                         }
                     },
@@ -88,7 +93,10 @@
                     "defaultConfiguration": "development"
                 },
                 "extract-i18n": {
-                    "builder": "@angular-devkit/build-angular:extract-i18n"
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "buildTarget": "sakai-ng:build"
+                    }
                 },
                 "test": {
                     "builder": "@angular-devkit/build-angular:karma",
@@ -116,11 +124,23 @@
                             "node_modules/leaflet.markercluster/dist/leaflet.markercluster.js"
                         ]
                     }
+                },
+                "lint": {
+                    "builder": "@angular-eslint/builder:lint",
+                    "options": {
+                        "lintFilePatterns": [
+                            "src/**/*.ts",
+                            "src/**/*.html"
+                        ]
+                    }
                 }
             }
         }
     },
     "cli": {
-      "analytics": false
+        "analytics": false,
+        "schematicCollections": [
+            "@angular-eslint/schematics"
+        ]
     }
 }

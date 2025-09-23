@@ -2,10 +2,8 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } fr
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { FormsModule } from '@angular/forms';
 import { DatePicker } from 'primeng/datepicker';
-import { ToggleSwitch } from 'primeng/toggleswitch';
 import { CurrencyPipe, DatePipe, NgClass } from '@angular/common';
-import { MultiSelect } from 'primeng/multiselect';
-import { MessageService, PrimeTemplate } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { Checkbox } from 'primeng/checkbox';
 import { Button } from 'primeng/button';
 import { TableModule } from 'primeng/table';
