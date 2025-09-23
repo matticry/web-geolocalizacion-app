@@ -2,7 +2,7 @@ import { ElementRef, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { MessageService } from 'primeng/api';
-import * as L from 'leaflet';
+import { L } from '../../layout/component/leaflet.config';
 import 'leaflet.markercluster';
 import { UserDto } from '@/core/models/UserDto';
 import { CustomerResponseDto } from '@/core/models/Customer/CustomerResponseDto';
@@ -284,13 +284,15 @@ export class MapService {
     private initializeCustomerCluster(): void {
         if (!this.map) return;
 
-        // Siempre limpiar el cluster existente primero
         if (this.customerClusterGroup) {
             this.map.removeLayer(this.customerClusterGroup);
             this.customerClusterGroup = null;
         }
 
-        // Crear nuevo cluster
+        if (!L.markerClusterGroup) {
+            throw new Error('leaflet.markercluster no está inicializado');
+        }
+
         this.customerClusterGroup = L.markerClusterGroup({
             showCoverageOnHover: false,
             maxClusterRadius: 40,
@@ -308,6 +310,7 @@ export class MapService {
 
         this.map.addLayer(this.customerClusterGroup);
     }
+
 
     /**
      * Crea marcador para cliente

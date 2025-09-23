@@ -27,7 +27,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { SelectModule } from 'primeng/select';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { SliderModule } from 'primeng/slider';
-import * as L from 'leaflet';
+import { L } from '../../../layout/component/leaflet.config';
 import 'leaflet.markercluster';
 import { Canton, Parroquia, Provincia } from '@/core/models/ProvinciaDto';
 import { AutoComplete } from 'primeng/autocomplete';

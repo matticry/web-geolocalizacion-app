@@ -18,7 +18,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import * as L from 'leaflet';
+import { L } from '../../layout/component/leaflet.config';
 import 'leaflet.markercluster';
 import { UserService } from '@/core/services/user.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';

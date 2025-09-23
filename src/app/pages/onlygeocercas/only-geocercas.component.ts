@@ -25,7 +25,6 @@ import { AuthService } from '@/core/services/auth.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
 import { GeocercaValidationResponse, GeofenceDto } from '@/core/models/Geocercas/GeocercaValidationResponseDto';
-import * as L from 'leaflet';
 import { Select } from 'primeng/select';
 import { Slider } from 'primeng/slider';
 import { ProvinceService } from '@/core/services/province.service';
