@@ -204,8 +204,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(this.map);
 
-            const marker = L.marker([-0.2298, -78.5249]).addTo(this.map);
-            marker.bindPopup('<b>Quito, Ecuador</b><br>Ubicación principal').openPopup();
 
             if (!this.markerClusterGroup) {
                 this.markerClusterGroup = L.markerClusterGroup({

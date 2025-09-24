@@ -147,7 +147,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
 
     // Propiedades de paginación
     first: number = 0;
-    itemsPerPage: number = 6;
+    itemsPerPage: number = 5;
 
     // Propiedades del mapa (delegadas al servicio)
     searchLocation: string = '';

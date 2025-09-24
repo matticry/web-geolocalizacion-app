@@ -10,6 +10,7 @@ import { GeocercaDto } from '@/core/models/Geocercas/VendedorDto';
 import { GeofenceDto } from '@/core/models/Geocercas/GeocercaValidationResponseDto';
 import { ChargeDto, LocationDto, OrderDto, UserLocationDto } from '../models/Filter/TrackingResponse';
 import { CustomerUpdateInfo } from '@/core/models/Customer/CustomerUpdateInfo';
+import { SolicitudData } from '@/core/models/SolicitudData';
 
 
 //===== INTERFACES ======//
@@ -288,6 +289,44 @@ export class MapService {
      * Agrega marcadores de la nueva direccion de los clientes
      */
 
+    addCustomerChangeAddressMarker(customers: SolicitudData[]): void {
+        if (!this.map || !this.L) {
+            console.warn('Mapa o Leaflet no están inicializados');
+            return;
+        }
+
+        try {
+            this.clearCustomerMarkers();
+            this.initializeCustomerCluster();
+
+            customers.forEach((customer) => {
+                if (customer.sollat && customer.sollog) {
+                    try {
+                        const market = this.createCustomerRequestMarker(customer);
+                        this.customerMarkers.set(customer.solruc, market);
+                        this.customerClusterGroup?.addLayer(market);
+                    }catch (e) {
+                        console.error('❌ Error al agregar marcador de cliente:', e, customer);
+
+                    }
+
+                }
+            });
+            setTimeout(() => {
+                this.map?.invalidateSize();
+            }, 100);
+
+        }catch (e) {
+            console.error('❌ Error general en addCustomerChangeAddressMarker:', e);
+            this.msgService?.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Error al agregar marcadores de clientes',
+                life: 7000
+            });
+        }
+    }
+
 
 
     /**
@@ -359,6 +398,17 @@ export class MapService {
         });
 
         this.map.addLayer(this.customerClusterGroup!);
+    }
+
+    private createCustomerRequestMarker(customer: SolicitudData): any {
+        if (!this.L) {
+            throw new Error('Leaflet no está cargado');
+        }
+
+        const customIcon = this.createCustomerIcon(customer.solact);
+        return this.L.marker([customer.sollat, customer.sollog], {
+            icon: customIcon
+        });
     }
 
 
@@ -654,7 +704,8 @@ export class MapService {
             await this.loadLeafletLibraries();
 
             if (!this.L) {
-                throw new Error('Leaflet no se cargó correctamente');
+                console.error('Leaflet no se cargó correctamente');
+                return false;
             }
 
             const mapConfig = { ...this.defaultConfig, ...config };
@@ -686,9 +737,6 @@ export class MapService {
                     northEast: bounds.getNorthEast()
                 });
             });
-
-            const mainMarker = this.L.marker(mapConfig.center).addTo(this.map);
-            mainMarker.bindPopup(`<b>${mapConfig.defaultLocation}</b><br>Ubicación principal`).openPopup();
 
             await this.initializeMarkerCluster();
 
@@ -1028,6 +1076,17 @@ export class MapService {
         this.map.setView([user.ubicacion.geublat, user.ubicacion.geublon], 15);
 
         const marker = this.userMarkers.get(user.usucod);
+        if (marker) {
+            marker.openPopup();
+        }
+    }
+
+    focusOnCustomerChangeAddress(customer: SolicitudData): void {
+        if (!this.map || !customer.sollog || !customer.sollat) return;
+
+        this.map.setView([customer.sollat, customer.sollog], 15);
+
+        const marker = this.customerMarkers.get(customer.solruc);
         if (marker) {
             marker.openPopup();
         }

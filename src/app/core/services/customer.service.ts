@@ -8,6 +8,8 @@ import { CustomerAreaRequestDto } from '@/core/models/Customer/CustomerAreaReque
 import { FilterRequest } from '@/core/models/Filter/FilterRequest';
 import { TrackingResponse } from '@/core/models/Filter/TrackingResponse';
 import { CustomerUpdateInfo } from '@/core/models/Customer/CustomerUpdateInfo';
+import { SolicitudData } from '@/core/models/SolicitudData';
+import { UpdateCustomerLocation } from '@/core/models/Customer/UpdateCustomerLocation';
 
 @Injectable({
     providedIn: 'root'
@@ -57,7 +59,36 @@ export class CustomerService {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
         });
-        return this.http.get<CustomerUpdateInfo[]>(`${this.baseUrl}/usuarios/websolicitudactualziarcliente`, { headers });
+        return this.http.get<CustomerUpdateInfo[]>(`${this.baseUrl}/clientes/websolicitudactualziarcliente`, { headers });
+    }
+
+    getDetailChangeAddressRequestById(id: number): Observable<SolicitudData> {
+        const token = this.authService.getToken();
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        });
+        const params = new HttpParams().set('solicitud', id);
+
+        return this.http.get<SolicitudData>(`${this.baseUrl}/clientes/websolicitudactualziarclienteunico`, { headers, params });
+
+    }
+    desactiveChangeAddressRequestById(id: number): Observable<void> {
+        const token = this.authService.getToken();
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        });
+        const params = new HttpParams().set('solicitud', id);
+        return this.http.get<void>(`${this.baseUrl}/clientes/webanularsolicitud`, { headers, params });
+    }
+    updateCustomerLocation(requestDto: UpdateCustomerLocation): Observable<UpdateCustomerLocation> {
+        const token = this.authService.getToken();
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        });
+        return this.http.post<UpdateCustomerLocation>(`${this.baseUrl}/clientes/webactualizarubicacioncliente`, requestDto, { headers });
     }
 
 

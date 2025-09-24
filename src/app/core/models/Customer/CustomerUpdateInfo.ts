@@ -1,9 +1,9 @@
 export interface CustomerUpdateInfo {
-    requestId: number;
-    requestDate: string;
-    username: string;
-    clientKey: string;
-    clientName: string;
-    isActive: boolean;
-    isApplied: boolean;
+    solid: number;
+    solfech: string;
+    solusu: string;
+    solclave: string;
+    solnombre: string;
+    solact: boolean;
+    solapli: boolean;
 }
