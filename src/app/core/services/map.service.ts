@@ -6,7 +6,7 @@ import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { UserDto } from '@/core/models/UserDto';
 import { CustomerResponseDto } from '@/core/models/Customer/CustomerResponseDto';
-import { GeocercaDto } from '@/core/models/Geocercas/VendedorDto';
+import { GeocercaDto, VendedorDto } from '@/core/models/Geocercas/VendedorDto';
 import { GeofenceDto } from '@/core/models/Geocercas/GeocercaValidationResponseDto';
 import { ChargeDto, LocationDto, OrderDto, UserLocationDto } from '../models/Filter/TrackingResponse';
 import { CustomerUpdateInfo } from '@/core/models/Customer/CustomerUpdateInfo';
@@ -1080,6 +1080,7 @@ export class MapService {
             marker.openPopup();
         }
     }
+
 
     focusOnCustomerChangeAddress(customer: SolicitudData): void {
         if (!this.map || !customer.sollog || !customer.sollat) return;

@@ -23,12 +23,12 @@ import 'leaflet.markercluster';
 import { UserService } from '@/core/services/user.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { VendedorDto, VendedoresResponse, PaginacionDto } from '@/core/models/Geocercas/VendedorDto';
-import { catchError, finalize, of, retry, Subject, timeout, timer } from 'rxjs';
+import { catchError, finalize, firstValueFrom, of, retry, Subject, timeout, timer } from 'rxjs';
 import { GeocercaService } from '@/core/services/geocerca.service';
 import { AuthService } from '@/core/services/auth.service';
 import { NominatimReverseResponse } from '@/core/models/nominatim-response.interface';
 import { AsignarGeocercaDto } from '@/core/models/AsignarGeocercaDto';
-import { UserDto } from '@/core/models/UserDto';
+import { MapService } from '@/core/services/map.service';
 
 interface NominatimResult {
     lat: string;
@@ -67,14 +67,16 @@ interface NominatimResult {
 export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('mapContainer', { static: true }) mapContainer!: ElementRef;
 
+    //Propiedades para el click en la lista de vendedores
+    private clickTimeout: any = null;
+    private readonly CLICK_DELAY = 300; // ms
 
     // Para scroll infinito
     loadingMore: boolean = false;
-    hasReachedEnd: boolean = false;
-    allUsers: UserDto[] = []; // Mantener usuarios originales
+    hasReachedEnd: boolean = false;// Mantener usuarios originales
     private scrollThreshold: number = 100;
-    private debounceTimer: any;
 
+    //Propiedades para el servicio de calles
     userLocations: Map<string, string> = new Map();
     loadingLocations: Set<string> = new Set();
     private geocodingQueue: Array<{userId: string, lat: number, lon: number}> = [];
@@ -146,6 +148,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
         private readonly authService: AuthService,
         private readonly msgService: MessageService,
         private readonly http: HttpClient,
+        private readonly mapService: MapService,
         private readonly confirmationService: ConfirmationService
     ) {}
 
@@ -354,6 +357,56 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
         this.geocercasFiltradas = user.geocercas || [];
         this.filtroGeocerca = ''; // Limpiar filtro
 
+
+        if (this.map) {
+            this.showSelectedUserGeocercas(user);
+            this.hideAllUserMarkersExcept(user.codigoVendedor);
+
+            if (user.totalGeocercas > 0) {
+                this.fitMapToUserGeocercas(user);
+            } else if (user.ubicacionActual) {
+                this.map.setView([user.ubicacionActual.geublat, user.ubicacionActual.geublon], 15);
+            }
+
+            const marker = this.userMarkers.get(user.codigoVendedor);
+            if (marker) {
+                marker.openPopup();
+            }
+        }
+    }
+
+    onUserClick(user: VendedorDto): void {
+        if (this.clickTimeout) {
+            clearTimeout(this.clickTimeout);
+            this.clickTimeout = null;
+            this.onUserDoubleClick(user);
+        } else {
+            this.clickTimeout = setTimeout(() => {
+                this.clickTimeout = null;
+                this.onUserSingleClick(user);
+            }, this.CLICK_DELAY);
+        }
+    }
+
+    onUserSingleClick(user: VendedorDto): void {
+        this.focusOnUser2(user);
+    }
+
+    focusOnUser2(user: VendedorDto): void {
+        if (!this.map || !user.ubicacionActual) return;
+
+        this.map.setView([user.ubicacionActual.geublat, user.ubicacionActual.geublon], 15);
+
+        const marker = this.userMarkers.get(user.codigoVendedor);
+        if (marker) {
+            marker.openPopup();
+        }
+    }
+
+    onUserDoubleClick(user: VendedorDto): void {
+        this.selectedUser = user;
+        this.geocercasFiltradas = user.geocercas || [];
+        this.filtroGeocerca = '';
 
         if (this.map) {
             this.showSelectedUserGeocercas(user);
@@ -622,9 +675,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
      * Muestra solo las geocercas del vendedor seleccionado
      * Las geocercas se resaltan con mayor opacidad y grosor
-     */
-    /**
-     * Muestra solo las geocercas del vendedor seleccionado
      */
     showSelectedUserGeocercas(user: VendedorDto): void {
         if (!this.map) return;
@@ -1109,32 +1159,38 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
     protected readonly Math = Math;
 
  //====================== FUNCIONES ASYNC COMPLETADAS =======================
-
-
     /**
      * Obtiene geocercas DISPONIBLES (sin vendedores asignados) para el diálogo
      */
     async getAvailableGeocercas(): Promise<void> {
-        if (!this.enterpriseName) {
-            return;
-        }
+        if (!this.enterpriseName) return;
 
         this.availableGeocercasLoading = true;
 
         try {
-            const response = await this.geocercaService.getGeocercasConVendedoresByEnterpriseName(
-                this.enterpriseName,
-                1, // Primera página
-                100, // Tamaño grande para obtener todas
-                true, // activo
-                false // soloConVendedores = false - geocercas SIN asignar
-            ).toPromise();
+            const response = await firstValueFrom(
+                this.geocercaService.getGeocercasConVendedoresByEnterpriseName(
+                    this.enterpriseName,
+                    1,    // Primera página
+                    100,  // Tamaño grande para obtener todas
+                    true, // activo
+                    false // soloConVendedores = false → geocercas SIN asignar
+                )
+            );
 
-            if (response && response.success && response.data) {
+            if (response?.success && response.data?.data) {
                 this.availableGeocercas = response.data.data;
                 this.filteredAvailableGeocercas = [...this.availableGeocercas];
 
-                console.log('Geocercas disponibles:', this.availableGeocercas);
+                console.debug('Geocercas disponibles:', this.availableGeocercas);
+            } else {
+                this.availableGeocercas = [];
+                this.filteredAvailableGeocercas = [];
+                this.msgService.add({
+                    severity: 'warn',
+                    summary: 'Sin resultados',
+                    detail: 'No se encontraron geocercas disponibles'
+                });
             }
         } catch (error) {
             console.error('Error obteniendo geocercas disponibles:', error);
@@ -1208,7 +1264,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
         this.selectedAvailableGeocerca = geocerca;
         this.showGeocercaPreview(geocerca);
     }
-
     /**
      * Asigna la geocerca seleccionada al vendedor actual
      */
@@ -1242,11 +1297,13 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                 geugeqcre: this.initializeEnterpriseName() || 'SUPERVISOR'
             };
 
-            // Llamar al servicio para asignar la geocerca
-            await this.geocercaService.assignGeocercaToUser(
-                this.selectedAvailableGeocerca.geoccod,
-                asignarDto
-            ).toPromise();
+            // Llamar al servicio usando
+            await firstValueFrom(
+                this.geocercaService.assignGeocercaToUser(
+                    this.selectedAvailableGeocerca.geoccod,
+                    asignarDto
+                )
+            );
 
             this.msgService.add({
                 severity: 'success',
@@ -1259,7 +1316,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.selectedUser.geocercas = [];
             }
 
-            // Agregar la geocerca asignada con información adicional
             const geocercaAsignada = {
                 ...this.selectedAvailableGeocerca,
                 fechaAsignacion: new Date().toISOString(),
@@ -1272,7 +1328,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
             this.selectedUser.geocercas.push(geocercaAsignada);
             this.selectedUser.totalGeocercas = this.selectedUser.geocercas.length;
 
-            // Actualizar la lista filtrada de geocercas del vendedor
             this.filtrarGeocercasList();
 
             // Remover la geocerca de la lista de disponibles
@@ -1283,18 +1338,13 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                 g => g.geoccod !== this.selectedAvailableGeocerca!.geoccod
             );
 
-            // Limpiar selección
+            // Limpiar selección y cerrar diálogo
             this.selectedAvailableGeocerca = null;
-
-            // Cerrar diálogo
             this.closeGeocercaDialog();
-
-            this.refreshData();
 
         } catch (error: any) {
             console.error('Error asignando geocerca:', error);
 
-            // Manejo de errores específicos
             let errorMessage = 'No se pudo asignar la geocerca al vendedor';
 
             if (error?.error?.message) {
@@ -1313,6 +1363,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                 detail: errorMessage
             });
         }
+
     }
 
     //===============NUEVOS MÉTODOS PARA SCROLL INFINITO========================================//
@@ -1372,22 +1423,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
             this.loadingMore = false;
         }, 600); // Tiempo ajustable según necesidades
     }
-
-
-    /**
-     * Carga los usuarios iniciales
-     */
-    private loadInitialUsers(): void {
-
-        this.paginatedUsers = this.filteredUsers.slice(0, this.itemsPerPage);
-        this.currentPage = 1;
-
-        // Verificar si ya no hay más usuarios
-        if (this.paginatedUsers.length >= this.filteredUsers.length) {
-            this.hasReachedEnd = true;
-        }
-    }
-
     /**
      * Scroll suave al inicio (útil después de filtros)
      */
@@ -1688,7 +1723,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // Procesar la cola si no se está procesando
         if (!this.isProcessingQueue) {
-            this.processGeocodingQueue();
+            this.processGeocodingQueue().then();
         }
     }
 
@@ -1769,33 +1804,37 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
      * Realiza la petición de geocoding con retry automático
      */
-    private performGeocodingRequest(lat: number, lon: number, userId: string): Promise<void> {
+    private async performGeocodingRequest(lat: number, lon: number, userId: string): Promise<void> {
         const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1`;
 
-        return this.http.get<NominatimReverseResponse>(url, {
-            headers: {
-                'User-Agent': `${this.enterpriseName || 'VendedoresApp'}/1.0`
-            }
-        }).pipe(
-            timeout(10000), // 10 segundos timeout
-            retry({
-                count: this.MAX_RETRIES,
-                delay: (error, retryCount) => {
-                    // Delay exponencial: 2s, 4s, 8s
-                    const delayMs = Math.pow(2, retryCount) * 1000;
-                    console.log(`Reintentando geocoding para ${userId} en ${delayMs}ms (intento ${retryCount})`);
-                    return timer(delayMs);
-                }
-            }),
-            catchError(error => {
-                console.warn(`Error en geocoding para ${userId} después de ${this.MAX_RETRIES} intentos:`, error);
-                return of(null); // Continuar sin error
-            }),
-            finalize(() => {
-                this.loadingLocations.delete(userId);
-            })
-        ).toPromise().then(response => {
-            if (response && response.address) {
+        try {
+            const response = await firstValueFrom(
+                this.http.get<NominatimReverseResponse>(url, {
+                    headers: {
+                        'User-Agent': `${this.enterpriseName || 'VendedoresApp'}/1.0`
+                    }
+                }).pipe(
+                    timeout(10000), // 10 segundos timeout
+                    retry({
+                        count: this.MAX_RETRIES,
+                        delay: (_error, retryCount) => {
+                            // Delay exponencial: 2s, 4s, 8s...
+                            const delayMs = Math.pow(2, retryCount) * 1000;
+                            console.log(`Reintentando geocoding para ${userId} en ${delayMs}ms (intento ${retryCount})`);
+                            return timer(delayMs);
+                        }
+                    }),
+                    catchError(error => {
+                        console.warn(`Error en geocoding para ${userId} después de ${this.MAX_RETRIES} intentos:`, error);
+                        return of(null); // Continuar sin error
+                    }),
+                    finalize(() => {
+                        this.loadingLocations.delete(userId);
+                    })
+                )
+            );
+
+            if (response?.address) {
                 const locationName = this.buildLocationName(response);
                 this.userLocations.set(userId, locationName);
 
@@ -1805,7 +1844,11 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                 // Marcar como fallido pero no mostrar error
                 this.userLocations.set(userId, 'Ubicación no disponible');
             }
-        });
+
+        } catch (error) {
+            console.error(`Fallo inesperado en performGeocodingRequest para ${userId}:`, error);
+            this.userLocations.set(userId, 'Ubicación no disponible');
+        }
     }
 
     /**
@@ -1823,7 +1866,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.geocodingQueue.push(item);
 
                 if (!this.isProcessingQueue) {
-                    this.processGeocodingQueue();
+                    this.processGeocodingQueue().then();
                 }
             }, retryDelay);
 
@@ -1876,7 +1919,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
 
                 // Recargar las geocercas del vendedor seleccionado
                 if (this.selectedUser) {
-                    this.refreshData()
+                    this.refreshData();
                 }
 
                 this.loading = false;
@@ -1892,7 +1935,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                 } else if (error.status === 403) {
                     errorMessage = 'No tiene permisos para realizar esta acción';
                 }
-
                 this.msgService.add({
                     severity: 'error',
                     summary: 'Error de Desvinculación',

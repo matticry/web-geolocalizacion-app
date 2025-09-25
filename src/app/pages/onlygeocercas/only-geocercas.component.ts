@@ -95,8 +95,6 @@ export class OnlyGeocercasComponent implements OnInit, AfterViewInit, OnDestroy 
     ciudadSeleccionada: Canton | null = null;
     sectorSeleccionado: Parroquia | null = null;
 
-    //===========================================================//
-
     //======= VARIABLES PARA VALIDACIÓN DEL CÓDIGO DE LAS GEOCERCAS ===================//
     // Estados de validación de código
     private codeValidationSubject = new Subject<string>(); // Subject para manejar la validación del código
@@ -104,7 +102,6 @@ export class OnlyGeocercasComponent implements OnInit, AfterViewInit, OnDestroy 
     codeValidationResult: 'valid' | 'invalid' | 'pending' | null = null;
     codeValidationMessage: string = '';
 
-    //===========================================================//
 
     // =================== PROPIEDADES PARA ELIMINACIÓN MÚLTIPLE ===================
     modoEliminacion: boolean = false;
@@ -147,15 +144,12 @@ export class OnlyGeocercasComponent implements OnInit, AfterViewInit, OnDestroy 
         }
     ];
 
-    //=================================================================//
-
     //======= VARIABLES PARA EL MAPA ===================//
     // Mapa (delegadas al servicio)
     searchLocation: string = '';
     searchingLocation: boolean = false;
     searchResults: SearchResult[] = [];
     mapInitialized: boolean = false;
-    //=================================================================//
 
 
     //======= VARIABLES DE GEOCERCAS ===================//
@@ -166,12 +160,10 @@ export class OnlyGeocercasComponent implements OnInit, AfterViewInit, OnDestroy 
     selectedGeocerca: GeofenceDto | null = null;
     loading: boolean = true;
 
-    //=================================================================//
-
 
     //======= VARIABLES DE PAGINACION DE GEOCERCAS ==================//
     first: number = 0;
-    itemsPerPage: number = 5;
+    itemsPerPage: number = 4;
     enterpriseName: string = '';     // Propiedades de empresa
 
 
@@ -1522,11 +1514,10 @@ export class OnlyGeocercasComponent implements OnInit, AfterViewInit, OnDestroy 
         return this.geocercasSeleccionadas.size > 0;
     }
 
-
     ngOnDestroy(): void {
         this.destroy$.next();
         this.destroy$.complete();
-        this.geocercaDrawing.destroy();
+        this.geocercaDrawing.cleanupOnDestroy();
         this.mapService.destroyMap();
     }
 }
