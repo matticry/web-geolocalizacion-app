@@ -28,7 +28,6 @@ import { GeocercaService } from '@/core/services/geocerca.service';
 import { AuthService } from '@/core/services/auth.service';
 import { NominatimReverseResponse } from '@/core/models/nominatim-response.interface';
 import { AsignarGeocercaDto } from '@/core/models/AsignarGeocercaDto';
-import { MapService } from '@/core/services/map.service';
 
 interface NominatimResult {
     lat: string;
@@ -73,13 +72,13 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Para scroll infinito
     loadingMore: boolean = false;
-    hasReachedEnd: boolean = false;// Mantener usuarios originales
+    hasReachedEnd: boolean = false; // Mantener usuarios originales
     private scrollThreshold: number = 100;
 
     //Propiedades para el servicio de calles
     userLocations: Map<string, string> = new Map();
     loadingLocations: Set<string> = new Set();
-    private geocodingQueue: Array<{userId: string, lat: number, lon: number}> = [];
+    private geocodingQueue: Array<{ userId: string; lat: number; lon: number }> = [];
     private isProcessingQueue: boolean = false;
     private lastRequestTime: number = 0;
     private readonly MIN_REQUEST_INTERVAL = 1500; // 1.5 segundos entre peticiones
@@ -93,9 +92,9 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
     availableGeocercasLoading: boolean = false;
     searchAvailableGeocerca: string = '';
 
-// Mapa del diálogo
+    // Mapa del diálogo
     dialogMap: L.Map | null = null;
-    dialogPreviewPolygon: L.Polygon | L.Circle | null = null;// Filtro de geocercas
+    dialogPreviewPolygon: L.Polygon | L.Circle | null = null; // Filtro de geocercas
     filtroGeocerca: string = '';
     geocercasFiltradas: any[] = [];
 
@@ -119,7 +118,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
     searchValue: string = '';
     private destroy$ = new Subject<void>();
 
-
     // Mapa
     map: L.Map | null = null;
     userMarkers: Map<string, L.Marker> = new Map();
@@ -141,14 +139,12 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
     geocercaDialog: boolean = false;
     enterpriseName: string = '';
 
-
     constructor(
         private readonly userService: UserService,
         private readonly geocercaService: GeocercaService,
         private readonly authService: AuthService,
         private readonly msgService: MessageService,
         private readonly http: HttpClient,
-        private readonly mapService: MapService,
         private readonly confirmationService: ConfirmationService
     ) {}
 
@@ -168,7 +164,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
      * Inicializa el nombre de la empresa desde el auth service
      */
-     initializeEnterpriseName(): any {
+    initializeEnterpriseName(): any {
         const empresa = this.authService.getEmpresa();
         if (empresa && empresa.nomempresa) {
             this.enterpriseName = empresa.nomempresa;
@@ -207,7 +203,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(this.map);
 
-
             if (!this.markerClusterGroup) {
                 this.markerClusterGroup = L.markerClusterGroup({
                     showCoverageOnHover: false,
@@ -226,15 +221,12 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.map?.invalidateSize();
             }, 100);
 
-
             console.log('Mapa inicializado correctamente');
         } catch (error) {
             console.error('Error inicializando el mapa:', error);
             this.showMapFallback();
         }
     }
-
-
 
     // ===================================== MÉTODO PARA OBTENER TODOS LOS USUARIOS ================================
 
@@ -270,36 +262,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
             });
     }
     /**
-     * Carga las direcciones de todos los usuarios que tienen ubicación
-     */
-    private loadUserLocations(): void {
-        // Limpiar estados previos
-        this.geocodingQueue = [];
-        this.isProcessingQueue = false;
-
-        // Filtrar usuarios con ubicación válida
-        const usersWithLocation = this.users.filter(user =>
-            user.ubicacionActual?.geublat &&
-            user.ubicacionActual?.geublon &&
-            !isNaN(parseFloat(String(user.ubicacionActual.geublat))) &&
-            !isNaN(parseFloat(String(user.ubicacionActual.geublon)))
-        );
-
-        console.log(`Iniciando geocoding para ${usersWithLocation.length} usuarios`);
-
-        // Agregar todos a la cola con un pequeño delay aleatorio inicial
-        usersWithLocation.forEach((user, index) => {
-            setTimeout(() => {
-                this.addToGeocodingQueue(
-                    parseFloat(String(user.ubicacionActual!.geublat)),
-                    parseFloat(String(user.ubicacionActual!.geublon)),
-                    user.codigoVendedor
-                );
-            }, index * 100); // 100ms entre adiciones a la cola
-        });
-    }
-
-    /**
      * Obtiene el nombre de la ubicación para mostrar en el UI
      */
     getUserLocationName(user: VendedorDto): string {
@@ -318,11 +280,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
         if (user.ubicacionActual?.geublat && user.ubicacionActual?.geublon) {
             // Agregar a la cola si no existe
             setTimeout(() => {
-                this.addToGeocodingQueue(
-                    parseFloat(String(user.ubicacionActual!.geublat)),
-                    parseFloat(String(user.ubicacionActual!.geublon)),
-                    user.codigoVendedor
-                );
+                this.addToGeocodingQueue(parseFloat(String(user.ubicacionActual!.geublat)), parseFloat(String(user.ubicacionActual!.geublon)), user.codigoVendedor);
             }, 100);
 
             return 'Cargando ubicación...';
@@ -356,7 +314,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
         this.selectedUser = user;
         this.geocercasFiltradas = user.geocercas || [];
         this.filtroGeocerca = ''; // Limpiar filtro
-
 
         if (this.map) {
             this.showSelectedUserGeocercas(user);
@@ -424,7 +381,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         }
     }
-
 
     private hideAllUserMarkersExcept(selectedUserCode: string): void {
         this.userMarkers.forEach((marker, userCode) => {
@@ -743,9 +699,14 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const getStatusColor = (estado: string) => {
             switch (estado?.toUpperCase()) {
-                case 'A': case 'ACTIVO': return 'bg-green-100 text-green-700';
-                case 'I': case 'INACTIVO': return 'bg-red-100 text-red-700';
-                default: return 'bg-gray-100 text-gray-700';
+                case 'A':
+                case 'ACTIVO':
+                    return 'bg-green-100 text-green-700';
+                case 'I':
+                case 'INACTIVO':
+                    return 'bg-red-100 text-red-700';
+                default:
+                    return 'bg-gray-100 text-gray-700';
             }
         };
 
@@ -769,9 +730,12 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const getStatusText = (estado: string) => {
             switch (estado?.toUpperCase()) {
-                case 'A': return 'Activo';
-                case 'I': return 'Inactivo';
-                default: return estado;
+                case 'A':
+                    return 'Activo';
+                case 'I':
+                    return 'Inactivo';
+                default:
+                    return estado;
             }
         };
 
@@ -1011,8 +975,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
 
     //==========================================================================//
 
-
-
     /**
      * Ejecuta la desactivación real de la geocerca
      */
@@ -1118,7 +1080,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
 
-        this.geocercasFiltradas = this.selectedUser.geocercas.filter(geocerca => {
+        this.geocercasFiltradas = this.selectedUser.geocercas.filter((geocerca) => {
             return (
                 geocerca.geocnom?.toLowerCase().includes(filtro) ||
                 geocerca.geoccod?.toLowerCase().includes(filtro) ||
@@ -1148,7 +1110,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
         this.editingGeocerca = null;
         this.editingPolygon = null;
 
-
         this.geocodingQueue = [];
         this.isProcessingQueue = false;
         this.userLocations.clear();
@@ -1158,7 +1119,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
 
     protected readonly Math = Math;
 
- //====================== FUNCIONES ASYNC COMPLETADAS =======================
+    //====================== FUNCIONES ASYNC COMPLETADAS =======================
     /**
      * Obtiene geocercas DISPONIBLES (sin vendedores asignados) para el diálogo
      */
@@ -1171,8 +1132,8 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
             const response = await firstValueFrom(
                 this.geocercaService.getGeocercasConVendedoresByEnterpriseName(
                     this.enterpriseName,
-                    1,    // Primera página
-                    100,  // Tamaño grande para obtener todas
+                    1, // Primera página
+                    100, // Tamaño grande para obtener todas
                     true, // activo
                     false // soloConVendedores = false → geocercas SIN asignar
                 )
@@ -1204,7 +1165,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-//====================== FUNCIONES DEL DIÁLOGO =======================
+    //====================== FUNCIONES DEL DIÁLOGO =======================
 
     /**
      * Abre el diálogo para agregar geocerca (botón AGREGAR)
@@ -1249,11 +1210,8 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         const searchTerm = this.searchAvailableGeocerca.toLowerCase().trim();
-        this.filteredAvailableGeocercas = this.availableGeocercas.filter(geocerca =>
-            geocerca.geocnom?.toLowerCase().includes(searchTerm) ||
-            geocerca.geoccod?.toLowerCase().includes(searchTerm) ||
-            geocerca.geocsec?.toLowerCase().includes(searchTerm) ||
-            geocerca.geocciud?.toLowerCase().includes(searchTerm)
+        this.filteredAvailableGeocercas = this.availableGeocercas.filter(
+            (geocerca) => geocerca.geocnom?.toLowerCase().includes(searchTerm) || geocerca.geoccod?.toLowerCase().includes(searchTerm) || geocerca.geocsec?.toLowerCase().includes(searchTerm) || geocerca.geocciud?.toLowerCase().includes(searchTerm)
         );
     }
 
@@ -1298,12 +1256,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
             };
 
             // Llamar al servicio usando
-            await firstValueFrom(
-                this.geocercaService.assignGeocercaToUser(
-                    this.selectedAvailableGeocerca.geoccod,
-                    asignarDto
-                )
-            );
+            await firstValueFrom(this.geocercaService.assignGeocercaToUser(this.selectedAvailableGeocerca.geoccod, asignarDto));
 
             this.msgService.add({
                 severity: 'success',
@@ -1331,17 +1284,12 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
             this.filtrarGeocercasList();
 
             // Remover la geocerca de la lista de disponibles
-            this.availableGeocercas = this.availableGeocercas.filter(
-                g => g.geoccod !== this.selectedAvailableGeocerca!.geoccod
-            );
-            this.filteredAvailableGeocercas = this.filteredAvailableGeocercas.filter(
-                g => g.geoccod !== this.selectedAvailableGeocerca!.geoccod
-            );
+            this.availableGeocercas = this.availableGeocercas.filter((g) => g.geoccod !== this.selectedAvailableGeocerca!.geoccod);
+            this.filteredAvailableGeocercas = this.filteredAvailableGeocercas.filter((g) => g.geoccod !== this.selectedAvailableGeocerca!.geoccod);
 
             // Limpiar selección y cerrar diálogo
             this.selectedAvailableGeocerca = null;
             this.closeGeocercaDialog();
-
         } catch (error: any) {
             console.error('Error asignando geocerca:', error);
 
@@ -1363,7 +1311,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                 detail: errorMessage
             });
         }
-
     }
 
     //===============NUEVOS MÉTODOS PARA SCROLL INFINITO========================================//
@@ -1426,7 +1373,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
      * Scroll suave al inicio (útil después de filtros)
      */
-
 
     formatLocationDate(dateString: string): string {
         if (!dateString) return 'Sin fecha';
@@ -1491,7 +1437,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-//====================== FUNCIONES DEL MAPA DEL DIÁLOGO =======================
+    //====================== FUNCIONES DEL MAPA DEL DIÁLOGO =======================
 
     /**
      * Inicializa el mapa del diálogo
@@ -1519,7 +1465,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
             setTimeout(() => {
                 this.dialogMap?.invalidateSize();
             }, 100);
-
         } catch (error) {
             console.error('Error inicializando mapa del diálogo:', error);
         }
@@ -1537,9 +1482,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         try {
-
-
-
             // Intentar usar las coordenadas completas del polígono primero
             if (geocerca.geoccoor) {
                 this.showFullPolygonPreview(geocerca);
@@ -1553,7 +1495,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
             }
 
             console.warn('Geocerca sin coordenadas válidas:', geocerca);
-
         } catch (error) {
             console.error('Error mostrando vista previa de geocerca:', error);
             this.msgService.add({
@@ -1570,9 +1511,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
     private showFullPolygonPreview(geocerca: any): void {
         try {
             // Parsear las coordenadas del JSON string
-            const coordinates = typeof geocerca.geoccoor === 'string'
-                ? JSON.parse(geocerca.geoccoor)
-                : geocerca.geoccoor;
+            const coordinates = typeof geocerca.geoccoor === 'string' ? JSON.parse(geocerca.geoccoor) : geocerca.geoccoor;
 
             if (!Array.isArray(coordinates) || coordinates.length < 3) {
                 console.warn('Coordenadas insuficientes para formar polígono, usando punto central');
@@ -1631,14 +1570,15 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
             // Usar tu método existente para crear el popup
             if (this.selectedUser) {
                 const popupContent = this.createGeocercaPopupContent(geocerca, this.selectedUser);
-                centerMarker.bindPopup(popupContent, {
-                    maxWidth: 300,
-                    className: 'custom-popup'
-                }).openPopup();
+                centerMarker
+                    .bindPopup(popupContent, {
+                        maxWidth: 300,
+                        className: 'custom-popup'
+                    })
+                    .openPopup();
             }
 
             console.log(`Polígono completo mostrado para geocerca: ${geocerca.geocnom} con ${coordinates.length} vértices`);
-
         } catch (error) {
             console.error('Error parseando coordenadas del polígono:', error);
             // Fallback al punto central
@@ -1699,10 +1639,12 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
         // Usar tu método existente para el popup
         if (this.selectedUser) {
             const popupContent = this.createGeocercaPopupContent(geocerca, this.selectedUser);
-            centerMarker.bindPopup(popupContent, {
-                maxWidth: 300,
-                className: 'custom-popup'
-            }).openPopup();
+            centerMarker
+                .bindPopup(popupContent, {
+                    maxWidth: 300,
+                    className: 'custom-popup'
+                })
+                .openPopup();
         }
 
         console.log(`Vista aproximada mostrada para geocerca: ${geocerca.geocnom} en [${lat}, ${lon}]`);
@@ -1712,7 +1654,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     private addToGeocodingQueue(lat: number, lon: number, userId: string): void {
         // Evitar duplicados en la cola
-        const exists = this.geocodingQueue.some(item => item.userId === userId);
+        const exists = this.geocodingQueue.some((item) => item.userId === userId);
         if (exists || this.loadingLocations.has(userId) || this.userLocations.has(userId)) {
             return;
         }
@@ -1726,7 +1668,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
             this.processGeocodingQueue().then();
         }
     }
-
 
     /**
      * Construye un nombre legible de la ubicación
@@ -1758,7 +1699,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
      * Utility para delays
      */
     private delay(ms: number): Promise<void> {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
     /**
@@ -1788,7 +1729,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                 // Realizar la petición
                 await this.performGeocodingRequest(item.lat, item.lon, item.userId);
                 this.lastRequestTime = Date.now();
-
             } catch (error) {
                 console.warn(`Error procesando geocoding para ${item.userId}:`, error);
                 this.handleGeocodingError(item);
@@ -1809,29 +1749,31 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
 
         try {
             const response = await firstValueFrom(
-                this.http.get<NominatimReverseResponse>(url, {
-                    headers: {
-                        'User-Agent': `${this.enterpriseName || 'VendedoresApp'}/1.0`
-                    }
-                }).pipe(
-                    timeout(10000), // 10 segundos timeout
-                    retry({
-                        count: this.MAX_RETRIES,
-                        delay: (_error, retryCount) => {
-                            // Delay exponencial: 2s, 4s, 8s...
-                            const delayMs = Math.pow(2, retryCount) * 1000;
-                            console.log(`Reintentando geocoding para ${userId} en ${delayMs}ms (intento ${retryCount})`);
-                            return timer(delayMs);
+                this.http
+                    .get<NominatimReverseResponse>(url, {
+                        headers: {
+                            'User-Agent': `${this.enterpriseName || 'VendedoresApp'}/1.0`
                         }
-                    }),
-                    catchError(error => {
-                        console.warn(`Error en geocoding para ${userId} después de ${this.MAX_RETRIES} intentos:`, error);
-                        return of(null); // Continuar sin error
-                    }),
-                    finalize(() => {
-                        this.loadingLocations.delete(userId);
                     })
-                )
+                    .pipe(
+                        timeout(10000), // 10 segundos timeout
+                        retry({
+                            count: this.MAX_RETRIES,
+                            delay: (_error, retryCount) => {
+                                // Delay exponencial: 2s, 4s, 8s...
+                                const delayMs = Math.pow(2, retryCount) * 1000;
+                                console.log(`Reintentando geocoding para ${userId} en ${delayMs}ms (intento ${retryCount})`);
+                                return timer(delayMs);
+                            }
+                        }),
+                        catchError((error) => {
+                            console.warn(`Error en geocoding para ${userId} después de ${this.MAX_RETRIES} intentos:`, error);
+                            return of(null); // Continuar sin error
+                        }),
+                        finalize(() => {
+                            this.loadingLocations.delete(userId);
+                        })
+                    )
             );
 
             if (response?.address) {
@@ -1844,7 +1786,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                 // Marcar como fallido pero no mostrar error
                 this.userLocations.set(userId, 'Ubicación no disponible');
             }
-
         } catch (error) {
             console.error(`Fallo inesperado en performGeocodingRequest para ${userId}:`, error);
             this.userLocations.set(userId, 'Ubicación no disponible');
@@ -1854,7 +1795,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
      * Maneja errores de geocoding con reintentos inteligentes
      */
-    private handleGeocodingError(item: {userId: string, lat: number, lon: number}): void {
+    private handleGeocodingError(item: { userId: string; lat: number; lon: number }): void {
         const failures = this.failedRequests.get(item.userId) || 0;
 
         if (failures < this.MAX_RETRIES) {
@@ -1869,7 +1810,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.processGeocodingQueue().then();
                 }
             }, retryDelay);
-
         } else {
             // Máximo de reintentos alcanzado, marcar como no disponible
             this.loadingLocations.delete(item.userId);
