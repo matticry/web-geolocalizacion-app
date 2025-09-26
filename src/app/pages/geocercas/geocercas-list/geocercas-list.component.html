@@ -485,231 +485,234 @@
                         </div>
                     </div>
 
-                    <!-- Accordion de Filtrado Especial -->
-                    <p-accordion class="mt-3">
-                        <p-accordion-panel value="0">
-                            <!-- Header personalizado del accordion -->
-                            <p-accordion-header>
-                                <div class="flex align-items-center gap-2 w-full">
-                                    <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 dark:bg-indigo-900/50">
-                                        <i class="pi pi-filter text-indigo-600 dark:text-indigo-300 text-sm"></i>
-                                    </div>
-                                    <div class="flex-1">
-                                <span class="font-semibold text-surface-800 dark:text-surface-200 text-sm">
-                                    Filtrado Especial
-                                </span>
-                                        <span class="text-xs text-surface-500 dark:text-surface-400 ml-2">
-                                    ({{ getActiveFiltersCount() }} activo{{ getActiveFiltersCount() !== 1 ? 's' : '' }})
-                                </span>
-                                    </div>
-                                </div>
-                            </p-accordion-header>
-
-                            <!-- Contenido del accordion -->
-                            <p-accordion-content>
-                                <div class="p-0">
-
-                                    <!-- Filtros Temporales -->
-                                    <div class="mb-4">
-                                        <div class="flex align-items-center gap-2 mb-3">
-                                            <i class="pi pi-clock text-blue-600 dark:text-blue-400 text-sm"></i>
-                                            <span class="font-medium text-surface-700 dark:text-surface-200 text-sm">Período</span>
-                                            <div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700"></div>
+                    @if (selectedUser)
+                    {
+                        <!-- Accordion de Filtrado Especial -->
+                        <p-accordion class="mt-3">
+                            <p-accordion-panel value="0">
+                                <!-- Header personalizado del accordion -->
+                                <p-accordion-header>
+                                    <div class="flex align-items-center gap-2 w-full">
+                                        <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 dark:bg-indigo-900/50">
+                                            <i class="pi pi-filter text-indigo-600 dark:text-indigo-300 text-sm"></i>
                                         </div>
-
-                                        <div class="grid grid-cols-12 gap-2">
-                                            <!-- Fecha desde -->
-                                            <div class="col-span-12 sm:col-span-7">
-                                                <label class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
-                                                    Desde
-                                                </label>
-                                                <p-datepicker
-                                                    inputId="filter-datetime-compact"
-                                                    [(ngModel)]="filterFrom"
-                                                    dateFormat="dd/mm/yy"
-                                                    [showTime]="true"
-                                                    [hourFormat]="'24'"
-                                                    placeholder="Fecha y hora..."
-                                                    class="w-full">
-                                                </p-datepicker>
-                                            </div>
-
-                                            <!-- Extensión temporal compacta -->
-                                            <div class="col-span-12 sm:col-span-5">
-                                                <label class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
-                                                    Tiempo
-                                                </label>
-                                                <div class="flex gap-1">
-                                                    <!-- Para unidades de tiempo -->
-                                                    <p-autoComplete
-                                                        [(ngModel)]="selectedTimeUnit"
-                                                        [suggestions]="timeUnitOptions"
-                                                        (completeMethod)="searchTimeUnit($event)"
-                                                        optionLabel="label"
-                                                        placeholder="días"
-                                                        [dropdown]="true"
-                                                        class="w-[300px]">
-                                                    </p-autoComplete>
-
-                                                    <input
-                                                        pInputText
-                                                        [(ngModel)]="timeValue"
-                                                        placeholder="2"
-                                                        type="number"
-                                                        min="1"
-                                                        class="w-16 flex-1 text-center text-sm">
-                                                </div>
-                                            </div>
+                                        <div class="flex-1">
+                                            <span class="font-semibold text-surface-800 dark:text-surface-200 text-sm">
+                                                Filtrado Especial
+                                            </span>
+                                            <span class="text-xs text-surface-500 dark:text-surface-400 ml-2">
+                                                ({{ getActiveFiltersCount() }} activo{{ getActiveFiltersCount() !== 1 ? 's' : '' }})
+                                            </span>
                                         </div>
                                     </div>
+                                </p-accordion-header>
 
-                                    <!-- Filtros Espaciales -->
-                                    @if (selectedUser) {
+                                <!-- Contenido del accordion -->
+                                <p-accordion-content>
+                                    <div class="p-0">
+
+                                        <!-- Filtros Temporales -->
                                         <div class="mb-4">
                                             <div class="flex align-items-center gap-2 mb-3">
-                                                <i class="pi pi-map text-purple-600 dark:text-purple-400 text-sm"></i>
-                                                <span class="font-medium text-surface-700 dark:text-surface-200 text-sm">Geocerca</span>
+                                                <i class="pi pi-clock text-blue-600 dark:text-blue-400 text-sm"></i>
+                                                <span class="font-medium text-surface-700 dark:text-surface-200 text-sm">Período</span>
                                                 <div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700"></div>
                                             </div>
 
-                                            <div class="grid grid-cols-12 gap-2 align-items-end">
-                                                <!-- Toggle compacto -->
-                                                <div class="col-span-12 sm:col-span-4">
-                                                    <div class="flex align-items-center gap-2 p-2 bg-surface-50 dark:bg-surface-800 border-round mt-3">
-                                                        <p-toggleswitch
-                                                            [(ngModel)]="geofenceEnabled"
-                                                            size="small"
-                                                            (onChange)="onToggleChange()">
-                                                        </p-toggleswitch>
-                                                        <div>
-                                                            <span class="block text-xs font-medium text-surface-700 dark:text-surface-200">Activa</span>
-                                                            <span class="text-xs" [ngClass]="geofenceEnabled ? 'text-green-600' : 'text-surface-500'">
-                                                                {{ geofenceEnabled ? 'Sí' : 'No' }}
-                                                            </span>
-                                                        </div>
+                                            <div class="grid grid-cols-12 gap-2">
+                                                <!-- Fecha desde -->
+                                                <div class="col-span-12 sm:col-span-7">
+                                                    <label class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
+                                                        Desde
+                                                    </label>
+                                                    <p-datepicker
+                                                        inputId="filter-datetime-compact"
+                                                        [(ngModel)]="filterFrom"
+                                                        dateFormat="dd/mm/yy"
+                                                        [showTime]="true"
+                                                        [hourFormat]="'24'"
+                                                        placeholder="Fecha y hora..."
+                                                        class="w-full">
+                                                    </p-datepicker>
+                                                </div>
+
+                                                <!-- Extensión temporal compacta -->
+                                                <div class="col-span-12 sm:col-span-5">
+                                                    <label class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
+                                                        Tiempo
+                                                    </label>
+                                                    <div class="flex gap-1">
+                                                        <!-- Para unidades de tiempo -->
+                                                        <p-autoComplete
+                                                            [(ngModel)]="selectedTimeUnit"
+                                                            [suggestions]="timeUnitOptions"
+                                                            (completeMethod)="searchTimeUnit($event)"
+                                                            optionLabel="label"
+                                                            placeholder="días"
+                                                            [dropdown]="true"
+                                                            class="w-[300px]">
+                                                        </p-autoComplete>
+
+                                                        <input
+                                                            pInputText
+                                                            [(ngModel)]="timeValue"
+                                                            placeholder="2"
+                                                            type="number"
+                                                            min="1"
+                                                            class="w-16 flex-1 text-center text-sm">
                                                     </div>
                                                 </div>
-                                                <!-- Selector compacto -->
-                                                @if (geofenceEnabled) {
-                                                    <div class="col-span-12 sm:col-span-8">
-                                                        <label class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
-                                                            Seleccionar Geocercas
-                                                        </label>
-                                                        <p-multiSelect
-                                                            [(ngModel)]="selectedGeofence"
-                                                            [options]="geofenceOptions"
-                                                            optionLabel="label"
-                                                            optionValue="value"
-                                                            placeholder="Elegir geocercas..."
-                                                            [filter]="true"
-                                                            filterBy="label"
-                                                            [disabled]="!geofenceEnabled"
-                                                            [showToggleAll]="true"
-                                                            [showHeader]="true"
-                                                            [maxSelectedLabels]="2"
-                                                            selectedItemsLabel="{0} geocercas seleccionadas"
-                                                            class="w-full"
-                                                            (onChange)="onGeofencesChange($event)">
+                                            </div>
+                                        </div>
 
-                                                            <!-- Template personalizado para mostrar más información -->
-                                                            <ng-template pTemplate="item" let-option>
-                                                                <div class="flex flex-col">
-                                                                    <span class="font-medium">{{ option.geocerca?.geocnom }}</span>
-                                                                    <small class="text-surface-500">{{ option.geocerca?.geocciud }} - {{ option.geocerca?.geocprov }}</small>
-                                                                </div>
-                                                            </ng-template>
+                                        <!-- Filtros Espaciales -->
+                                        @if (selectedUser) {
+                                            <div class="mb-4">
+                                                <div class="flex align-items-center gap-2 mb-3">
+                                                    <i class="pi pi-map text-purple-600 dark:text-purple-400 text-sm"></i>
+                                                    <span class="font-medium text-surface-700 dark:text-surface-200 text-sm">Geocerca</span>
+                                                    <div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700"></div>
+                                                </div>
 
-                                                            <!-- Template para elementos seleccionados -->
-                                                            <ng-template pTemplate="selectedItems" let-selectedOptions>
-                                                                @if (selectedOptions && selectedOptions.length > 0) {
-                                                                    <span>{{ selectedOptions.length }} geocerca{{ selectedOptions.length === 1 ? '' : 's' }} seleccionada{{ selectedOptions.length === 1 ? '' : 's' }}</span>
-                                                                }
-                                                            </ng-template>
-                                                        </p-multiSelect>
+                                                <div class="grid grid-cols-12 gap-2 align-items-end">
+                                                    <!-- Toggle compacto -->
+                                                    <div class="col-span-12 sm:col-span-4">
+                                                        <div class="flex align-items-center gap-2 p-2 bg-surface-50 dark:bg-surface-800 border-round mt-3">
+                                                            <p-toggleswitch
+                                                                [(ngModel)]="geofenceEnabled"
+                                                                size="small"
+                                                                (onChange)="onToggleChange()">
+                                                            </p-toggleswitch>
+                                                            <div>
+                                                                <span class="block text-xs font-medium text-surface-700 dark:text-surface-200">Activa</span>
+                                                                <span class="text-xs" [ngClass]="geofenceEnabled ? 'text-green-600' : 'text-surface-500'">
+                                                                {{ geofenceEnabled ? 'Sí' : 'No' }}
+                                                            </span>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                }
+                                                    <!-- Selector compacto -->
+                                                    @if (geofenceEnabled) {
+                                                        <div class="col-span-12 sm:col-span-8">
+                                                            <label class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
+                                                                Seleccionar Geocercas
+                                                            </label>
+                                                            <p-multiSelect
+                                                                [(ngModel)]="selectedGeofence"
+                                                                [options]="geofenceOptions"
+                                                                optionLabel="label"
+                                                                optionValue="value"
+                                                                placeholder="Elegir geocercas..."
+                                                                [filter]="true"
+                                                                filterBy="label"
+                                                                [disabled]="!geofenceEnabled"
+                                                                [showToggleAll]="true"
+                                                                [showHeader]="true"
+                                                                [maxSelectedLabels]="2"
+                                                                selectedItemsLabel="{0} geocercas seleccionadas"
+                                                                class="w-full"
+                                                                (onChange)="onGeofencesChange($event)">
+
+                                                                <!-- Template personalizado para mostrar más información -->
+                                                                <ng-template pTemplate="item" let-option>
+                                                                    <div class="flex flex-col">
+                                                                        <span class="font-medium">{{ option.geocerca?.geocnom }}</span>
+                                                                        <small class="text-surface-500">{{ option.geocerca?.geocciud }} - {{ option.geocerca?.geocprov }}</small>
+                                                                    </div>
+                                                                </ng-template>
+
+                                                                <!-- Template para elementos seleccionados -->
+                                                                <ng-template pTemplate="selectedItems" let-selectedOptions>
+                                                                    @if (selectedOptions && selectedOptions.length > 0) {
+                                                                        <span>{{ selectedOptions.length }} geocerca{{ selectedOptions.length === 1 ? '' : 's' }} seleccionada{{ selectedOptions.length === 1 ? '' : 's' }}</span>
+                                                                    }
+                                                                </ng-template>
+                                                            </p-multiSelect>
+                                                        </div>
+                                                    }
+                                                </div>
                                             </div>
-                                        </div>
-                                    }
-                                    <!-- Tipo de Transacción -->
-                                    <div class="mb-4">
-                                        <div class="flex align-items-center gap-2 mb-3">
-                                            <i class="pi pi-database text-green-600 dark:text-green-400 text-sm"></i>
-                                            <span class="font-medium text-surface-700 dark:text-surface-200 text-sm">Tipo de Transacción</span>
-                                            <div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700"></div>
+                                        }
+                                        <!-- Tipo de Transacción -->
+                                        <div class="mb-4">
+                                            <div class="flex align-items-center gap-2 mb-3">
+                                                <i class="pi pi-database text-green-600 dark:text-green-400 text-sm"></i>
+                                                <span class="font-medium text-surface-700 dark:text-surface-200 text-sm">Tipo de Transacción</span>
+                                                <div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700"></div>
+                                            </div>
+
+                                            <div class="flex gap-4 p-2 bg-surface-50 dark:bg-surface-800 border-round">
+                                                <div class="flex align-items-center gap-2">
+                                                    <p-checkbox inputId="pedidos-compact" [(ngModel)]="pedidosEnabled" [binary]="true"></p-checkbox>
+                                                    <label for="pedidos-compact" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
+                                                        <i class="pi pi-shopping-cart mr-1"></i>Pedidos
+                                                    </label>
+                                                </div>
+                                                <div class="flex align-items-center gap-2">
+                                                    <p-checkbox inputId="cobros-compact" [(ngModel)]="collectionsEnabled" [binary]="true"></p-checkbox>
+                                                    <label for="cobros-compact" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
+                                                        <i class="pi pi-dollar mr-1"></i>Cobros
+                                                    </label>
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        <div class="flex gap-4 p-2 bg-surface-50 dark:bg-surface-800 border-round">
-                                            <div class="flex align-items-center gap-2">
-                                                <p-checkbox inputId="pedidos-compact" [(ngModel)]="pedidosEnabled" [binary]="true"></p-checkbox>
-                                                <label for="pedidos-compact" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
-                                                    <i class="pi pi-shopping-cart mr-1"></i>Pedidos
-                                                </label>
+                                        <!-- Clientes -->
+                                        <div class="mb-4">
+                                            <div class="flex align-items-center gap-2 mb-3">
+                                                <i class="pi pi-users text-green-600 dark:text-green-400 text-sm"></i>
+                                                <span class="font-medium text-surface-700 dark:text-surface-200 text-sm">Clientes</span>
+                                                <div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700"></div>
                                             </div>
-                                            <div class="flex align-items-center gap-2">
-                                                <p-checkbox inputId="cobros-compact" [(ngModel)]="collectionsEnabled" [binary]="true"></p-checkbox>
-                                                <label for="cobros-compact" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
-                                                    <i class="pi pi-dollar mr-1"></i>Cobros
-                                                </label>
+
+                                            <div class="flex gap-4 p-2 bg-surface-50 dark:bg-surface-800 border-round">
+                                                <div class="flex align-items-center gap-2">
+                                                    <p-checkbox
+                                                        inputId="clientes-all"
+                                                        [(ngModel)]="clientesAll"
+                                                        [binary]="true"
+                                                        (onChange)="onClientFilterChange('all')">
+                                                    </p-checkbox>
+                                                    <label for="clientes-all" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
+                                                        <i class="pi pi-users mr-1"></i>Todos
+                                                    </label>
+                                                </div>
+                                                <div class="flex align-items-center gap-2">
+                                                    <p-checkbox
+                                                        inputId="clientes-assigned"
+                                                        [(ngModel)]="clientesAssigned"
+                                                        [binary]="true"
+                                                        (onChange)="onClientFilterChange('assigned')">
+                                                    </p-checkbox>
+                                                    <label for="clientes-assigned" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
+                                                        <i class="pi pi-user-check mr-1"></i>Asignados
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
+                                        <!-- Botones compactos -->
+                                        <div class="flex justify-content-end gap-2">
+                                            <p-button
+                                                label="Limpiar"
+                                                icon="pi pi-refresh"
+                                                severity="secondary"
+                                                size="small"
+                                                (onClick)="clearFilters()"
+                                                [text]="true">
+                                            </p-button>
+                                            <p-button
+                                                label="Aplicar"
+                                                icon="pi pi-check"
+                                                size="small"
+                                                (onClick)="applyFilters()">
+                                            </p-button>
+                                        </div>
+
                                     </div>
-
-                                    <!-- Clientes -->
-                                    <div class="mb-4">
-                                        <div class="flex align-items-center gap-2 mb-3">
-                                            <i class="pi pi-users text-green-600 dark:text-green-400 text-sm"></i>
-                                            <span class="font-medium text-surface-700 dark:text-surface-200 text-sm">Clientes</span>
-                                            <div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700"></div>
-                                        </div>
-
-                                        <div class="flex gap-4 p-2 bg-surface-50 dark:bg-surface-800 border-round">
-                                            <div class="flex align-items-center gap-2">
-                                                <p-checkbox
-                                                    inputId="clientes-all"
-                                                    [(ngModel)]="clientesAll"
-                                                    [binary]="true"
-                                                    (onChange)="onClientFilterChange('all')">
-                                                </p-checkbox>
-                                                <label for="clientes-all" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
-                                                    <i class="pi pi-users mr-1"></i>Todos
-                                                </label>
-                                            </div>
-                                            <div class="flex align-items-center gap-2">
-                                                <p-checkbox
-                                                    inputId="clientes-assigned"
-                                                    [(ngModel)]="clientesAssigned"
-                                                    [binary]="true"
-                                                    (onChange)="onClientFilterChange('assigned')">
-                                                </p-checkbox>
-                                                <label for="clientes-assigned" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
-                                                    <i class="pi pi-user-check mr-1"></i>Asignados
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Botones compactos -->
-                                    <div class="flex justify-content-end gap-2">
-                                        <p-button
-                                            label="Limpiar"
-                                            icon="pi pi-refresh"
-                                            severity="secondary"
-                                            size="small"
-                                            (onClick)="clearFilters()"
-                                            [text]="true">
-                                        </p-button>
-                                        <p-button
-                                            label="Aplicar"
-                                            icon="pi pi-check"
-                                            size="small"
-                                            (onClick)="applyFilters()">
-                                        </p-button>
-                                    </div>
-
-                                </div>
-                            </p-accordion-content>
-                        </p-accordion-panel>
-                    </p-accordion>
+                                </p-accordion-content>
+                            </p-accordion-panel>
+                        </p-accordion>
+                    }
 
                     <!-- Buscador de Ubicaciones -->
                     <div class="flex flex-col sm:flex-row gap-2">

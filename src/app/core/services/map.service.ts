@@ -440,18 +440,15 @@ export class MapService {
     focusOnCustomer(customer: CustomerResponseDto): void {
         if (!this.map || !customer.latitud || !customer.longitud) return;
 
-        // OPCIÓN 1: Zoom out y luego zoom in para forzar movimiento visual
         const targetLat = customer.latitud;
         const targetLng = customer.longitud;
         const finalZoom = 20;
 
-        // Primero hacer zoom out
         this.map.setView([targetLat, targetLng], 15, {
             animate: true,
             duration: 0.3
         });
 
-        // Después de un pequeño delay, hacer zoom in al nivel final
         setTimeout(() => {
             if (this.map) {
                 this.map.setView([targetLat, targetLng], finalZoom, {
@@ -461,7 +458,6 @@ export class MapService {
             }
         }, 300);
 
-        // Abrir popup después de la animación completa
         setTimeout(() => {
             const marker = this.customerMarkers.get(customer.dirclave);
             if (marker) {
@@ -1181,13 +1177,9 @@ export class MapService {
                     layers.push(polygon);
                 }
             }
-
-            // Retornar grupo con todas las capas
             return layers.length > 1 ? L.layerGroup(layers) : layers[0];
         } catch (error) {
             console.error('Error al crear geocerca:', error);
-
-            // Fallback: solo marcador central
             const fallbackMarker = L.circleMarker([geocerca.geoclat, geocerca.geoclon], {
                 radius: 6,
                 color: '#ef4444',
@@ -1267,13 +1259,10 @@ export class MapService {
     focusOnGeocerca(geocerca: GeofenceDto): void {
         if (!this.map || !geocerca.geoclat || !geocerca.geoclon) return;
 
-        // Centrar en la geocerca con zoom apropiado
         this.map.setView([geocerca.geoclat, geocerca.geoclon], 16);
 
-        // Abrir popup del marcador si existe
         const marker = this.geocercasMarkers.get(geocerca.geoccod);
         if (marker) {
-            // Si es un LayerGroup, buscar el marcador que tiene popup
             if ('getLayers' in marker) {
                 const layers = (marker as L.LayerGroup).getLayers();
                 const markerWithPopup = layers.find((layer) => 'openPopup' in layer && '_popup' in layer) as L.Layer & { openPopup(): void };
@@ -1285,8 +1274,6 @@ export class MapService {
                 (marker as any).openPopup();
             }
         }
-
-        // Mensaje de confirmación
         this.msgService.add({
             severity: 'info',
             summary: 'Geocerca seleccionada',
@@ -1301,7 +1288,6 @@ export class MapService {
     resetMapView(): void {
         if (!this.map) return;
 
-        // Restablecer vista a la configuración por defecto
         this.map.setView(this.defaultConfig.center, this.defaultConfig.zoom);
 
         // Limpiar marcadores de búsqueda
@@ -1321,15 +1307,11 @@ export class MapService {
 
         // Resetear resultados de búsqueda
         this.searchResults$.next([]);
-
-        // Mensaje de confirmación
         this.msgService.add({
             severity: 'info',
             summary: 'Vista restablecida',
             detail: 'El mapa ha vuelto a la vista inicial'
         });
-
-        // Invalidar tamaño para asegurar renderizado correcto
         setTimeout(() => {
             this.map?.invalidateSize();
         }, 100);
@@ -1351,7 +1333,6 @@ export class MapService {
             const userLocation = userLocations[0]; // Solo un usuario
             const locations = userLocation.ubicaciones;
 
-            // Crear marcadores para cada ubicación
             locations.forEach((location, index) => {
                 if (location.latitud && location.longitud) {
                     try {

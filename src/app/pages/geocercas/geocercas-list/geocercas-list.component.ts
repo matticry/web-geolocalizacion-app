@@ -513,6 +513,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         }
 
         this.loadVendorGeocercas(user.usucodv);
+        this.setDefaultValues();
     }
 
     selectOnlyUser(user: UserDto): void {
@@ -738,6 +739,32 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         if (this.timeValue && this.selectedTimeUnit) count++;
         if (this.clientesNone || this.clientesAll || this.clientesAssigned) count++;
         return count;
+    }
+
+    private setDefaultValues(): void
+    {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        yesterday.setHours(9,39,0,0);
+        this.filterFrom = yesterday;
+
+        this.selectedTimeUnit = 'Días';
+        this.timeValue = 2;
+
+        this.pedidosEnabled = true;
+        this.collectionsEnabled = true;
+
+        this.clientesAll = true;
+        this.clientesAssigned = false;
+
+        this.applyFilters();
+
+        this.msgService.add({
+            severity: 'info',
+            summary: 'Filtros',
+            detail: 'Se han aplicado los filtros por defecto',
+            life: 2000
+        });
     }
 
     clearFilters(): void {
