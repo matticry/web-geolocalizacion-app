@@ -582,6 +582,14 @@ export class MapService {
         });
     }
 
+    hideAllUserMarkers(): void {
+        if (!this.markerClusterGroup) return;
+
+        this.userMarkers.forEach((marker) => {
+            this.markerClusterGroup?.removeLayer(marker);
+        });
+    }
+
     restoreAllUserMarkers(): void {
         if (!this.markerClusterGroup) return;
 
@@ -1330,13 +1338,18 @@ export class MapService {
             this.clearTrackingMarkers();
             this.initializeTrackingCluster();
 
-            const userLocation = userLocations[0]; // Solo un usuario
+            const userLocation = userLocations[0];
             const locations = userLocation.ubicaciones;
+
+            const mostRecentLocation = locations.reduce((latest, current) =>
+                new Date(current.tiempo) > new Date(latest.tiempo) ? current : latest
+            );
 
             locations.forEach((location, index) => {
                 if (location.latitud && location.longitud) {
                     try {
-                        const marker = this.createTrackingMarker(location, index, locations.length);
+                        const isLastLocation = location.tiempo === mostRecentLocation.tiempo;
+                        const marker = this.createTrackingMarker(location, index, locations.length, isLastLocation);
                         const markerId = `${location.latitud}-${location.longitud}-${location.tiempo}`;
                         this.trackingMarkers.set(markerId, marker);
                         this.trackingClusterGroup?.addLayer(marker);
@@ -1445,8 +1458,7 @@ export class MapService {
     /**
      * Crea marcador para ubicación de tracking
      */
-    private createTrackingMarker(location: LocationDto, index: number, totalLocations: number): L.Marker {
-        const isLastLocation = index === totalLocations - 1;
+    private createTrackingMarker(location: LocationDto, index: number, totalLocations: number, isLastLocation: boolean): L.Marker {
         const customIcon = this.createTrackingIcon(index, isLastLocation);
         const marker = L.marker([location.latitud, location.longitud], {
             icon: customIcon

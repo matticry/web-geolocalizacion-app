@@ -799,6 +799,9 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
             return;
         }
 
+        this.mapService.hideAllUserMarkers();
+
+
         if (!this.validateFilters()) {
             return;
         }
