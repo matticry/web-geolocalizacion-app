@@ -336,34 +336,36 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Botones de acciones -->
-                                            <div class="flex items-center gap-1.5 flex-shrink-0">
-                                                <p-button
-                                                    icon="pi pi-times"
-                                                    severity="danger"
-                                                    size="small"
-                                                    [text]="true"
-                                                    [rounded]="true"
-                                                    [loading]="loadingDesactivate"
-                                                    class="!w-7 !h-7"
-                                                    pTooltip="Anular solicitud"
-                                                    tooltipPosition="top"
-                                                    (click)="desactivateRequest(detail.solid)">
-                                                </p-button>
+                                            @if (!detail.solapli) {
+                                                <!-- Botones de acciones -->
+                                                <div class="flex items-center gap-1.5 flex-shrink-0">
+                                                    <p-button
+                                                        icon="pi pi-times"
+                                                        severity="danger"
+                                                        size="small"
+                                                        [text]="true"
+                                                        [rounded]="true"
+                                                        [loading]="loadingDesactivate"
+                                                        class="!w-7 !h-7"
+                                                        pTooltip="Anular solicitud"
+                                                        tooltipPosition="top"
+                                                        (click)="desactivateRequest(detail.solid)">
+                                                    </p-button>
 
-                                                <p-button
-                                                    icon="pi pi-check"
-                                                    severity="success"
-                                                    size="small"
-                                                    [text]="true"
-                                                    [rounded]="true"
-                                                    [loading]="loadingAccept"
-                                                    class="!w-7 !h-7"
-                                                    pTooltip="Aceptar solicitud"
-                                                    tooltipPosition="top"
-                                                    (click)="acceptRequest(detail)">
-                                                </p-button>
-                                            </div>
+                                                    <p-button
+                                                        icon="pi pi-check"
+                                                        severity="success"
+                                                        size="small"
+                                                        [text]="true"
+                                                        [rounded]="true"
+                                                        [loading]="loadingAccept"
+                                                        class="!w-7 !h-7"
+                                                        pTooltip="Aceptar solicitud"
+                                                        tooltipPosition="top"
+                                                        (click)="acceptRequest(detail)">
+                                                    </p-button>
+                                                </div>
+                                            }
                                         </div>
                                     </div>
 
@@ -372,7 +374,6 @@
 
                                     <!-- Cambio de Ubicación -->
                                     <div>
-
                                         <!-- Direcciones en flex horizontal -->
                                         <div class="flex items-center gap-2 mb-2">
 
@@ -383,7 +384,7 @@
                                                     <span class="text-xs text-orange-600 dark:text-orange-400 font-medium">Anterior</span>
                                                 </div>
                                                 <p class="text-sm font-semibold text-surface-900 dark:text-surface-0 leading-tight truncate">
-                                                    {{ detail.soldiran }}
+                                                    {{ detail.soldiran ? detail.soldiran : 'Sin dirección anterior' }}
                                                 </p>
                                             </div>
 
@@ -406,7 +407,7 @@
 
                                         <!-- Coordenadas -->
                                         <div class="pt-1.5 border-t border-surface-200/50 dark:border-surface-600/30">
-                                            <p class="text-xs font-mono text-surface-500 dark:text-surface-400">
+                                            <p class="text-xs font-mono text-surface-500 dark:text-surface-400 text-right">
                                                 {{ detail.sollat | number:'1.4-4' }}, {{ detail.sollog | number:'1.4-4' }}
                                             </p>
                                         </div>

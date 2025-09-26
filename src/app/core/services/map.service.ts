@@ -440,12 +440,34 @@ export class MapService {
     focusOnCustomer(customer: CustomerResponseDto): void {
         if (!this.map || !customer.latitud || !customer.longitud) return;
 
-        this.map.setView([customer.latitud, customer.longitud], 20);
+        // OPCIÓN 1: Zoom out y luego zoom in para forzar movimiento visual
+        const targetLat = customer.latitud;
+        const targetLng = customer.longitud;
+        const finalZoom = 20;
 
-        const marker = this.customerMarkers.get(customer.dirclave);
-        if (marker) {
-            marker.openPopup();
-        }
+        // Primero hacer zoom out
+        this.map.setView([targetLat, targetLng], 15, {
+            animate: true,
+            duration: 0.3
+        });
+
+        // Después de un pequeño delay, hacer zoom in al nivel final
+        setTimeout(() => {
+            if (this.map) {
+                this.map.setView([targetLat, targetLng], finalZoom, {
+                    animate: true,
+                    duration: 0.5
+                });
+            }
+        }, 300);
+
+        // Abrir popup después de la animación completa
+        setTimeout(() => {
+            const marker = this.customerMarkers.get(customer.dirclave);
+            if (marker) {
+                marker.openPopup();
+            }
+        }, 800);
     }
 
     /**
@@ -596,7 +618,6 @@ export class MapService {
 
         const { range } = rangeInfo;
 
-        // Crear rectángulo para mostrar los bounds exactos
         const rectangle = L.rectangle(
             [
                 [range.southWest[0], range.southWest[1]],
@@ -605,8 +626,8 @@ export class MapService {
             {
                 color: '#ef4444',
                 fillColor: '#ef4444',
-                fillOpacity: 0, // Relleno transparente
-                opacity: 0, // Borde transparente
+                fillOpacity: 0,
+                opacity: 0,
                 weight: 1,
                 dashArray: '3, 3'
             }
@@ -618,57 +639,25 @@ export class MapService {
     private addCornerMarkers(range: UserRange): void {
         if (!this.userRangeLayer) return;
 
-        // Marcador esquina superior derecha (NorthEast)
         const neMarker = L.circleMarker([range.northEast[0], range.northEast[1]], {
-            radius: 6,
-            color: '#ffffff',
-            fillColor: '#ffffff',
-            fillOpacity: 1,
-            weight: 2
+            radius: 0,
+            color: 'transparent',
+            fillColor: 'transparent',
+            fillOpacity: 0,
+            weight: 0,
+            opacity: 0
         });
 
-        neMarker.bindTooltip(
-            `
-            <div class="font-semibold text-xs">
-                <div class="text-red-600">Límite Superior Derecho</div>
-                <div class="mt-1">
-                    <div>Lat: ${range.northEast[0].toFixed(6)}</div>
-                    <div>Lng: ${range.northEast[1].toFixed(6)}</div>
-                </div>
-            </div>
-        `,
-            {
-                permanent: false,
-                direction: 'top',
-                className: 'range-tooltip'
-            }
-        );
 
-        // Marcador esquina inferior izquierda (SouthWest)
         const swMarker = L.circleMarker([range.southWest[0], range.southWest[1]], {
-            radius: 6,
-            color: '#ef4444',
-            fillColor: '#ffffff',
-            fillOpacity: 1,
-            weight: 2
+            radius: 0,
+            color: 'transparent',
+            fillColor: 'transparent',
+            fillOpacity: 0,
+            weight: 0,
+            opacity: 0
         });
 
-        swMarker.bindTooltip(
-            `
-            <div class="font-semibold text-xs">
-                <div class="text-red-600">Límite Inferior Izquierdo</div>
-                <div class="mt-1">
-                    <div>Lat: ${range.southWest[0].toFixed(6)}</div>
-                    <div>Lng: ${range.southWest[1].toFixed(6)}</div>
-                </div>
-            </div>
-        `,
-            {
-                permanent: false,
-                direction: 'bottom',
-                className: 'range-tooltip'
-            }
-        );
         this.userRangeLayer.addLayer(neMarker);
         this.userRangeLayer.addLayer(swMarker);
     }
