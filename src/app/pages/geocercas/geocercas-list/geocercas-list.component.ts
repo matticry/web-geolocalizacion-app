@@ -85,7 +85,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
 
 
     //Propiedades para el polling/ refresh de coordenadas en el mapa en tiempo real
-
     private pollingSubscription$ = new Subject<void>();
     private readonly POLLING_INTERVAL = 30000; // 30 segundos
     private isPollingActive = false;
@@ -779,7 +778,8 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
 
         const filterRequest: FilterRequest = {
             usuarios: {
-                tipoelementos: 0,
+                tipoelementos: 3,
+                recorrido: true,
                 usuarios: [this.selectedUser.usucod],
                 buscaxzona: 0
             },

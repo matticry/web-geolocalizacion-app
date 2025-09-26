@@ -8,6 +8,7 @@ export interface FilterRequest {
 
 export interface UsuariosFilter {
     tipoelementos: number;
+    recorrido: boolean;
     usuarios: string[];
     buscaxzona: number;
 }
