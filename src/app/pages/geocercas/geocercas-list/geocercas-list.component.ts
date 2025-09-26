@@ -954,6 +954,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         } else {
             this.mapService.clearOrderMarkers();
         }
+
         this.centerMapOnFilteredData(response);
     }
 

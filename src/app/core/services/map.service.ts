@@ -6,10 +6,9 @@ import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { UserDto } from '@/core/models/UserDto';
 import { CustomerResponseDto } from '@/core/models/Customer/CustomerResponseDto';
-import { GeocercaDto, VendedorDto } from '@/core/models/Geocercas/VendedorDto';
+import { GeocercaDto } from '@/core/models/Geocercas/VendedorDto';
 import { GeofenceDto } from '@/core/models/Geocercas/GeocercaValidationResponseDto';
 import { ChargeDto, LocationDto, OrderDto, UserLocationDto } from '../models/Filter/TrackingResponse';
-import { CustomerUpdateInfo } from '@/core/models/Customer/CustomerUpdateInfo';
 import { SolicitudData } from '@/core/models/SolicitudData';
 
 
@@ -44,7 +43,6 @@ export interface RangeDisplayInfo {
     providedIn: 'root'
 })
 export class MapService {
-
     private L: any = null;
 
     //Variables para el filtrado de Especial
@@ -305,18 +303,15 @@ export class MapService {
                         const market = this.createCustomerRequestMarker(customer);
                         this.customerMarkers.set(customer.solruc, market);
                         this.customerClusterGroup?.addLayer(market);
-                    }catch (e) {
+                    } catch (e) {
                         console.error('❌ Error al agregar marcador de cliente:', e, customer);
-
                     }
-
                 }
             });
             setTimeout(() => {
                 this.map?.invalidateSize();
             }, 100);
-
-        }catch (e) {
+        } catch (e) {
             console.error('❌ Error general en addCustomerChangeAddressMarker:', e);
             this.msgService?.add({
                 severity: 'error',
@@ -326,8 +321,6 @@ export class MapService {
             });
         }
     }
-
-
 
     /**
      * Agrega marcadores de clientes al mapa
@@ -357,7 +350,6 @@ export class MapService {
             setTimeout(() => {
                 this.map?.invalidateSize();
             }, 100);
-
         } catch (error) {
             console.error('❌ Error general en addCustomerMarkers:', error);
             this.msgService?.add({
@@ -410,7 +402,6 @@ export class MapService {
             icon: customIcon
         });
     }
-
 
     /**
      * Crea marcador para cliente
@@ -652,7 +643,6 @@ export class MapService {
             opacity: 0
         });
 
-
         const swMarker = L.circleMarker([range.southWest[0], range.southWest[1]], {
             radius: 0,
             color: 'transparent',
@@ -740,7 +730,6 @@ export class MapService {
             this.mapInitialized$.next(true);
             console.log('Mapa inicializado correctamente');
             return true;
-
         } catch (error) {
             console.error('Error inicializando el mapa:', error);
             this.showMapFallback(container);
@@ -845,8 +834,6 @@ export class MapService {
 
         this.map.addLayer(this.markerClusterGroup!);
     }
-
-
 
     /**
      * Agrega marcadores de usuarios al mapa
@@ -1073,7 +1060,6 @@ export class MapService {
             marker.openPopup();
         }
     }
-
 
     focusOnCustomerChangeAddress(customer: SolicitudData): void {
         if (!this.map || !customer.sollog || !customer.sollat) return;
@@ -1341,15 +1327,13 @@ export class MapService {
             const userLocation = userLocations[0];
             const locations = userLocation.ubicaciones;
 
-            const mostRecentLocation = locations.reduce((latest, current) =>
-                new Date(current.tiempo) > new Date(latest.tiempo) ? current : latest
-            );
+            const mostRecentLocation = locations.reduce((latest, current) => (new Date(current.tiempo) > new Date(latest.tiempo) ? current : latest));
 
             locations.forEach((location, index) => {
                 if (location.latitud && location.longitud) {
                     try {
                         const isLastLocation = location.tiempo === mostRecentLocation.tiempo;
-                        const marker = this.createTrackingMarker(location, index, locations.length, isLastLocation);
+                        const marker = this.createTrackingMarker(location, index, isLastLocation);
                         const markerId = `${location.latitud}-${location.longitud}-${location.tiempo}`;
                         this.trackingMarkers.set(markerId, marker);
                         this.trackingClusterGroup?.addLayer(marker);
@@ -1364,7 +1348,6 @@ export class MapService {
             setTimeout(() => {
                 this.map?.invalidateSize();
             }, 100);
-
         } catch (error) {
             console.error('Error general en addTrackingMarkers:', error);
             this.msgService?.add({
@@ -1403,7 +1386,6 @@ export class MapService {
             setTimeout(() => {
                 this.map?.invalidateSize();
             }, 100);
-
         } catch (error) {
             console.error('❌ Error general en addChargeMarkers:', error);
             this.msgService?.add({
@@ -1442,7 +1424,6 @@ export class MapService {
             setTimeout(() => {
                 this.map?.invalidateSize();
             }, 100);
-
         } catch (error) {
             console.error('❌ Error general en addOrderMarkers:', error);
             this.msgService?.add({
@@ -1458,7 +1439,7 @@ export class MapService {
     /**
      * Crea marcador para ubicación de tracking
      */
-    private createTrackingMarker(location: LocationDto, index: number, totalLocations: number, isLastLocation: boolean): L.Marker {
+    private createTrackingMarker(location: LocationDto, index: number, isLastLocation: boolean): L.Marker {
         const customIcon = this.createTrackingIcon(index, isLastLocation);
         const marker = L.marker([location.latitud, location.longitud], {
             icon: customIcon
@@ -1865,14 +1846,10 @@ export class MapService {
         if (userLocation.ubicaciones.length < 2) return;
 
         // Ordenar ubicaciones por tiempo
-        const sortedLocations = userLocation.ubicaciones.sort((a, b) =>
-            new Date(a.tiempo).getTime() - new Date(b.tiempo).getTime()
-        );
+        const sortedLocations = userLocation.ubicaciones.sort((a, b) => new Date(a.tiempo).getTime() - new Date(b.tiempo).getTime());
 
         // Crear coordenadas para la línea
-        const pathCoordinates: [number, number][] = sortedLocations.map((location) =>
-            [location.latitud, location.longitud]
-        );
+        const pathCoordinates: [number, number][] = sortedLocations.map((location) => [location.latitud, location.longitud]);
 
         // Crear polyline usando this.L
         this.trackingPath = this.L.polyline(pathCoordinates, {
@@ -1941,7 +1918,7 @@ export class MapService {
     updateUserMarkersLocation(users: UserDto[]): void {
         if (!this.map || !this.markerClusterGroup) return;
 
-        users.forEach(user => {
+        users.forEach((user) => {
             if (user.ubicacion?.geublat && user.ubicacion?.geublon) {
                 const existingMarker = this.userMarkers.get(user.usucod);
 
