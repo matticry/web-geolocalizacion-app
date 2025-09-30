@@ -20,7 +20,6 @@ export class AppMenu {
     private readonly authService = inject(AuthService);
     readonly router = inject(Router);
 
-    // Simplificado: solo verificamos si está autenticado
     isAuthenticated = this.authService.isAuthenticated();
     userSignal = this.authService.getUserSignal();
 
@@ -33,9 +32,9 @@ export class AppMenu {
                 items: [
                     {
                         label: 'Geolocalización',
-
                         isAuthenticated: true,
                         icon: 'pi pi-fw pi-cog',
+                        expanded: true, // ← Agregado aquí
                         items: [
                             { label: 'Geocercas y Vendedores', isAuthenticated: true, icon: 'pi pi-fw pi-map-marker', routerLink: ['/pages/geocercas-vendedores'] },
                         ]
@@ -49,6 +48,7 @@ export class AppMenu {
                         label: 'Geolocalización',
                         isAuthenticated: true,
                         icon: 'pi pi-fw pi-cog',
+                        expanded: true, // ← Agregado aquí
                         items: [
                             { label: 'Crear Geocercas ', isAuthenticated: true, icon: 'pi pi-fw pi-map-marker', routerLink: ['/pages/only-geocercas'] },
                         ]
@@ -62,6 +62,7 @@ export class AppMenu {
                         label: 'Geolocalización',
                         isAuthenticated: true,
                         icon: 'pi pi-fw pi-cog',
+                        expanded: true, // ← Agregado aquí
                         items: [
                             { label: 'Detalles del Registro', isAuthenticated: true, icon: 'pi pi-fw pi-map-marker', routerLink: ['/pages/item-detail'] },
                             { label: 'Vendedores', isAuthenticated: true, icon: 'pi pi-fw pi-id-card', routerLink: ['/pages/vendedores'] },
@@ -76,28 +77,24 @@ export class AppMenu {
                         label: 'Geolocalización',
                         isAuthenticated: true,
                         icon: 'pi pi-fw pi-cog',
+                        expanded: true, // ← Agregado aquí
                         items: [
                             { label: 'Solicitudes de Cambio', isAuthenticated: true, icon: 'pi pi-address-book', routerLink: ['/pages/change-address-review'] },
                         ]
                     },
                 ]
             },
-
-
             {
                 label: 'Cerrar Sesión',
                 items: [
                     { label: 'Cerrar Sesión', isAuthenticated: true, icon: 'pi pi-fw pi-sign-out', command: () => this.logout() },
                 ]
             }
-
         ];
 
-        // Filtrado simplificado: solo verificamos si requiere autenticación
         this.model = this.model.map(menu => ({
             ...menu,
             items: menu.items?.filter(item =>
-                // Solo mostrar si no requiere autenticación O si está autenticado
                 !item['isAuthenticated'] || this.isAuthenticated
             )
         }));
@@ -105,6 +102,6 @@ export class AppMenu {
 
     logout(): void {
         this.authService.logOut();
-        this.router.navigate(['/auth/login']);
+        this.router.navigate(['/auth/login']).then();
     }
 }
