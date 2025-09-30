@@ -322,7 +322,6 @@ export class OnlyGeocercasComponent implements OnInit, AfterViewInit, OnDestroy 
      * Configurar validación de código con debounce
      */
     private setupCodeValidation(): void {
-        // Configurar debounce para validación de código
         this.codeValidationSubject
             .pipe(
                 debounceTime(500), // Esperar 500ms después de que el usuario deje de escribir
@@ -652,10 +651,12 @@ export class OnlyGeocercasComponent implements OnInit, AfterViewInit, OnDestroy 
                 geoceqedi: this.enterpriseName
             };
 
-            const response = await this.geocercaService.actualizarGeocerca(
-                this.geocercaOriginal.geoccod,
-                updateDto
-            ).toPromise();
+            const response = await firstValueFrom(
+                this.geocercaService.actualizarGeocerca(
+                    this.geocercaOriginal.geoccod,
+                    updateDto
+                )
+            );
 
             if (response && response.success) {
                 this.geocercaDialog = false;
@@ -881,25 +882,7 @@ export class OnlyGeocercasComponent implements OnInit, AfterViewInit, OnDestroy 
         });
     }
 
-// Aliases para mantener compatibilidad
-    cancelarCreacionGeocerca(): void {
-        this.cancelarGestionGeocerca();
-    }
 
-    cancelarEdicionGeocerca(): void {
-        this.cancelarGestionGeocerca();
-    }
-
-// Getter actualizado para el template
-    get estaGestionandoGeocerca(): boolean {
-        return this.creandoGeocerca || this.editandoGeocerca || this.modoEdicion;
-    }
-
-    get modoGeocerca(): string {
-        if (this.editandoGeocerca || this.modoEdicion) return 'Editando Geocerca';
-        if (this.creandoGeocerca) return 'Creando Geocerca';
-        return '';
-    }
 
 
     /**
@@ -1266,9 +1249,6 @@ export class OnlyGeocercasComponent implements OnInit, AfterViewInit, OnDestroy 
 
     //======= FUNCIONES GETTERS PARA OBTENER ESTADO DE GEOCERCA =================//
 
-    getGeocercaStatusSeverity(geocerca: GeofenceDto): string {
-        return geocerca.geocact ? 'success' : 'danger';
-    }
 
     getGeocercaStatusText(geocerca: GeofenceDto): string {
         return geocerca.geocact ? 'Activa' : 'Inactiva';

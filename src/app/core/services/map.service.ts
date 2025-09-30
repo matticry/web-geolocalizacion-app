@@ -601,13 +601,13 @@ export class MapService {
             'charge_order_customer': {
                 gradient: 'from-green-600 via-purple-600 to-blue-600',
                 icons: `
-                <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <svg class="w-3 h-3 text-white" viewBox="0 0 24 24"  style="fill: currentColor;">
                     <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
                 </svg>
-                <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" style="fill: currentColor;">
                     <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z"/>
                 </svg>
-                <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" style="fill: currentColor;">
                     <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
                 </svg>`,
                 badge: '3'
@@ -615,10 +615,10 @@ export class MapService {
             'charge_order': {
                 gradient: 'from-green-600 to-purple-600',
                 icons: `
-                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" style="fill: currentColor;">
                     <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
                 </svg>
-                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" style="fill: currentColor;">
                     <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z"/>
                 </svg>`,
                 badge: '2'
@@ -626,10 +626,10 @@ export class MapService {
             'charge_customer': {
                 gradient: 'from-green-600 to-blue-600',
                 icons: `
-                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" style="fill: currentColor;">
                     <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
                 </svg>
-                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" style="fill: currentColor;">
                     <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
                 </svg>`,
                 badge: '2'
@@ -637,10 +637,10 @@ export class MapService {
             'order_customer': {
                 gradient: 'from-purple-600 to-blue-600',
                 icons: `
-                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" style="fill: currentColor;">
                     <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z"/>
                 </svg>
-                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" style="fill: currentColor;">
                     <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
                 </svg>`,
                 badge: '2'
@@ -674,7 +674,7 @@ export class MapService {
             sections.push(`
             <div class="bg-green-50 rounded-lg p-2 border border-green-200">
                 <div class="flex items-center space-x-2 mb-2">
-                    <svg class="w-3.5 h-3.5 text-green-600" viewBox="0 0 24 24" fill="currentColor">
+                    <svg class="w-3.5 h-3.5 text-green-600" viewBox="0 0 24 24" style="fill: currentColor;">
                         <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
                     </svg>
                     <span class="font-semibold text-xs text-green-700">Cobro #${charge.cabnumero}</span>
@@ -695,7 +695,7 @@ export class MapService {
             sections.push(`
             <div class="bg-purple-50 rounded-lg p-2 border border-purple-200">
                 <div class="flex items-center space-x-2 mb-2">
-                    <svg class="w-3.5 h-3.5 text-purple-600" viewBox="0 0 24 24" fill="currentColor">
+                    <svg class="w-3.5 h-3.5 text-purple-600" viewBox="0 0 24 24" style="fill: currentColor;">
                         <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z"/>
                     </svg>
                     <span class="font-semibold text-xs text-purple-700">Pedido #${order.pdtfactura}</span>
@@ -717,7 +717,7 @@ export class MapService {
             sections.push(`
             <div class="bg-blue-50 rounded-lg p-2 border border-blue-200">
                 <div class="flex items-center space-x-2 mb-2">
-                    <svg class="w-3.5 h-3.5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                    <svg class="w-3.5 h-3.5 text-blue-600" viewBox="0 0 24 24" style="fill: currentColor;">
                         <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
                     </svg>
                     <span class="font-semibold text-xs text-blue-700">Cliente</span>
@@ -747,7 +747,7 @@ export class MapService {
                 combo.type === 'charge_customer' ? 'from-green-600 to-blue-600' :
                     'from-purple-600 to-blue-600'} px-3 py-2">
             <div class="flex items-center space-x-2 text-white">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" style="fill: currentColor;">
                     <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M11,7V13H13V7H11M11,15V17H13V15H11Z"/>
                 </svg>
                 <span class="font-semibold text-sm">${titleText}</span>
@@ -981,7 +981,7 @@ export class MapService {
             html: `
         <div class="relative">
             <div class="w-10 h-10 ${bgColor} rounded-full border-2 border-white shadow-md flex items-center justify-center">
-                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" style="fill: currentColor;">
                     <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
                 </svg>
             </div>
@@ -2037,7 +2037,7 @@ export class MapService {
             html: `
                 <div class="relative">
                     <div class="w-10 h-10 bg-blue-500 rounded-full border-2 border-white shadow-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                        <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" style="fill: currentColor;">
                             <path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
                         </svg>
                     </div>
@@ -2060,7 +2060,7 @@ export class MapService {
             html: `
         <div class="relative">
             <div class="w-10 h-10 bg-green-600 rounded-full border-2 border-white shadow-md flex items-center justify-center">
-                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" style="fill: currentColor;">
                     <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
                 </svg>
             </div>
@@ -2086,7 +2086,7 @@ export class MapService {
             html: `
             <div class="relative">
                 <div class="w-10 h-10 bg-purple-500 rounded-full border-2 border-white shadow-md flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" style="fill: currentColor;">
                         <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z"/>
                     </svg>
                 </div>
@@ -2121,12 +2121,12 @@ export class MapService {
         <div class="bg-white rounded-lg shadow-sm border-0 overflow-hidden">
             <div class="${headerColor} px-3 py-2">
                 <div class="flex items-center space-x-2 text-white">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" style="fill: currentColor;">
                         ${
-                            isLastLocation
-                                ? '<path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>'
-                                : '<path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>'
-                        }
+            isLastLocation
+                ? '<path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>'
+                : '<path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>'
+        }
                     </svg>
                     <span class="font-semibold text-sm">${title}</span>
                     ${isLastLocation ? '<div class="w-2 h-2 bg-green-300 rounded-full animate-pulse ml-1"></div>' : ''}
@@ -2167,7 +2167,7 @@ export class MapService {
     <div class="bg-white rounded-lg shadow-sm border-0 overflow-hidden">
         <div class="bg-green-600 px-3 py-2">
             <div class="flex items-center space-x-2 text-white">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" style="fill: currentColor;">
                     <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
                 </svg>
                 <span class="font-semibold text-sm">Cobro #${charge.cabnumero}</span>
@@ -2224,7 +2224,7 @@ export class MapService {
         <div class="bg-white rounded-lg shadow-sm border-0 overflow-hidden">
             <div class="bg-purple-600 px-3 py-2">
                 <div class="flex items-center space-x-2 text-white">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" style="fill: currentColor;">
                         <path d="M19,7H18V6A2,2 0 0,0 16,4H8A2,2 0 0,0 6,6V7H5A1,1 0 0,0 4,8V19A3,3 0 0,0 7,22H17A3,3 0 0,0 20,19V8A1,1 0 0,0 19,7Z"/>
                     </svg>
                     <span class="font-semibold text-sm">Pedido #${order.pdtfactura}</span>
@@ -2244,7 +2244,7 @@ export class MapService {
                     <span>Cliente: ${order.pdtclave} - ${order.pdtclave1}</span>
                 </div>
                 <div class="flex items-center space-x-2 text-xs text-gray-600">
-                    <svg class="w-2.5 h-2.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                    <svg class="w-2.5 h-2.5 text-gray-400" viewBox="0 0 20 20" style="fill: currentColor;">
                         <path d="M17.707 9.293l-5-5A.997.997 0 0012 4H5a3 3 0 00-3 3v6a3 3 0 003 3h7c.265 0 .52-.105.707-.293l5-5a.999.999 0 000-1.414zM6 9a1 1 0 110-2 1 1 0 010 2z"/>
                     </svg>
                     <span>Tipo: ${order.pdttd}</span>

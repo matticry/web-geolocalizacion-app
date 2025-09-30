@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } fr
 import { catchError, finalize, Observable, of, Subject, takeUntil, tap } from 'rxjs';
 import { UserDto } from '@/core/models/UserDto';
 import { MapService, SearchResult } from '@/core/services/map.service';
-import { UserService } from '@/core/services/user.service';
 import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IconField } from 'primeng/iconfield';
@@ -51,7 +50,6 @@ export class ChangeAddressReviewComponent implements OnInit, OnDestroy, AfterVie
     users: UserDto[] = [];
     filteredUsers: UserDto[] = [];
     paginatedUsers: UserDto[] = [];
-    selectedUser: UserDto | null = null;
     loading: boolean = true;
 
     // Propiedades de paginación
@@ -65,7 +63,6 @@ export class ChangeAddressReviewComponent implements OnInit, OnDestroy, AfterVie
     mapInitialized: boolean = false;
 
     constructor(
-        private readonly userService: UserService,
         private readonly msgService: MessageService,
         private readonly mapService: MapService,
         private readonly customerService: CustomerService
@@ -120,7 +117,6 @@ export class ChangeAddressReviewComponent implements OnInit, OnDestroy, AfterVie
         });
     }
 
-
     // Método para aceptar solicitud
     acceptRequest(detail: SolicitudData): void {
         if (!detail) return;
@@ -139,7 +135,7 @@ export class ChangeAddressReviewComponent implements OnInit, OnDestroy, AfterVie
         this.loadingAccept = true;
 
         this.customerService.updateCustomerLocation(requestDto).subscribe({
-            next: (response) => {
+            next: () => {
                 this.loadingAccept = false;
                 this.msgService.add({
                     severity: 'success',
@@ -167,33 +163,6 @@ export class ChangeAddressReviewComponent implements OnInit, OnDestroy, AfterVie
         const end = start + this.itemsPerPage;
         this.paginatedCustomers = this.filteredCustomers.slice(start, end);
     }
-
-    getAllUsers(): void {
-        this.loading = true;
-        this.userService.getAllListUser().subscribe({
-            next: (data: UserDto[]) => {
-                this.users = data;
-                this.filteredUsers = [...this.users];
-                this.updatePagination();
-                this.loading = false;
-
-                // Si el mapa está inicializado, agregar marcadores
-                if (this.mapInitialized) {
-                    this.mapService.addUserMarkers(this.users);
-                }
-            },
-            error: (error: HttpErrorResponse) => {
-                console.error('Error al cargar usuarios:', error);
-                this.loading = false;
-                this.msgService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'No se pudieron cargar los usuarios'
-                });
-            }
-        });
-    }
-
     onSearch(event: Event): void {
         const value = (event.target as HTMLInputElement).value.toLowerCase();
         this.filteredUsers = this.users.filter((user) => user.usunombre.toLowerCase().includes(value) || user.usucod.toLowerCase().includes(value) || user.usuemail.toLowerCase().includes(value));
@@ -247,18 +216,12 @@ export class ChangeAddressReviewComponent implements OnInit, OnDestroy, AfterVie
         const end = start + this.itemsPerPage;
         this.paginatedUsers = this.filteredUsers.slice(start, end);
     }
-
-    selectUser(user: UserDto): void {
-        this.selectedUser = user;
-        this.mapService.focusOnUser(user);
-    }
     selectCustomerRequest(customer: CustomerUpdateInfo): void {
         this.selectedCustomer = customer;
         this.loadingCustomerDetail = true;
 
         this.selectedCustomerDetail$ = this.customerService.getDetailChangeAddressRequestById(customer.solid).pipe(
             tap((detailData) => {
-
                 // efecto secundario: enfocar en el mapa
                 this.mapService.focusOnCustomerChangeAddress(detailData);
                 this.mapService.addCustomerChangeAddressMarker([detailData]);

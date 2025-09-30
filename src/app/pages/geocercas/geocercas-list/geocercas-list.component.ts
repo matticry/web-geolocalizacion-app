@@ -103,7 +103,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     loadingMore: boolean = false;
     hasReachedEnd: boolean = false;
     currentPage: number = 0;
-    private scrollThreshold: number = 100;
     private debounceTimer: any;
 
     // Propiedades de filtros
@@ -741,23 +740,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
             { label: 'Años', value: 'Años' }
         ].filter((option) => option.label.toLowerCase().includes(query));
     }
-
-    searchGeofence(event: any): void {
-        const query = event.query.toLowerCase();
-
-        if (!this.selectedUser || !this.vendorGeocercas.length) {
-            this.geofenceOptions = [];
-            return;
-        }
-
-        this.geofenceOptions = this.vendorGeocercas
-            .filter((geocerca) => geocerca.geocnom.toLowerCase().includes(query) || geocerca.geocciud.toLowerCase().includes(query) || geocerca.geocprov.toLowerCase().includes(query))
-            .map((geocerca) => ({
-                label: `${geocerca.geocnom} - ${geocerca.geocciud}`,
-                value: geocerca.geoccod,
-                geocerca: geocerca
-            }));
-    }
     /**
      * Maneja el cambio de checkboxes de clientes (mutuamente excluyentes)
      */
@@ -1146,57 +1128,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     //===============NUEVOS MÉTODOS PARA SCROLL INFINITO========================================//
-
-    /**
-     * Maneja el evento de scroll para detectar cuando cargar más usuarios
-     */
-    onScroll(event: Event): void {
-        const element = event.target as HTMLElement;
-        const { scrollTop, scrollHeight, clientHeight } = element;
-        const isNearBottom = scrollTop + clientHeight >= scrollHeight - this.scrollThreshold;
-        if (isNearBottom && !this.loadingMore && !this.hasReachedEnd && this.canLoadMore()) {
-            this.loadMoreUsers();
-        }
-    }
-
-    /**
-     * Verifica si se pueden cargar más usuarios
-     */
-    private canLoadMore(): boolean {
-        const totalLoaded = this.paginatedUsers.length;
-        const totalAvailable = this.filteredUsers.length;
-        return totalLoaded < totalAvailable;
-    }
-
-    /**
-     * Carga más usuarios con skeleton
-     */
-    private loadMoreUsers(): void {
-        if (this.loadingMore) return;
-
-        this.loadingMore = true;
-        setTimeout(() => {
-            const startIndex = this.currentPage * this.itemsPerPage;
-            const endIndex = startIndex + this.itemsPerPage;
-            const nextBatch = this.filteredUsers.slice(startIndex, endIndex);
-
-            if (nextBatch.length > 0) {
-                // Agregar nuevos usuarios a la lista existente
-                this.paginatedUsers = [...this.paginatedUsers, ...nextBatch];
-                this.currentPage++;
-
-                // Verificar si hemos llegado al final
-                if (this.paginatedUsers.length >= this.filteredUsers.length) {
-                    this.hasReachedEnd = true;
-                }
-            } else {
-                this.hasReachedEnd = true;
-            }
-
-            this.loadingMore = false;
-        }, 600); // Tiempo ajustable según necesidades
-    }
-
     /**
      * Resetea el estado del scroll infinito
      */

@@ -33,6 +33,7 @@ export class AppMenu {
                 items: [
                     {
                         label: 'Geolocalización',
+
                         isAuthenticated: true,
                         icon: 'pi pi-fw pi-cog',
                         items: [

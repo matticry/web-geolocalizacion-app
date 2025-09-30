@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { ActualizarGeocercaDto, CrearGeocercaDto, GeocercaResponseDto } from '../models/Geocercas/GeocercaDto';
 import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
-import { CreateGeofenceDto, GeocercaValidationResponse, GeofenceDto } from '@/core/models/Geocercas/GeocercaValidationResponseDto';
+import { CreateGeofenceDto, GeocercaValidationResponse } from '@/core/models/Geocercas/GeocercaValidationResponseDto';
 import { AsignarGeocercaDto } from '@/core/models/AsignarGeocercaDto';
 
 @Injectable({
