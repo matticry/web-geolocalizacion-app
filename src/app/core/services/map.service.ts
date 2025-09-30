@@ -43,7 +43,13 @@ export interface RangeDisplayInfo {
     providedIn: 'root'
 })
 export class MapService {
+
+    // Varible para Leaflet
     private L: any = null;
+
+    // Variable para el cluster general entre pedidos y cobros
+    private combinedClusterGroup?: any;
+    private combinedMarkers: Map<string, any> = new Map();
 
     //Variables para el filtrado de Especial
     private trackingMarkers = new Map<string, L.Marker>();
@@ -322,6 +328,449 @@ export class MapService {
         }
     }
 
+    /*
+     * Agrega marcadores de cobros y pedidos al mapa
+     */
+
+    private initializeCombinedCluster(): void {
+        if (!this.map || !this.L) return;
+
+        if (!this.L.MarkerClusterGroup) {
+            throw new Error('leaflet.markercluster no está disponible');
+        }
+
+        this.combinedClusterGroup = new this.L.MarkerClusterGroup({
+            iconCreateFunction: (cluster: any) => {
+                const markers = cluster.getAllChildMarkers();
+                const charges = markers.filter((m: any) => m.options.markerType === 'charge' || m.options.markerType?.includes('charge')).length;
+                const orders = markers.filter((m: any) => m.options.markerType === 'order' || m.options.markerType?.includes('order')).length;
+                const customers = markers.filter((m: any) => m.options.markerType === 'customer' || m.options.markerType?.includes('customer')).length;
+
+                return this.L.divIcon({
+                    html: `
+                    <div class="bg-gradient-to-br from-green-600 via-purple-600 to-blue-600 text-white rounded-full w-14 h-14 flex items-center justify-center font-semibold text-[10px] shadow-lg border-2 border-white">
+                        <div class="flex flex-col items-center leading-tight">
+                            <span>${charges}C/${orders}P/${customers}CL</span>
+                        </div>
+                    </div>`,
+                    className: 'custom-combined-cluster',
+                    iconSize: [56, 56]
+                });
+            },
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: true,
+            spiderfyDistanceMultiplier: 1.5,
+            maxClusterRadius: 80
+        });
+
+        this.map.addLayer(this.combinedClusterGroup!);
+    }
+
+    addCombinedMarkers(charges: ChargeDto[], orders: OrderDto[], customers: CustomerResponseDto[]): void {
+        if (!this.map || !this.L) {
+            console.warn('Mapa o Leaflet no están inicializados');
+            return;
+        }
+
+        try {
+            this.clearCombinedMarkers();
+            this.initializeCombinedCluster();
+
+            const { combinedCoords, isolatedCustomers } = this.detectCoincidentMarkers(charges, orders, customers);
+
+            combinedCoords.forEach((items, coordKey) => {
+                const { chargeList = [], orderList = [], customerList = [] } = items;
+                const hasMultiple = (chargeList.length + orderList.length + customerList.length) > 1;
+
+                if (hasMultiple) {
+                    const combinations = this.generateCombinations(chargeList, orderList, customerList);
+
+                    combinations.forEach((combo, idx) => {
+                        const offset = this.calculateOffset(idx);
+                        const marker = this.createDynamicMarker(combo, offset);
+                        this.combinedMarkers.set(`${coordKey}_${combo.type}_${idx}`, marker);
+                        this.combinedClusterGroup?.addLayer(marker);
+                    });
+                } else {
+                    chargeList.forEach((charge, idx) => {
+                        const offset = this.calculateOffset(idx);
+                        const marker = this.createChargeMarker(charge);
+                        marker.options.markerType = 'charge';
+                        marker.setLatLng([charge.cablat + offset.lat, charge.cablon + offset.lng]);
+                        this.combinedMarkers.set(`${coordKey}_charge_${idx}`, marker);
+                        this.combinedClusterGroup?.addLayer(marker);
+                    });
+
+                    orderList.forEach((order, idx) => {
+                        const offset = this.calculateOffset(idx);
+                        const marker = this.createOrderMarker(order);
+                        marker.options.markerType = 'order';
+                        marker.setLatLng([order.pdtlat + offset.lat, order.pdtlon + offset.lng]);
+                        this.combinedMarkers.set(`${coordKey}_order_${idx}`, marker);
+                        this.combinedClusterGroup?.addLayer(marker);
+                    });
+
+                    customerList.forEach((customer, idx) => {
+                        const offset = this.calculateOffset(idx);
+                        const marker = this.createCustomerMarker(customer);
+                        marker.options.markerType = 'customer';
+                        marker.setLatLng([customer.latitud + offset.lat, customer.longitud + offset.lng]);
+                        this.combinedMarkers.set(`${coordKey}_customer_${idx}`, marker);
+                        this.combinedClusterGroup?.addLayer(marker);
+                    });
+                }
+            });
+
+            if (isolatedCustomers.length > 0) {
+                this.addCustomerMarkers(isolatedCustomers);
+            }
+
+            setTimeout(() => {
+                this.map?.invalidateSize();
+            }, 100);
+        } catch (error) {
+            console.error('❌ Error general en addCombinedMarkers:', error);
+            this.msgService?.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Error al agregar marcadores combinados'
+            });
+        }
+    }
+
+    private detectCoincidentMarkers(
+        charges: ChargeDto[],
+        orders: OrderDto[],
+        customers: CustomerResponseDto[]
+    ): {
+        combinedCoords: Map<string, { chargeList?: ChargeDto[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>,
+        isolatedCustomers: CustomerResponseDto[]
+    } {
+        const coordMap = new Map<string, { chargeList?: ChargeDto[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>();
+        const proximityThreshold = 0.0001;
+
+        charges.forEach(charge => {
+            if (charge.cablat && charge.cablon) {
+                const key = `${charge.cablat.toFixed(6)}_${charge.cablon.toFixed(6)}`;
+                const existing = coordMap.get(key) || {};
+                coordMap.set(key, {
+                    ...existing,
+                    chargeList: [...(existing.chargeList || []), charge]
+                });
+            }
+        });
+
+        orders.forEach(order => {
+            if (order.pdtlat && order.pdtlon) {
+                const key = `${order.pdtlat.toFixed(6)}_${order.pdtlon.toFixed(6)}`;
+                const existing = coordMap.get(key) || {};
+                coordMap.set(key, {
+                    ...existing,
+                    orderList: [...(existing.orderList || []), order]
+                });
+            }
+        });
+
+        const isolatedCustomers: CustomerResponseDto[] = [];
+
+        customers.forEach(customer => {
+            if (customer.latitud && customer.longitud) {
+                let hasNearbyChargeOrOrder = false;
+
+                for (const [coordKey, items] of coordMap.entries()) {
+                    const [lat, lng] = coordKey.split('_').map(Number);
+                    const distance = Math.sqrt(
+                        Math.pow(customer.latitud - lat, 2) +
+                        Math.pow(customer.longitud - lng, 2)
+                    );
+
+                    if (distance <= proximityThreshold && (items.chargeList?.length || items.orderList?.length)) {
+                        hasNearbyChargeOrOrder = true;
+                        const existing = coordMap.get(coordKey) || {};
+                        coordMap.set(coordKey, {
+                            ...existing,
+                            customerList: [...(existing.customerList || []), customer]
+                        });
+                        break;
+                    }
+                }
+
+                if (!hasNearbyChargeOrOrder) {
+                    isolatedCustomers.push(customer);
+                }
+            }
+        });
+
+        return { combinedCoords: coordMap, isolatedCustomers };
+    }
+
+    private generateCombinations(
+        charges: ChargeDto[],
+        orders: OrderDto[],
+        customers: CustomerResponseDto[]
+    ): Array<{ type: string, data: any, lat: number, lng: number }> {
+        const combinations: Array<{ type: string, data: any, lat: number, lng: number }> = [];
+
+        if (charges.length > 0 && orders.length > 0 && customers.length > 0) {
+            charges.forEach(charge => {
+                orders.forEach(order => {
+                    customers.forEach(customer => {
+                        combinations.push({
+                            type: 'charge_order_customer',
+                            data: { charge, order, customer },
+                            lat: charge.cablat,
+                            lng: charge.cablon
+                        });
+                    });
+                });
+            });
+        } else if (charges.length > 0 && orders.length > 0) {
+            charges.forEach(charge => {
+                orders.forEach(order => {
+                    combinations.push({
+                        type: 'charge_order',
+                        data: { charge, order },
+                        lat: charge.cablat,
+                        lng: charge.cablon
+                    });
+                });
+            });
+        } else if (charges.length > 0 && customers.length > 0) {
+            charges.forEach(charge => {
+                customers.forEach(customer => {
+                    combinations.push({
+                        type: 'charge_customer',
+                        data: { charge, customer },
+                        lat: charge.cablat,
+                        lng: charge.cablon
+                    });
+                });
+            });
+        } else if (orders.length > 0 && customers.length > 0) {
+            orders.forEach(order => {
+                customers.forEach(customer => {
+                    combinations.push({
+                        type: 'order_customer',
+                        data: { order, customer },
+                        lat: order.pdtlat,
+                        lng: order.pdtlon
+                    });
+                });
+            });
+        }
+
+        return combinations;
+    }
+
+    private createDynamicMarker(combo: any, offset: { lat: number, lng: number }): any {
+        if (!this.L) {
+            throw new Error('Leaflet no está cargado');
+        }
+
+        const customIcon = this.createDynamicIcon(combo.type);
+        const marker = this.L.marker(
+            [combo.lat + offset.lat, combo.lng + offset.lng],
+            { icon: customIcon, markerType: combo.type }
+        );
+
+        const popupContent = this.createDynamicPopupContent(combo);
+        marker.bindPopup(popupContent, {
+            maxWidth: 360,
+            className: 'custom-combined-popup'
+        });
+
+        return marker;
+    }
+
+    private calculateOffset(index: number): { lat: number, lng: number } {
+        const offsetDistance = 0.00005;
+        const angle = (index * 360 / 8) * (Math.PI / 180);
+        return {
+            lat: Math.sin(angle) * offsetDistance,
+            lng: Math.cos(angle) * offsetDistance
+        };
+    }
+
+    private createDynamicIcon(type: string): any {
+        if (!this.L) {
+            throw new Error('Leaflet no está cargado');
+        }
+
+        const iconConfigs: Record<string, { gradient: string, icons: string, badge: string }> = {
+            'charge_order_customer': {
+                gradient: 'from-green-600 via-purple-600 to-blue-600',
+                icons: `
+                <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
+                </svg>
+                <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z"/>
+                </svg>
+                <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                </svg>`,
+                badge: '3'
+            },
+            'charge_order': {
+                gradient: 'from-green-600 to-purple-600',
+                icons: `
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
+                </svg>
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z"/>
+                </svg>`,
+                badge: '2'
+            },
+            'charge_customer': {
+                gradient: 'from-green-600 to-blue-600',
+                icons: `
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
+                </svg>
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                </svg>`,
+                badge: '2'
+            },
+            'order_customer': {
+                gradient: 'from-purple-600 to-blue-600',
+                icons: `
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z"/>
+                </svg>
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                </svg>`,
+                badge: '2'
+            }
+        };
+
+        const config = iconConfigs[type];
+
+        return this.L.divIcon({
+            html: `
+        <div class="relative">
+            <div class="w-12 h-12 bg-gradient-to-br ${config.gradient} rounded-full border-2 border-white shadow-lg flex items-center justify-center space-x-0.5">
+                ${config.icons}
+            </div>
+            <div class="absolute -top-1 -right-1 w-5 h-5 bg-yellow-400 border-2 border-white rounded-full flex items-center justify-center">
+                <span class="text-xs font-bold text-gray-800">${config.badge}</span>
+            </div>
+        </div>`,
+            className: 'custom-combined-marker',
+            iconSize: [48, 48],
+            iconAnchor: [24, 24]
+        });
+    }
+
+    private createDynamicPopupContent(combo: any): string {
+        const sections: string[] = [];
+
+        if (combo.data.charge) {
+            const charge = combo.data.charge as ChargeDto;
+            const chargeDate = new Date(charge.cabfecha).toLocaleDateString('es-ES');
+            sections.push(`
+            <div class="bg-green-50 rounded-lg p-2 border border-green-200">
+                <div class="flex items-center space-x-2 mb-2">
+                    <svg class="w-3.5 h-3.5 text-green-600" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
+                    </svg>
+                    <span class="font-semibold text-xs text-green-700">Cobro #${charge.cabnumero}</span>
+                </div>
+                <div class="space-y-1">
+                    <div class="text-xs text-gray-700">${charge.cabclave1}</div>
+                    <div class="text-xs text-gray-600">Recibo: ${charge.cabnrecibo}</div>
+                    <div class="text-xs text-gray-600">${chargeDate}</div>
+                </div>
+            </div>
+        `);
+        }
+
+        if (combo.data.order) {
+            const order = combo.data.order as OrderDto;
+            const orderDate = new Date(order.pdtfechaf).toLocaleDateString('es-ES');
+            const orderTime = new Date(order.pdtfechaf).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+            sections.push(`
+            <div class="bg-purple-50 rounded-lg p-2 border border-purple-200">
+                <div class="flex items-center space-x-2 mb-2">
+                    <svg class="w-3.5 h-3.5 text-purple-600" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z"/>
+                    </svg>
+                    <span class="font-semibold text-xs text-purple-700">Pedido #${order.pdtfactura}</span>
+                </div>
+                <div class="space-y-1">
+                    <div class="text-xs text-gray-700">${order.pdtnombre}</div>
+                    <div class="text-xs text-gray-600">Cliente: ${order.pdtclave1}</div>
+                    <div class="text-xs text-gray-600">${orderDate} - ${orderTime}</div>
+                </div>
+            </div>
+        `);
+        }
+
+        if (combo.data.customer) {
+            const customer = combo.data.customer as CustomerResponseDto;
+            const statusColor = customer.asignado ? 'text-blue-600' : 'text-gray-600';
+            const statusText = customer.asignado ? 'Asignado' : 'No asignado';
+            const statusIcon = customer.asignado ? 'text-green-500' : 'text-yellow-500';
+            sections.push(`
+            <div class="bg-blue-50 rounded-lg p-2 border border-blue-200">
+                <div class="flex items-center space-x-2 mb-2">
+                    <svg class="w-3.5 h-3.5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                    </svg>
+                    <span class="font-semibold text-xs text-blue-700">Cliente</span>
+                </div>
+                <div class="space-y-1">
+                    <div class="text-xs text-gray-700">${customer.dirnombre}</div>
+                    <div class="text-xs text-gray-600">${customer.dirruc}</div>
+                    <div class="text-xs text-gray-600 leading-tight">${customer.dirdirec}</div>
+                    <div class="flex items-center space-x-2 mt-1 pt-1 border-t border-blue-100">
+                        <div class="w-2 h-2 ${statusIcon} rounded-full"></div>
+                        <span class="text-xs ${statusColor} font-medium">${statusText}</span>
+                    </div>
+                </div>
+            </div>
+        `);
+        }
+
+        const titleText = combo.type === 'charge_order_customer' ? 'Cobro + Pedido + Cliente' :
+            combo.type === 'charge_order' ? 'Cobro + Pedido' :
+                combo.type === 'charge_customer' ? 'Cobro + Cliente' :
+                    'Pedido + Cliente';
+
+        return `
+    <div class="bg-white rounded-lg shadow-sm border-0 overflow-hidden">
+        <div class="bg-gradient-to-r ${combo.type === 'charge_order_customer' ? 'from-green-600 via-purple-600 to-blue-600' :
+            combo.type === 'charge_order' ? 'from-green-600 to-purple-600' :
+                combo.type === 'charge_customer' ? 'from-green-600 to-blue-600' :
+                    'from-purple-600 to-blue-600'} px-3 py-2">
+            <div class="flex items-center space-x-2 text-white">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M11,7V13H13V7H11M11,15V17H13V15H11Z"/>
+                </svg>
+                <span class="font-semibold text-sm">${titleText}</span>
+            </div>
+        </div>
+
+        <div class="p-3 space-y-2">
+            ${sections.join('')}
+        </div>
+    </div>
+    `;
+    }
+
+
+    clearCombinedMarkers(): void {
+        if (this.combinedClusterGroup && this.map) {
+            this.combinedClusterGroup.clearLayers();
+            this.map.removeLayer(this.combinedClusterGroup);
+            this.combinedClusterGroup = null;
+        }
+        this.combinedMarkers.clear();
+    }
+
     /**
      * Agrega marcadores de clientes al mapa
      */
@@ -455,6 +904,66 @@ export class MapService {
                 marker.openPopup();
             }
         }, 800);
+    }
+
+    focusOnOrder(order: OrderDto): void {
+        if (!this.map || !order.pdtlat || !order.pdtlon) return;
+
+        const targetLat = order.pdtlat;
+        const targetLng = order.pdtlon;
+        const finalZoom = 20;
+
+        this.map.setView([targetLat, targetLng], 15, {
+            animate: true,
+            duration: 0.3
+        });
+
+        setTimeout(() => {
+            if (this.map) {
+                this.map.setView([targetLat, targetLng], finalZoom, {
+                    animate: true,
+                    duration: 0.5
+                });
+            }
+        }, 300);
+
+        setTimeout(() => {
+            const market = this.orderMarkers.get(order.pdtfactura.toString());
+            if (market) {
+                market.openPopup();
+            }
+        },800);
+
+    }
+
+    focusOnCharge(charge: ChargeDto): void {
+        if (!this.map || !charge.cablat || !charge.cablon) return;
+
+        const targetLat = charge.cablat;
+        const targetLng = charge.cablon;
+        const finalZoom = 20;
+
+        this.map.setView([targetLat, targetLng], 15, {
+            animate: true,
+            duration: 0.3
+        });
+
+        setTimeout(() => {
+            if (this.map) {
+                this.map.setView([targetLat, targetLng], finalZoom, {
+                    animate: true,
+                    duration: 0.5
+                });
+            }
+        }, 300);
+
+        setTimeout(() => {
+            const market = this.chargeMarkers.get(charge.cabnumero.toString());
+            if (market) {
+                market.openPopup();
+            }
+        },800);
+
     }
 
     /**
@@ -1294,6 +1803,7 @@ export class MapService {
         this.clearCustomerMarkers();
 
         this.clearGeocercas();
+        this.clearCombinedMarkers();
 
         // Limpiar rangos de usuario si existen
         this.clearUserRange();
@@ -1504,12 +2014,9 @@ export class MapService {
      * Crea icono para ubicación de tracking
      */
     private createTrackingIcon(index: number, isLastLocation: boolean = false): L.DivIcon {
-        // Usar icono especial para la última ubicación (posición actual)
         if (isLastLocation) {
             return this.createDeliveryPersonIcon();
         }
-
-        // Icono simple para ubicaciones históricas (como en la imagen)
         return L.divIcon({
             html: `
             <div class="relative">

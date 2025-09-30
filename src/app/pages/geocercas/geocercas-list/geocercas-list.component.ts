@@ -40,7 +40,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { NominatimReverseResponse } from '@/core/models/nominatim-response.interface';
 import { FilterRequest, ZonaBusquedaFilter } from '@/core/models/Filter/FilterRequest';
-import { TrackingResponse } from '@/core/models/Filter/TrackingResponse';
+import { ChargeDto, OrderDto, TrackingResponse } from '@/core/models/Filter/TrackingResponse';
 import { MultiSelect } from 'primeng/multiselect';
 
 @Component({
@@ -133,6 +133,19 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
 
     // Propiedades de búsqueda de customers
     filteredCustomers: CustomerResponseDto[] = [];
+
+    //Propiedades de busqueda de pedidos
+    orders: OrderDto[] = [];
+    loadingOrders: boolean = false;
+    filteredOrders: OrderDto[] = [];
+    orderSearchTerm: string = '';
+
+    //Propiedades de busqueda de cobros
+    charges: ChargeDto[] = [];
+    loadingCharges: boolean = false;
+    filteredCharges: ChargeDto[] = [];
+    chargeSearchTerm: string = '';
+
 
     // Subject para manejo de subscripciones
     private destroy$ = new Subject<void>();
@@ -408,6 +421,41 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         this.filteredCustomers = this.customers.filter((customer) => customer.dirnombre.toLowerCase().includes(searchTerm) || customer.dirruc.toLowerCase().includes(searchTerm) || customer.dirdirec.toLowerCase().includes(searchTerm));
     }
 
+    // Método para filtrar pedidos
+    filterOrders = (): void => {
+        const ordersWithCoordinates = this.orders.filter(order =>
+            order.pdtlat !== 0 && order.pdtlon !== 0
+        );
+
+        const term = this.orderSearchTerm.toLowerCase().trim();
+        this.filteredOrders = term
+            ? ordersWithCoordinates.filter(order =>
+                order.pdtnombre.toLowerCase().includes(term) ||
+                order.pdtclave.toLowerCase().includes(term) ||
+                order.pdtclave1.toLowerCase().includes(term) ||
+                order.pdtfactura.toString().includes(term)
+            )
+            : [...ordersWithCoordinates];
+    };
+
+
+    // Método para filtrar cobros
+    filterCharges = (): void => {
+        const chargesWithCoordinates = this.charges.filter(charge =>
+            charge.cablat !== 0 && charge.cablon !== 0
+        );
+
+        const term = this.chargeSearchTerm.toLowerCase().trim();
+        this.filteredCharges = term
+            ? chargesWithCoordinates.filter(charge =>
+                charge.cabclave1.toLowerCase().includes(term) ||
+                charge.cabnrecibo.toLowerCase().includes(term) ||
+                charge.cabnumero.toString().includes(term) ||
+                charge.cabnvendedor.toLowerCase().includes(term)
+            )
+            : [...chargesWithCoordinates];
+    };
+
     private getCustomersInArea(vendorCode: string, range: any): void {
         this.loadingCustomers = true;
 
@@ -659,6 +707,28 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         });
     }
 
+    focusOrderOnMap(order: OrderDto): void {
+        this.mapService.focusOnOrder(order);
+
+        this.msgService.add({
+            severity: 'info',
+            summary: 'Orden localizada',
+            detail: `Mapa centrado en ${order.pdtfactura}`,
+            life: 2000
+        });
+    }
+
+    focusChargeOnMap(charge: ChargeDto): void {
+        this.mapService.focusOnCharge(charge);
+
+        this.msgService.add({
+            severity: 'info',
+            summary: 'Carga localizada',
+            detail: `Mapa centrado en ${charge.cabnumero}`,
+            life: 2000
+        });
+    }
+
     searchTimeUnit(event: any): void {
         const query = event.query.toLowerCase();
         this.timeUnitOptions = [
@@ -801,7 +871,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
 
         this.mapService.hideAllUserMarkers();
 
-
         if (!this.validateFilters()) {
             return;
         }
@@ -830,8 +899,12 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
             },
             zonasbusqueda: this.buildZonaClientes()
         };
+
         this.loading = true;
         this.loadingCustomers = true;
+        this.loadingOrders = true;
+        this.loadingCharges = true;
+
         this.customerService
             .getTrackingDetails(filterRequest)
             .pipe(
@@ -839,6 +912,8 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
                 finalize(() => {
                     this.loading = false;
                     this.loadingCustomers = false;
+                    this.loadingOrders = false;
+                    this.loadingCharges = false;
                 })
             )
             .subscribe({
@@ -926,6 +1001,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         if (response.ubicaciones && response.ubicaciones.length > 0) {
             this.mapService.addTrackingMarkers(response.ubicaciones);
         }
+
         this.loadingCustomers = false;
         if (response.clientes && response.clientes.length > 0) {
             this.customers = response.clientes;
@@ -937,25 +1013,44 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
             this.mapService.clearCustomerMarkers();
         }
 
+        // Procesar cobros
+        this.loadingCharges = false;
         if (this.collectionsEnabled) {
             this.mapService.clearChargeMarkers();
             if (response.cobros && response.cobros.length > 0) {
+                this.charges = response.cobros;
+                this.filterCharges();
                 this.mapService.addChargeMarkers(response.cobros);
+            } else {
+                this.charges = [];
+                this.filteredCharges = [];
             }
         } else {
+            this.charges = [];
+            this.filteredCharges = [];
             this.mapService.clearChargeMarkers();
         }
 
+        // Procesar pedidos
+        this.loadingOrders = false;
         if (this.pedidosEnabled) {
             this.mapService.clearOrderMarkers();
             if (response.pedidos && response.pedidos.length > 0) {
+                this.orders = response.pedidos;
+                this.filterOrders();
                 this.mapService.addOrderMarkers(response.pedidos);
+            } else {
+                this.orders = [];
+                this.filteredOrders = [];
             }
         } else {
+            this.orders = [];
+            this.filteredOrders = [];
             this.mapService.clearOrderMarkers();
         }
 
         this.centerMapOnFilteredData(response);
+        this.mapService.addCombinedMarkers(response.cobros, response.pedidos, response.clientes);
     }
 
     /**
@@ -1303,15 +1398,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         setTimeout(() => this.startUserLocationPolling(), 5000); // Reiniciar en 5 segundos
     }
 
-    pausePolling(): void {
-        this.isPollingActive = false;
-    }
-
-    resumePolling(): void {
-        if (!this.isPollingActive) {
-            this.startUserLocationPolling();
-        }
-    }
 
 
 
