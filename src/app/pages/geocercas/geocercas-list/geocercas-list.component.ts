@@ -553,11 +553,10 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         this.selectedUser = user;
         this.selectedGeofence = [];
 
-        const rangeInfo = this.mapService.focusOnUserWithRange(user, this.defaultRadius);
+        this.mapService.focusOnUser(user);
 
-        if (rangeInfo) {
-            this.getCustomersInArea(user.usucodv, rangeInfo.range);
-        }
+        const bounds = this.mapService.getCurrentBounds();
+        this.searchCustomersInCurrentArea(bounds);
 
         this.loadVendorGeocercas(user.usucodv);
         this.setDefaultValues();
@@ -974,9 +973,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         return true;
     }
 
-    /**
-     * Procesa la respuesta del tracking y actualiza el mapa
-     */
     private processTrackingResponse(response: TrackingResponse): void {
         this.validateTrackingDataAvailability(response);
 
@@ -985,54 +981,25 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         }
 
         this.loadingCustomers = false;
-        if (response.clientes && response.clientes.length > 0) {
-            this.customers = response.clientes;
-            this.filterCustomers();
-            this.mapService.addCustomerMarkers(response.clientes);
-        } else {
-            this.customers = [];
-            this.filteredCustomers = [];
-            this.mapService.clearCustomerMarkers();
-        }
-
-        // Procesar cobros
         this.loadingCharges = false;
-        if (this.collectionsEnabled) {
-            this.mapService.clearChargeMarkers();
-            if (response.cobros && response.cobros.length > 0) {
-                this.charges = response.cobros;
-                this.filterCharges();
-                this.mapService.addChargeMarkers(response.cobros);
-            } else {
-                this.charges = [];
-                this.filteredCharges = [];
-            }
-        } else {
-            this.charges = [];
-            this.filteredCharges = [];
-            this.mapService.clearChargeMarkers();
-        }
-
-        // Procesar pedidos
         this.loadingOrders = false;
-        if (this.pedidosEnabled) {
-            this.mapService.clearOrderMarkers();
-            if (response.pedidos && response.pedidos.length > 0) {
-                this.orders = response.pedidos;
-                this.filterOrders();
-                this.mapService.addOrderMarkers(response.pedidos);
-            } else {
-                this.orders = [];
-                this.filteredOrders = [];
-            }
-        } else {
-            this.orders = [];
-            this.filteredOrders = [];
-            this.mapService.clearOrderMarkers();
-        }
+
+        this.customers = response.clientes || [];
+        this.charges = this.collectionsEnabled && response.cobros ? response.cobros : [];
+        this.orders = this.pedidosEnabled && response.pedidos ? response.pedidos : [];
+
+        this.filterCustomers();
+        this.filterCharges();
+        this.filterOrders();
+
+        this.mapService.clearChargeMarkers();
+        this.mapService.clearOrderMarkers();
+        this.mapService.clearCustomerMarkers();
+        this.mapService.clearCombinedMarkers();
+
+        this.mapService.addCombinedMarkers(this.charges, this.orders, this.customers);
 
         this.centerMapOnFilteredData(response);
-        this.mapService.addCombinedMarkers(response.cobros, response.pedidos, response.clientes);
     }
 
     /**

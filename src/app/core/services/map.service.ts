@@ -105,22 +105,15 @@ export class MapService {
         if (this.L && this.markerClusterLoaded) return;
 
         try {
-            // Solo en navegador
             if (typeof window !== 'undefined') {
-                // Importar Leaflet de manera correcta
                 const leafletModule = await import('leaflet');
                 this.L = leafletModule.default || leafletModule;
-
-                // Verificar que se cargó correctamente
                 if (!this.L || !this.L.map) {
                     console.error('Error al cargar Leaflet');
                 }
-
-                // Cargar markercluster
                 await import('leaflet.markercluster');
                 this.markerClusterLoaded = true;
 
-                // Configurar iconos DESPUÉS de verificar que L existe
                 setTimeout(() => {
                     this.configureLeafletIcons();
                 }, 100);
@@ -157,17 +150,14 @@ export class MapService {
      */
     private createGeocercaLayer(geocerca: GeocercaDto): L.Layer | null {
         try {
-            // Parsear coordenadas del polígono
             const coordinates = JSON.parse(geocerca.geoccoor);
 
             if (!Array.isArray(coordinates) || coordinates.length === 0) {
                 return null;
             }
 
-            // Convertir a formato Leaflet
             const latLngs: [number, number][] = coordinates.map((coord) => [coord.lat, coord.lng]);
 
-            // Crear polígono
             const polygon = L.polygon(latLngs, {
                 color: '#f32a2a',
                 fillColor: '#f32a2a',
@@ -176,13 +166,11 @@ export class MapService {
                 opacity: 0.8
             });
 
-            // Agregar popup con información
             polygon.bindPopup(this.createGeocercaPopup(geocerca), {
                 maxWidth: 280,
                 className: 'geocerca-popup'
             });
 
-            // Agregar marcador central
             const centerMarker = L.circleMarker([geocerca.geoclat, geocerca.geoclon], {
                 radius: 6,
                 color: '#8b5cf6',
@@ -195,8 +183,6 @@ export class MapService {
                 permanent: false,
                 direction: 'top'
             });
-
-            // Crear grupo con polígono y marcador central
 
             return L.layerGroup([polygon, centerMarker]);
         } catch (error) {
@@ -262,7 +248,6 @@ export class MapService {
 
         const bounds = L.latLngBounds([]);
 
-        // Iterar sobre las geocercas y expandir los bounds
         this.geocercasMarkers.forEach((layer) => {
             if (layer instanceof L.Polygon) {
                 bounds.extend(layer.getBounds());
@@ -396,6 +381,7 @@ export class MapService {
                     chargeList.forEach((charge, idx) => {
                         const offset = this.calculateOffset(idx);
                         const marker = this.createChargeMarker(charge);
+                        this.chargeMarkers.set(charge.cabnumero.toString(), marker);
                         marker.options.markerType = 'charge';
                         marker.setLatLng([charge.cablat + offset.lat, charge.cablon + offset.lng]);
                         this.combinedMarkers.set(`${coordKey}_charge_${idx}`, marker);
@@ -405,6 +391,7 @@ export class MapService {
                     orderList.forEach((order, idx) => {
                         const offset = this.calculateOffset(idx);
                         const marker = this.createOrderMarker(order);
+                        this.orderMarkers.set(order.pdtclave, marker);
                         marker.options.markerType = 'order';
                         marker.setLatLng([order.pdtlat + offset.lat, order.pdtlon + offset.lng]);
                         this.combinedMarkers.set(`${coordKey}_order_${idx}`, marker);
@@ -439,14 +426,10 @@ export class MapService {
         }
     }
 
-    private detectCoincidentMarkers(
-        charges: ChargeDto[],
-        orders: OrderDto[],
-        customers: CustomerResponseDto[]
-    ): {
+    private detectCoincidentMarkers(charges: ChargeDto[], orders: OrderDto[], customers: CustomerResponseDto[]): {
         combinedCoords: Map<string, { chargeList?: ChargeDto[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>,
-        isolatedCustomers: CustomerResponseDto[]
-    } {
+        isolatedCustomers: CustomerResponseDto[] }
+    {
         const coordMap = new Map<string, { chargeList?: ChargeDto[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>();
         const proximityThreshold = 0.0001;
 
@@ -877,94 +860,45 @@ export class MapService {
     /**
      * Centra el mapa en un cliente específico
      */
-    focusOnCustomer(customer: CustomerResponseDto): void {
+    focusOnCustomer(customer: CustomerResponseDto, zoom: number = 19): void {
         if (!this.map || !customer.latitud || !customer.longitud) return;
 
-        const targetLat = customer.latitud;
-        const targetLng = customer.longitud;
-        const finalZoom = 20;
-
-        this.map.setView([targetLat, targetLng], 15, {
-            animate: true,
-            duration: 0.3
+        this.map.flyTo([customer.latitud, customer.longitud], zoom, {
+            duration: 1.5
         });
 
-        setTimeout(() => {
-            if (this.map) {
-                this.map.setView([targetLat, targetLng], finalZoom, {
-                    animate: true,
-                    duration: 0.5
-                });
-            }
-        }, 300);
-
-        setTimeout(() => {
+        this.map.once('moveend', () => {
             const marker = this.customerMarkers.get(customer.dirclave);
-            if (marker) {
-                marker.openPopup();
-            }
-        }, 800);
+            marker?.openPopup();
+        });
     }
 
-    focusOnOrder(order: OrderDto): void {
+    focusOnOrder(order: OrderDto, zoom: number = 19): void {
         if (!this.map || !order.pdtlat || !order.pdtlon) return;
 
-        const targetLat = order.pdtlat;
-        const targetLng = order.pdtlon;
-        const finalZoom = 20;
-
-        this.map.setView([targetLat, targetLng], 15, {
-            animate: true,
-            duration: 0.3
+        this.map.flyTo([order.pdtlat, order.pdtlon], zoom, {
+            duration: 1.5
         });
 
-        setTimeout(() => {
-            if (this.map) {
-                this.map.setView([targetLat, targetLng], finalZoom, {
-                    animate: true,
-                    duration: 0.5
-                });
-            }
-        }, 300);
-
-        setTimeout(() => {
-            const market = this.orderMarkers.get(order.pdtfactura.toString());
-            if (market) {
-                market.openPopup();
-            }
-        },800);
-
+        this.map.once('moveend', () => {
+            const marker = this.orderMarkers.get(order.pdtclave);
+            marker?.openPopup();
+        });
     }
 
-    focusOnCharge(charge: ChargeDto): void {
+    focusOnCharge(charge: ChargeDto, zoom: number = 19): void {
         if (!this.map || !charge.cablat || !charge.cablon) return;
 
-        const targetLat = charge.cablat;
-        const targetLng = charge.cablon;
-        const finalZoom = 20;
-
-        this.map.setView([targetLat, targetLng], 15, {
-            animate: true,
-            duration: 0.3
+        this.map.flyTo([charge.cablat, charge.cablon], zoom, {
+            duration: 1.5
         });
 
-        setTimeout(() => {
-            if (this.map) {
-                this.map.setView([targetLat, targetLng], finalZoom, {
-                    animate: true,
-                    duration: 0.5
-                });
-            }
-        }, 300);
-
-        setTimeout(() => {
-            const market = this.chargeMarkers.get(charge.cabnumero.toString());
-            if (market) {
-                market.openPopup();
-            }
-        },800);
-
+        this.map.once('moveend', () => {
+            const marker = this.chargeMarkers.get(charge.cabnumero.toString());
+            marker?.openPopup();
+        });
     }
+
 
     /**
      * Crea icono para cliente
@@ -1251,11 +1185,7 @@ export class MapService {
         if (!this.map) return;
 
         const mapContainer = this.map.getContainer();
-
-        // Crear contenedor principal flotante
         const container = L.DomUtil.create('div', 'leaflet-control leaflet-control-custom', mapContainer);
-
-        // Estilos base
         container.style.position = 'absolute';
         container.style.top = '10px';
         container.style.left = '50%';
@@ -1274,13 +1204,11 @@ export class MapService {
         container.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)'; // sombra ligera
         container.style.transition = 'all 0.2s ease'; // transición suave
 
-        // Agregar icono y texto
         container.innerHTML = `
             <i class="pi pi-search" style="font-size: 15px; color: #4f46e5;"></i>
             <span style="color: #374151;">Buscar en esta área</span>
         `;
 
-        // Hover
         container.onmouseenter = () => {
             container.style.backgroundColor = '#f3f4f6'; // gris clarito
             container.style.borderColor = '#4f46e5'; // morado del ícono
@@ -1293,13 +1221,11 @@ export class MapService {
             container.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
         };
 
-        // Click
         container.onclick = () => {
             const currentBounds = this.map!.getBounds();
             onSearchClick(currentBounds);
         };
 
-        // Prevenir propagación
         L.DomEvent.disableClickPropagation(container);
     }
 
@@ -1323,14 +1249,12 @@ export class MapService {
             console.log('Iconos de Leaflet configurados');
         } catch (error) {
             console.error('Error configurando iconos:', error);
-            // No lanzar el error, solo registrarlo
         }
     }
 
     private async initializeMarkerCluster(): Promise<void> {
         if (!this.map || !this.L) return;
 
-        // Verificar que markerClusterGroup esté disponible
         if (!this.L.markerClusterGroup) {
             throw new Error('leaflet.markercluster no está disponible');
         }
@@ -1378,23 +1302,19 @@ export class MapService {
 
         try {
             if (coordinates.length === 1) {
-                // Si solo hay una coordenada, centrar con zoom específico
                 this.map.setView(coordinates[0], 15);
             } else {
-                // Si hay múltiples coordenadas, crear bounds para incluir todas
                 const group = new L.FeatureGroup();
 
                 coordinates.forEach((coord) => {
                     L.marker(coord).addTo(group);
                 });
 
-                // Ajustar el mapa para mostrar todos los puntos con padding
                 this.map.fitBounds(group.getBounds(), {
-                    padding: [20, 20], // Padding en píxeles
-                    maxZoom: 16 // Zoom máximo para evitar acercarse demasiado
+                    padding: [20, 20],
+                    maxZoom: 16
                 });
 
-                // Limpiar el grupo temporal
                 group.clearLayers();
             }
         } catch (error) {
@@ -1640,7 +1560,6 @@ export class MapService {
             }
         });
 
-        // Auto-fit bounds si hay geocercas
         if (geocercas.length > 0) {
             this.fitGeocercasBounds();
         }
@@ -1657,7 +1576,6 @@ export class MapService {
         try {
             const layers: L.Layer[] = [];
 
-            // Crear polígono si tiene coordenadas
             if (geocerca.geoccoor) {
                 const coordinates = JSON.parse(geocerca.geoccoor);
 
@@ -1792,20 +1710,12 @@ export class MapService {
         if (!this.map) return;
 
         this.map.setView(this.defaultConfig.center, this.defaultConfig.zoom);
-
-        // Limpiar marcadores de búsqueda
         this.clearSearchMarker();
-
         this.clearTrackingMarkers();
-
         this.clearAllTrackingData();
-
         this.clearCustomerMarkers();
-
         this.clearGeocercas();
         this.clearCombinedMarkers();
-
-        // Limpiar rangos de usuario si existen
         this.clearUserRange();
         this.restoreAllUserMarkers();
 
@@ -2123,10 +2033,10 @@ export class MapService {
                 <div class="flex items-center space-x-2 text-white">
                     <svg class="w-4 h-4" viewBox="0 0 24 24" style="fill: currentColor;">
                         ${
-            isLastLocation
-                ? '<path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>'
-                : '<path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>'
-        }
+                            isLastLocation
+                                ? '<path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>'
+                                : '<path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>'
+                        }
                     </svg>
                     <span class="font-semibold text-sm">${title}</span>
                     ${isLastLocation ? '<div class="w-2 h-2 bg-green-300 rounded-full animate-pulse ml-1"></div>' : ''}
@@ -2352,13 +2262,10 @@ export class MapService {
         const userLocation = userLocations[0]; // Solo un usuario
         if (userLocation.ubicaciones.length < 2) return;
 
-        // Ordenar ubicaciones por tiempo
         const sortedLocations = userLocation.ubicaciones.sort((a, b) => new Date(a.tiempo).getTime() - new Date(b.tiempo).getTime());
 
-        // Crear coordenadas para la línea
         const pathCoordinates: [number, number][] = sortedLocations.map((location) => [location.latitud, location.longitud]);
 
-        // Crear polyline usando this.L
         this.trackingPath = this.L.polyline(pathCoordinates, {
             color: '#3B82F6',
             weight: 3,
@@ -2430,15 +2337,11 @@ export class MapService {
                 const existingMarker = this.userMarkers.get(user.usucod);
 
                 if (existingMarker) {
-                    // Actualizar posición del marcador existente
                     const newLatLng = L.latLng(user.ubicacion.geublat, user.ubicacion.geublon);
                     existingMarker.setLatLng(newLatLng);
-
-                    // Actualizar popup si es necesario
                     const popupContent = this.createUserPopupContent(user);
                     existingMarker.setPopupContent(popupContent);
                 } else {
-                    // Crear nuevo marcador si no existe
                     const marker = this.createUserMarker(user);
                     this.userMarkers.set(user.usucod, marker);
                     this.markerClusterGroup?.addLayer(marker);

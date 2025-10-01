@@ -995,7 +995,7 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                 const polygon = L.polygon(latlngs);
                 this.map.fitBounds(polygon.getBounds(), {
                     padding: [30, 30],
-                    maxZoom: 16
+                    maxZoom: 19
                 });
 
                 this.resaltarGeocercaTemporal(geocerca);
