@@ -54,7 +54,6 @@ export class GeocercaDrawingService {
     initialize(map: L.Map): void {
         console.log('Inicializando GeocercaDrawingService...');
 
-        // Si ya está inicializado, solo limpiar y re-configurar
         if (this.isInitialized) {
             this.cleanup();
         }
@@ -62,10 +61,8 @@ export class GeocercaDrawingService {
         this.map = map;
         this.isInitialized = true;
 
-        // Crear layer para dibujo
         this.dibujoLayer = L.featureGroup().addTo(this.map);
 
-        // Si había un estado de dibujo activo, restaurarlo
         if (this.estadoDibujo.creando) {
             console.log('Restaurando estado de dibujo activo:', this.estadoDibujo.tipo);
             this.restaurarEstadoDibujo();
@@ -82,15 +79,12 @@ export class GeocercaDrawingService {
 
         console.log('Restaurando estado de dibujo:', this.estadoDibujo);
 
-        // Configurar eventos del mapa
         this.configurarEventosMapa(this.estadoDibujo.tipo);
 
-        // Si hay elementos dibujados, recrearlos
         if (this.estadoDibujo.coordenadas.length > 0) {
             this.dibujarGeocercaExistente();
         }
 
-        // Notificar estado actual
         this.drawing$.next(this.estadoDibujo);
     }
 
@@ -111,7 +105,6 @@ export class GeocercaDrawingService {
         // Limpiar estado anterior
         this.cancelarCreacion();
 
-        // Configurar estado
         this.estadoDibujo = {
             creando: true,
             tipo,
@@ -141,7 +134,6 @@ export class GeocercaDrawingService {
         // Limpiar eventos anteriores
         this.map.off('click');
 
-        // Pequeño delay para asegurar que el mapa esté listo
         setTimeout(() => {
             if (!this.map) return;
 
@@ -182,7 +174,6 @@ export class GeocercaDrawingService {
         // Generar coordenadas
         this.generarCoordenadasCirculo(lat, lng, this.radioGeocerca);
 
-        // Actualizar estado
         this.estadoDibujo.coordenadas = [...this.estadoDibujo.coordenadas];
         this.drawing$.next(this.estadoDibujo);
 
@@ -202,13 +193,9 @@ export class GeocercaDrawingService {
         const { lat, lng } = e.latlng;
         this.estadoDibujo.coordenadas.push({ lat, lng });
 
-        // Agregar marcador
         this.agregarMarcadorPunto(lat, lng, this.estadoDibujo.coordenadas.length);
-
-        // Actualizar polígono
         this.actualizarPoligono();
 
-        // Actualizar estado reactivo
         this.drawing$.next(this.estadoDibujo);
 
         this.msgService.add({
