@@ -52,7 +52,6 @@ export class GeocercaDrawingService {
      * Inicializar servicio con el mapa
      */
     initialize(map: L.Map): void {
-        console.log('Inicializando GeocercaDrawingService...');
 
         if (this.isInitialized) {
             this.cleanup();
@@ -64,11 +63,8 @@ export class GeocercaDrawingService {
         this.dibujoLayer = L.featureGroup().addTo(this.map);
 
         if (this.estadoDibujo.creando) {
-            console.log('Restaurando estado de dibujo activo:', this.estadoDibujo.tipo);
             this.restaurarEstadoDibujo();
         }
-
-        console.log('GeocercaDrawingService inicializado correctamente');
     }
 
     /**
@@ -76,9 +72,6 @@ export class GeocercaDrawingService {
      */
     private restaurarEstadoDibujo(): void {
         if (!this.estadoDibujo.creando || !this.estadoDibujo.tipo) return;
-
-        console.log('Restaurando estado de dibujo:', this.estadoDibujo);
-
         this.configurarEventosMapa(this.estadoDibujo.tipo);
 
         if (this.estadoDibujo.coordenadas.length > 0) {
@@ -129,9 +122,6 @@ export class GeocercaDrawingService {
     private configurarEventosMapa(tipo: 'circular' | 'poligono'): void {
         if (!this.map) return;
 
-        console.log('Configurando eventos del mapa para:', tipo);
-
-        // Limpiar eventos anteriores
         this.map.off('click');
 
         setTimeout(() => {
@@ -143,7 +133,6 @@ export class GeocercaDrawingService {
                 this.map.on('click', this.onMapClickPoligono.bind(this));
             }
 
-            console.log('Eventos configurados correctamente para:', tipo);
         }, 100);
     }
 
@@ -248,7 +237,6 @@ export class GeocercaDrawingService {
             direction: 'top'
         });
 
-        // Eventos de drag
         marcador.on('dragstart', () => {
             marcador.closeTooltip();
             const iconElement = (marcador as any)._icon;
@@ -333,18 +321,13 @@ export class GeocercaDrawingService {
             this.dibujoLayer.removeLayer(this.formaActual);
         }
 
-        // Limpiar líneas temporales
         this.lineasTemporales.forEach((linea) => {
             if (this.dibujoLayer) {
                 this.dibujoLayer.removeLayer(linea);
             }
         });
         this.lineasTemporales = [];
-
-        // Crear líneas punteadas
         this.crearLineasPunteadas();
-
-        // Crear polígono si hay suficientes puntos
         if (this.estadoDibujo.coordenadas.length >= 3) {
             const latLngs = this.estadoDibujo.coordenadas.map((coord) => [coord.lat, coord.lng] as L.LatLngTuple);
 
@@ -357,8 +340,6 @@ export class GeocercaDrawingService {
             this.formaActual = polygon;
             this.dibujoLayer!.addLayer(polygon);
         }
-
-        // Calcular centro
         this.calcularCentroPoligono();
     }
 
@@ -427,7 +408,6 @@ export class GeocercaDrawingService {
             return null;
         }
 
-        // Crear objeto geocerca
         const geocerca: GeocercaDrawing = {
             id: this.generarId(),
             tipo: this.estadoDibujo.tipo!,
@@ -439,7 +419,6 @@ export class GeocercaDrawingService {
             fechaCreacion: new Date()
         };
 
-        // Guardar geocerca
         this.geocercasCreadas.set(geocerca.id, geocerca);
         this.geocercaDrawing$.next(Array.from(this.geocercasCreadas.values()))
 
@@ -452,15 +431,11 @@ export class GeocercaDrawingService {
      */
     cancelarCreacion(): void {
 
-        // Limpiar eventos del mapa
         if (this.map) {
             this.map.off('click');
         }
-
-        // Limpiar elementos temporales
         this.limpiarElementosTemporales();
 
-        // Resetear estado
         this.estadoDibujo = {
             creando: false,
             tipo: null,
@@ -475,17 +450,11 @@ export class GeocercaDrawingService {
      * Limpiar solo los elementos del mapa (sin resetear estado completo)
      */
     private cleanup(): void {
-        console.log('Limpiando elementos del servicio...');
-
-        // Limpiar eventos del mapa
         if (this.map) {
             this.map.off('click');
         }
-
-        // Limpiar elementos temporales del mapa
         this.limpiarElementosTemporales();
 
-        // Limpiar capa de dibujo del mapa anterior
         if (this.dibujoLayer && this.map) {
             this.map.removeLayer(this.dibujoLayer);
             this.dibujoLayer = null;
@@ -493,15 +462,10 @@ export class GeocercaDrawingService {
     }
 
     cancelarEdicion(): void {
-        // Limpiar eventos del mapa
         if (this.map) {
             this.map.off('click');
         }
-
-        // Limpiar elementos temporales
         this.limpiarElementosTemporales();
-
-        // Resetear estado
         this.estadoDibujo = {
             creando: false,
             tipo: null,
@@ -516,7 +480,6 @@ export class GeocercaDrawingService {
      * Limpiar elementos temporales del dibujo
      */
     private limpiarElementosTemporales(): void {
-        // Limpiar marcadores de puntos
         this.marcadoresPuntos.forEach(marcador => {
             if (this.dibujoLayer) {
                 this.dibujoLayer.removeLayer(marcador);
@@ -524,7 +487,6 @@ export class GeocercaDrawingService {
         });
         this.marcadoresPuntos = [];
 
-        // Limpiar líneas temporales
         this.lineasTemporales.forEach(linea => {
             if (this.dibujoLayer) {
                 this.dibujoLayer.removeLayer(linea);
@@ -532,7 +494,6 @@ export class GeocercaDrawingService {
         });
         this.lineasTemporales = [];
 
-        // Limpiar forma actual
         if (this.formaActual && this.dibujoLayer) {
             this.dibujoLayer.removeLayer(this.formaActual);
             this.formaActual = null;
@@ -543,8 +504,6 @@ export class GeocercaDrawingService {
      * Método para limpiar al salir del componente (NO destruir completamente)
      */
     cleanupOnDestroy(): void {
-        console.log('Cleanup on destroy - manteniendo estado del servicio');
-
         this.cleanup();
         this.map = null;
         this.isInitialized = false;
@@ -562,8 +521,6 @@ export class GeocercaDrawingService {
                 this.estadoDibujo.centro.lng,
                 nuevoRadio
             );
-
-            // Actualizar visualización
             if (this.formaActual && this.dibujoLayer) {
                 this.dibujoLayer.removeLayer(this.formaActual);
 
@@ -600,10 +557,7 @@ export class GeocercaDrawingService {
     ): void {
         if (!this.map) return;
 
-        // Limpiar estado actual
         this.cancelarCreacion();
-
-        // Configurar estado para edición
         this.estadoDibujo = {
             creando: true,
             tipo: tipo,
@@ -611,18 +565,13 @@ export class GeocercaDrawingService {
             centro: { ...centro }
         };
 
-        // Configurar eventos del mapa
         this.configurarEventosMapa(tipo);
-
-        // Si es circular, configurar radio
         if (tipo === 'circular' && radio) {
             this.radioGeocerca = radio;
         }
 
-        // Dibujar geocerca existente en el mapa
         this.dibujarGeocercaExistente();
 
-        // Actualizar estado reactivo
         this.drawing$.next(this.estadoDibujo);
     }
 

@@ -1142,7 +1142,6 @@ export class MapService {
                 return false;
             }
 
-            // Usar this.L en lugar de L directamente
             this.map = this.L.map(element, {
                 center: mapConfig.center,
                 zoom: mapConfig.zoom,
@@ -1171,7 +1170,6 @@ export class MapService {
             }, 100);
 
             this.mapInitialized$.next(true);
-            console.log('Mapa inicializado correctamente');
             return true;
         } catch (error) {
             console.error('Error inicializando el mapa:', error);
@@ -1197,12 +1195,12 @@ export class MapService {
         container.style.gap = '6px';
         container.style.cursor = 'pointer';
         container.style.fontSize = '13px';
-        container.style.fontWeight = '600'; // más peso
-        container.style.fontFamily = 'Segoe UI, Roboto, sans-serif'; // tipografía distinta
+        container.style.fontWeight = '600';
+        container.style.fontFamily = 'Segoe UI, Roboto, sans-serif';
         container.style.border = '2px solid rgba(0,0,0,0.2)';
-        container.style.borderRadius = '10px'; // bordes suaves
-        container.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)'; // sombra ligera
-        container.style.transition = 'all 0.2s ease'; // transición suave
+        container.style.borderRadius = '10px';
+        container.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
+        container.style.transition = 'all 0.2s ease';
 
         container.innerHTML = `
             <i class="pi pi-search" style="font-size: 15px; color: #4f46e5;"></i>
@@ -1246,7 +1244,6 @@ export class MapService {
                 shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png'
             });
 
-            console.log('Iconos de Leaflet configurados');
         } catch (error) {
             console.error('Error configurando iconos:', error);
         }
@@ -1719,7 +1716,6 @@ export class MapService {
         this.clearUserRange();
         this.restoreAllUserMarkers();
 
-        // Resetear resultados de búsqueda
         this.searchResults$.next([]);
         this.msgService.add({
             severity: 'info',

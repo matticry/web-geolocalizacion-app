@@ -221,7 +221,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.map?.invalidateSize();
             }, 100);
 
-            console.log('Mapa inicializado correctamente');
         } catch (error) {
             console.error('Error inicializando el mapa:', error);
             this.showMapFallback();
@@ -1578,10 +1577,8 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                     .openPopup();
             }
 
-            console.log(`Polígono completo mostrado para geocerca: ${geocerca.geocnom} con ${coordinates.length} vértices`);
         } catch (error) {
             console.error('Error parseando coordenadas del polígono:', error);
-            // Fallback al punto central
             this.showCenterPointPreview(geocerca);
         }
     }
@@ -1646,8 +1643,6 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                 })
                 .openPopup();
         }
-
-        console.log(`Vista aproximada mostrada para geocerca: ${geocerca.geocnom} en [${lat}, ${lon}]`);
     }
     /**
      * Obtiene el nombre del lugar usando reverse geocoding con cola y cooldown
@@ -1756,19 +1751,17 @@ export class VendedoresComponent implements OnInit, AfterViewInit, OnDestroy {
                         }
                     })
                     .pipe(
-                        timeout(10000), // 10 segundos timeout
+                        timeout(10000),
                         retry({
                             count: this.MAX_RETRIES,
                             delay: (_error, retryCount) => {
-                                // Delay exponencial: 2s, 4s, 8s...
                                 const delayMs = Math.pow(2, retryCount) * 1000;
-                                console.log(`Reintentando geocoding para ${userId} en ${delayMs}ms (intento ${retryCount})`);
                                 return timer(delayMs);
                             }
                         }),
                         catchError((error) => {
                             console.warn(`Error en geocoding para ${userId} después de ${this.MAX_RETRIES} intentos:`, error);
-                            return of(null); // Continuar sin error
+                            return of(null);
                         }),
                         finalize(() => {
                             this.loadingLocations.delete(userId);

@@ -242,7 +242,6 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.map?.invalidateSize();
             });
 
-            console.log('Mapa inicializado correctamente');
         } catch (error) {
             console.error('Error inicializando el mapa:', error);
             this.showMapFallback();
@@ -478,10 +477,8 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
 
         setTimeout(() => {
             if (this.tipoGeocerca === 'circular') {
-                console.log('Configurando eventos para CÍRCULO');
                 this.map!.on('click', this.onMapClickCircular.bind(this));
             } else {
-                console.log('Configurando eventos para POLÍGONO');
                 this.map!.on('click', this.onMapClickPoligono.bind(this));
             }
         }, 100);
@@ -930,7 +927,6 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
 
         setTimeout(() => {
             this.configurarEventosMapa();
-            console.log('Eventos configurados para tipo:', this.tipoGeocerca);
         }, 100);
 
         this.msgService.add({
@@ -977,13 +973,13 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
             this.dibujoLayer.clearLayers();
         }
 
-        // Limpiar marcadores
         this.marcadoresPuntos.forEach((marcador) => {
             if (this.dibujoLayer && this.map) {
                 try {
                     this.dibujoLayer.removeLayer(marcador);
                 } catch (e) {
-                    console.log('Error removiendo marcador:', e);
+                    console.error('Error al limpiar' + e)
+
                 }
             }
         });
@@ -994,7 +990,6 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
                 try {
                     this.dibujoLayer.removeLayer(linea);
                 } catch (e) {
-                    console.log('Error removiendo línea:', e);
                 }
             }
         });
@@ -1004,7 +999,7 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
             try {
                 this.dibujoLayer.removeLayer(this.formaActual);
             } catch (e) {
-                console.log('Error removiendo forma:', e);
+                console.error('Error al limpiar' + e)
             }
         }
 
