@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { UserDto } from '../models/UserDto';
+import { CUltimoRegxUsu } from '../models/CUltimoRegxUsu';
 import { Observable } from 'rxjs';
 import { AuthService } from '@/core/services/auth.service';
 import { VendedoresQueryParams, VendedoresResponse } from '@/core/models/Geocercas/VendedorDto';
@@ -12,19 +12,21 @@ import { VendedoresQueryParams, VendedoresResponse } from '@/core/models/Geocerc
 export class UserService {
     private readonly baseUrl = environment.apiUrl + '/usuarios';
     private readonly baseUrl2 = environment.apiUrl2;
+    private readonly apiUrlUsuarios = environment.apiUrlUsuarios;
     private readonly authService = inject(AuthService);
 
     constructor(private readonly http: HttpClient) {}
 
 
-    getAllListUser(): Observable<UserDto[]> {
+    getAllListUser(): Observable<CUltimoRegxUsu[]> {
         const token = this.authService.getToken();
         const headers = new HttpHeaders({
             Authorization: `Bearer ${token}`
         });
-        return this.http.get<UserDto[]>(`${this.baseUrl}/listacompleta`, { headers });
+        //return this.http.get<CUltimoRegxUsu[]>(`${this.baseUrl}/listacompleta`, { headers });
+        return this.http.get<CUltimoRegxUsu[]>(`${this.apiUrlUsuarios}/geolocalizacion/webtodoslosusuarios`, { headers });
     }
-    getAllListUser2(skipLoader = false): Observable<UserDto[]> {
+    getAllListUser2(skipLoader = false): Observable<CUltimoRegxUsu[]> {
         const token = this.authService.getToken();
         let headers = new HttpHeaders({
             Authorization: `Bearer ${token}`
@@ -34,7 +36,7 @@ export class UserService {
             headers = headers.set('X-Skip-Loader', 'true');
         }
 
-        return this.http.get<UserDto[]>(`${this.baseUrl}/listacompleta`, { headers });
+        return this.http.get<CUltimoRegxUsu[]>(`${this.baseUrl}/listacompleta`, { headers });
     }
     getVendedoresConGeocercas(params?: VendedoresQueryParams): Observable<VendedoresResponse> {
         const token = this.authService.getToken();

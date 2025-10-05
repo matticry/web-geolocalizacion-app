@@ -20,7 +20,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, finalize, of, retry, startWith, Subject, switchMap, takeUntil, timeout, timer } from 'rxjs';
-import { UserDto } from '@/core/models/UserDto';
+import { CUltimoRegxUsu } from '@/core/models/CUltimoRegxUsu';
 import { UserService } from '@/core/services/user.service';
 import { MapService, RangeDisplayInfo, SearchResult } from '@/core/services/map.service';
 import * as L from 'leaflet';
@@ -150,10 +150,14 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     private destroy$ = new Subject<void>();
 
     // Propiedades de usuarios
-    users: UserDto[] = [];
-    filteredUsers: UserDto[] = [];
-    paginatedUsers: UserDto[] = [];
-    selectedUser: UserDto | null = null;
+    //users: CUltimoRegxUsu[] = [];
+    //filteredUsers: CUltimoRegxUsu[] = [];
+    //paginatedUsers: CUltimoRegxUsu[] = [];
+    //selectedUser: CUltimoRegxUsu | null = null;
+    users: CUltimoRegxUsu[] = [];
+    filteredUsers: CUltimoRegxUsu[] = [];
+    paginatedUsers: CUltimoRegxUsu[] = [];
+    selectedUser: CUltimoRegxUsu | null = null;
     loading: boolean = true;
 
     // Propiedades de paginación
@@ -180,7 +184,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         private readonly mapService: MapService,
         private readonly http: HttpClient,
         private readonly customerService: CustomerService
-    ) {}
+    ) { }
 
     //===============MÉTODO DE INICIALIZACIÓN========================================//
 
@@ -192,7 +196,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
 
     ngAfterViewInit(): void {
         requestAnimationFrame(() => {
-            this.initializeMap().then(() => {});
+            this.initializeMap().then(() => { });
         });
     }
 
@@ -234,11 +238,15 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
 
         this.getCustomersInArea(this.selectedUser.usucodv, range);
     }
-
+    CentrarUsuario(user: CUltimoRegxUsu) {
+        if(user.latitud!=0 && user.latitud!=0 ){
+        this.mapService.focusOnUser(user);
+        }
+    }
     /**
      * Obtiene el nombre de la ubicación para mostrar en el UI
      */
-    getUserLocationName(user: UserDto): string {
+    getUserLocationName(user: CUltimoRegxUsu): string {
         const locationName = this.userLocations.get(user.usucodv);
         const isLoading = this.loadingLocations.has(user.usucodv);
 
@@ -249,9 +257,9 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         if (locationName) {
             return locationName;
         }
-        if (user.ubicacion.geublat && user.ubicacion.geublon) {
+        if (user.latitud && user.longitud) {
             setTimeout(() => {
-                this.addToGeocodingQueue(parseFloat(String(user.ubicacion!.geublat)), parseFloat(String(user.ubicacion!.geublon)), user.usucodv);
+                this.addToGeocodingQueue(parseFloat(String(user.latitud)), parseFloat(String(user.longitud)), user.usucodv);
             }, 100);
 
             return 'Cargando ubicación...';
@@ -514,6 +522,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         this.userService.getAllListUser().subscribe({
             next: (users) => {
                 this.users = users;
+                console.log(users);
                 this.filteredUsers = [...users];
                 this.resetInfiniteScroll();
                 this.updatePagination();
@@ -549,7 +558,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     }
     //=============================================================================================//
 
-    selectUser(user: UserDto): void {
+    selectUser(user: CUltimoRegxUsu): void {
         this.selectedUser = user;
         this.selectedGeofence = [];
 
@@ -562,7 +571,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         this.setDefaultValues();
     }
 
-    selectOnlyUser(user: UserDto): void {
+    selectOnlyUser(user: CUltimoRegxUsu): void {
         this.selectedUser = user;
         this.mapService.focusOnUser(user);
     }
@@ -792,11 +801,10 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         return count;
     }
 
-    private setDefaultValues(): void
-    {
+    private setDefaultValues(): void {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-        yesterday.setHours(9,39,0,0);
+        yesterday.setHours(9, 39, 0, 0);
         this.filterFrom = yesterday;
 
         this.selectedTimeUnit = 'Días';
@@ -1047,6 +1055,8 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
             this.mapService.focusOnUser(this.selectedUser);
         }
     }
+
+
     /**
      * Valida la disponibilidad de datos en la respuesta y muestra mensajes informativos
      */
@@ -1168,8 +1178,8 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     copyCoordinates(ubicacion: any): void {
-        if (ubicacion?.geublat && ubicacion?.geublon) {
-            const coordinates = `${ubicacion.geublat}, ${ubicacion.geublon}`;
+        if (ubicacion?.latitud && ubicacion?.longitud) {
+            const coordinates = `${ubicacion.latitud}, ${ubicacion.longitud}`;
             navigator.clipboard.writeText(coordinates).then(() => {
                 this.msgService.add({
                     severity: 'success',
@@ -1267,17 +1277,17 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         }, this.POLLING_INTERVAL);
     }
 
-    private updateUsersLocation(users: UserDto[]): void {
+    private updateUsersLocation(users: CUltimoRegxUsu[]): void {
         users.forEach(updatedUser => {
             const existingUserIndex = this.users.findIndex(u => u.usucod === updatedUser.usucod);
             if (existingUserIndex !== -1) {
-                this.users[existingUserIndex].ubicacion = updatedUser.ubicacion;
+                this.users[existingUserIndex] = updatedUser;
             }
         });
 
         this.filteredUsers = this.filteredUsers.map(user => {
             const updatedUser = users.find(u => u.usucod === user.usucod);
-            return updatedUser ? { ...user, ubicacion: updatedUser.ubicacion } : user;
+            return updatedUser ? { ...user, ubicacion: updatedUser } : user;
         });
 
         if (this.mapInitialized) {

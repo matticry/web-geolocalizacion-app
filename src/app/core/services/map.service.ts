@@ -4,12 +4,12 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { UserDto } from '@/core/models/UserDto';
 import { CustomerResponseDto } from '@/core/models/Customer/CustomerResponseDto';
 import { GeocercaDto } from '@/core/models/Geocercas/VendedorDto';
 import { GeofenceDto } from '@/core/models/Geocercas/GeocercaValidationResponseDto';
 import { ChargeDto, LocationDto, OrderDto, UserLocationDto } from '../models/Filter/TrackingResponse';
 import { SolicitudData } from '@/core/models/SolicitudData';
+import { CUltimoRegxUsu } from '../models/CUltimoRegxUsu';
 
 
 //===== INTERFACES ======//
@@ -34,7 +34,7 @@ export interface UserRange {
 }
 
 export interface RangeDisplayInfo {
-    user: UserDto;
+    user: CUltimoRegxUsu;
     range: UserRange;
     bounds: L.LatLngBounds;
 }
@@ -978,13 +978,13 @@ export class MapService {
         this.customerMarkers.clear();
     }
 
-    focusOnUserWithRange(user: UserDto, radiusMeters: number = 1000): RangeDisplayInfo | null {
-        if (!this.map || !user.ubicacion) return null;
+    focusOnUserWithRange(user: CUltimoRegxUsu, radiusMeters: number = 1000): RangeDisplayInfo | null {
+        if (!this.map ) return null;
 
         this.hideAllUserMarkersExcept(user.usucod);
 
-        const centerLat = user.ubicacion.geublat;
-        const centerLng = user.ubicacion.geublon;
+        const centerLat = user.latitud;
+        const centerLng = user.longitud;
 
         this.map.setView([centerLat, centerLng], 16);
         const userRange = this.calculateUserRange(centerLat, centerLng, radiusMeters);
@@ -1268,13 +1268,13 @@ export class MapService {
     /**
      * Agrega marcadores de usuarios al mapa
      */
-    addUserMarkers(users: UserDto[]): void {
+    addUserMarkers(users: CUltimoRegxUsu[]): void {
         if (!this.map || !this.markerClusterGroup) return;
 
         this.clearUserMarkers();
 
         users.forEach((user) => {
-            if (user.ubicacion?.geublat && user.ubicacion?.geublon) {
+            if (user.latitud && user.longitud) {
                 const marker = this.createUserMarker(user);
                 this.userMarkers.set(user.usucod, marker);
                 this.markerClusterGroup?.addLayer(marker);
@@ -1322,9 +1322,9 @@ export class MapService {
     /**
      * Crea un marcador para un usuario específico
      */
-    private createUserMarker(user: UserDto): L.Marker {
+    private createUserMarker(user: CUltimoRegxUsu): L.Marker {
         const customIcon = this.createUserIcon();
-        const marker = L.marker([user.ubicacion!.geublat, user.ubicacion!.geublon], {
+        const marker = L.marker([user.latitud, user.longitud], {
             icon: customIcon
         });
 
@@ -1366,8 +1366,8 @@ export class MapService {
     /**
      * Crea el contenido del popup para un usuario
      */
-    private createUserPopupContent(user: UserDto): string {
-        const lastUpdate = new Date(user.ubicacion!.geubfech).toLocaleString('es-EC', {
+    private createUserPopupContent(user: CUltimoRegxUsu): string {
+        const lastUpdate = new Date(user.fechaultimaconex!).toLocaleString('es-EC', {
             day: '2-digit',
             month: '2-digit',
             year: '2-digit',
@@ -1375,9 +1375,17 @@ export class MapService {
             minute: '2-digit'
         });
 
-        return `
+        var resultado = `
       <div class="bg-white rounded-lg shadow-sm border-0 overflow-hidden">
         <div class="p-2 space-y-1.5">
+        <div class="flex items-center space-x-1.5 text-xs">
+            <svg class="w-2.5 h-2.5 text-gray-400" viewBox="0 0 20 20">
+              <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"
+                d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1z" />
+            </svg>
+            <span class="text-gray-700 font-medium">${user.usunombre}</span>
+          </div>
+
           <div class="flex items-center space-x-1.5 text-xs">
             <svg class="w-2.5 h-2.5 text-gray-400" viewBox="0 0 20 20">
               <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"
@@ -1387,13 +1395,15 @@ export class MapService {
             <span class="text-gray-400">•</span>
             <span class="text-gray-500">${user.usucodv}</span>
           </div>
+`+ (user.usuemail==""?``:`
           <div class="flex items-center space-x-1.5 text-xs">
             <svg class="w-2.5 h-2.5 text-gray-400" viewBox="0 0 20 20">
               <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"
                 d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
             </svg>
-            <span class="text-gray-600 text-xs">${user.usuemail || 'No tiene correo'}</span>
+            <span class="text-gray-600 text-xs">${user.usuemail}</span>
           </div>
+`)+`
           <div class="flex items-center space-x-1.5 text-xs">
             <svg class="w-2.5 h-2.5 text-gray-400" viewBox="0 0 20 20">
               <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"
@@ -1401,13 +1411,16 @@ export class MapService {
             </svg>
             <span class="text-gray-500">Última ubicación: ${lastUpdate}</span>
           </div>
+          `+ (!user.enlinea?``:`
           <div class="flex items-center space-x-1.5 mt-2">
             <div class="w-2 h-2 bg-green-400 rounded-full"></div>
-            <span class="text-xs text-green-600 font-medium">Usuario activo</span>
+            <span class="text-xs text-green-600 font-medium">En Linea</span>
           </div>
+          `)+`
         </div>
       </div>
     `;
+    return resultado;
     }
 
     /**
@@ -1476,10 +1489,10 @@ export class MapService {
     /**
      * Centra el mapa en un usuario específico
      */
-    focusOnUser(user: UserDto): void {
-        if (!this.map || !user.ubicacion) return;
+    focusOnUser(user: CUltimoRegxUsu): void {
+        if (!this.map) return;
 
-        this.map.setView([user.ubicacion.geublat, user.ubicacion.geublon], 15);
+        this.map.setView([user.latitud, user.longitud], 15);
 
         const marker = this.userMarkers.get(user.usucod);
         if (marker) {
@@ -2325,15 +2338,15 @@ export class MapService {
         this.clearOrderMarkers();
     }
 
-    updateUserMarkersLocation(users: UserDto[]): void {
+    updateUserMarkersLocation(users: CUltimoRegxUsu[]): void {
         if (!this.map || !this.markerClusterGroup) return;
 
         users.forEach((user) => {
-            if (user.ubicacion?.geublat && user.ubicacion?.geublon) {
+            if (user.latitud && user.longitud) {
                 const existingMarker = this.userMarkers.get(user.usucod);
 
                 if (existingMarker) {
-                    const newLatLng = L.latLng(user.ubicacion.geublat, user.ubicacion.geublon);
+                    const newLatLng = L.latLng(user.latitud, user.longitud);
                     existingMarker.setLatLng(newLatLng);
                     const popupContent = this.createUserPopupContent(user);
                     existingMarker.setPopupContent(popupContent);

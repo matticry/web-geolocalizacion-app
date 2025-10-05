@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { catchError, finalize, Observable, of, Subject, takeUntil, tap } from 'rxjs';
-import { UserDto } from '@/core/models/UserDto';
+import { CUltimoRegxUsu } from '@/core/models/CUltimoRegxUsu';
 import { MapService, SearchResult } from '@/core/services/map.service';
 import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -47,9 +47,9 @@ export class ChangeAddressReviewComponent implements OnInit, OnDestroy, AfterVie
     loadingCustomers: boolean = true;
 
     // Propiedades de usuarios
-    users: UserDto[] = [];
-    filteredUsers: UserDto[] = [];
-    paginatedUsers: UserDto[] = [];
+    users: CUltimoRegxUsu[] = [];
+    filteredUsers: CUltimoRegxUsu[] = [];
+    paginatedUsers: CUltimoRegxUsu[] = [];
     loading: boolean = true;
 
     // Propiedades de paginación

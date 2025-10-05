@@ -10,7 +10,7 @@ import { TableModule } from 'primeng/table';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
-import { UserDto } from '@/core/models/UserDto';
+import { CUltimoRegxUsu } from '@/core/models/CUltimoRegxUsu';
 import { MapService, SearchResult } from '@/core/services/map.service';
 import { Subject, takeUntil } from 'rxjs';
 import { UserService } from '@/core/services/user.service';
@@ -59,10 +59,10 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     activeIndex: number | undefined = 0;
 
     // Propiedades de usuarios
-    users: UserDto[] = [];
-    filteredUsers: UserDto[] = [];
-    paginatedUsers: UserDto[] = [];
-    selectedUser: UserDto | null = null;
+    users: CUltimoRegxUsu[] = [];
+    filteredUsers: CUltimoRegxUsu[] = [];
+    paginatedUsers: CUltimoRegxUsu[] = [];
+    selectedUser: CUltimoRegxUsu | null = null;
     loading: boolean = true;
 
     // Propiedades de paginación
@@ -220,7 +220,7 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     getAllUsers(): void {
         this.loading = true;
         this.userService.getAllListUser().subscribe({
-            next: (data: UserDto[]) => {
+            next: (data: CUltimoRegxUsu[]) => {
                 this.users = data;
                 this.filteredUsers = [...this.users];
                 this.updatePagination();
@@ -246,7 +246,7 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Nuevo método para mapear usuarios a opciones
 
-    private mapUsersToVendorOptions(users: UserDto[]): void {
+    private mapUsersToVendorOptions(users: CUltimoRegxUsu[]): void {
         this.vendorOptions = users.map((user) => ({
             label: user.usunombre,
             value: user.usucodv,
@@ -417,7 +417,7 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         this.paginatedUsers = this.filteredUsers.slice(start, end);
     }
 
-    selectUser(user: UserDto): void {
+    selectUser(user: CUltimoRegxUsu): void {
         this.selectedUser = user;
         this.mapService.focusOnUser(user);
     }

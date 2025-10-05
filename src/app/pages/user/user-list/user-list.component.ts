@@ -1,4 +1,4 @@
-import { UserDto } from '@/core/models/UserDto';
+import { CUltimoRegxUsu } from '@/core/models/CUltimoRegxUsu';
 import { UserService } from '@/core/services/user.service';
 import { GeocercaService } from '@/core/services/geocerca.service';
 import { CrearGeocercaDto, CoordenadaDto } from '@/core/models/Geocercas/GeocercaDto';
@@ -92,10 +92,10 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
     sectorSeleccionado: Parroquia | null = null;
 
     // Propiedades de usuarios
-    users: UserDto[] = [];
-    filteredUsers: UserDto[] = [];
-    paginatedUsers: UserDto[] = [];
-    selectedUser: UserDto | null = null;
+    users: CUltimoRegxUsu[] = [];
+    filteredUsers: CUltimoRegxUsu[] = [];
+    paginatedUsers: CUltimoRegxUsu[] = [];
+    selectedUser: CUltimoRegxUsu | null = null;
     loading: boolean = true;
 
     // Propiedades de paginación
@@ -370,7 +370,7 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
     getAllUsers(): void {
         this.loading = true;
         this.userService.getAllListUser().subscribe({
-            next: (data: UserDto[]) => {
+            next: (data: CUltimoRegxUsu[]) => {
                 this.users = data;
                 this.filteredUsers = [...this.users];
                 this.updatePagination();
@@ -447,11 +447,11 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.paginatedUsers = this.filteredUsers.slice(start, end);
     }
 
-    selectUser(user: UserDto): void {
+    selectUser(user: CUltimoRegxUsu): void {
         this.selectedUser = user;
 
-        if (user.ubicacion && this.map) {
-            this.map.setView([user.ubicacion.geublat, user.ubicacion.geublon], 15);
+        if (this.map) {
+            this.map.setView([user.latitud, user.longitud], 15);
 
             const marker = this.userMarkers.get(user.usucod);
             if (marker) {
@@ -712,7 +712,7 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
         this.userMarkers.clear();
 
         this.users.forEach(user => {
-            if (user.ubicacion?.geublat && user.ubicacion?.geublon) {
+            if (user.latitud && user.longitud) {
                 // Icono personalizado para usuarios
                 const customIcon = L.divIcon({
                     html: `
@@ -736,7 +736,7 @@ export class UserListComponent implements OnInit, AfterViewInit, OnDestroy {
                     iconAnchor: [16, 16]
                 });
 
-                const marker = L.marker([user.ubicacion.geublat, user.ubicacion.geublon], {
+                const marker = L.marker([user.latitud, user.longitud], {
                     icon: customIcon
                 });
 
