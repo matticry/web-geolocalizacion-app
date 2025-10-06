@@ -27,11 +27,15 @@ interface MenuChangeEvent {
 })
 export class LayoutService {
     _config: layoutConfig = {
-        preset: 'Aura',
-        primary: 'emerald',
-        surface: null,
-        darkTheme: false,
-        menuMode: 'static'
+        //preset: 'Aura',
+        preset: localStorage.getItem('presets') == null?'Aura':localStorage.getItem('presets')!,
+        //primary: 'emerald',
+        primary: localStorage.getItem('prycolor') == null?'emerald':localStorage.getItem('prycolor')!,
+        //surface: null,
+        surface: localStorage.getItem('sfcolor') == null?'null':localStorage.getItem('sfcolor')!,
+        darkTheme: localStorage.getItem('theme') =='dark'?true:false,
+        //menuMode: 'static'
+        menuMode: localStorage.getItem('menumode') == null?'static':localStorage.getItem('menumode')!
     };
 
     _state: LayoutState = {
@@ -79,6 +83,12 @@ export class LayoutService {
     private initialized = false;
 
     constructor() {
+        localStorage.setItem('theme',localStorage.getItem('theme') =='dark'?'dark':'light',);
+        localStorage.setItem('prycolor',localStorage.getItem('prycolor') == null?'emerald':localStorage.getItem('prycolor')!,);
+        localStorage.setItem('presets',localStorage.getItem('presets') == null?'Aura':localStorage.getItem('presets')!,);
+        localStorage.setItem('menumode',localStorage.getItem('menumode') == null?'static':localStorage.getItem('menumode')!,);
+
+
         effect(() => {
             const config = this.layoutConfig();
             if (config) {

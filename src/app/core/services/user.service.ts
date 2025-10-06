@@ -10,7 +10,8 @@ import { VendedoresQueryParams, VendedoresResponse } from '@/core/models/Geocerc
     providedIn: 'root'
 })
 export class UserService {
-    private readonly baseUrl = environment.apiUrl + '/usuarios';
+    private readonly baseUrl = environment.apiUrl ;
+    //private readonly baseUrl = environment.apiUrl + '/usuarios';
     private readonly baseUrl2 = environment.apiUrl2;
     private readonly apiUrlUsuarios = environment.apiUrlUsuarios;
     private readonly authService = inject(AuthService);
@@ -24,7 +25,7 @@ export class UserService {
             Authorization: `Bearer ${token}`
         });
         //return this.http.get<CUltimoRegxUsu[]>(`${this.baseUrl}/listacompleta`, { headers });
-        return this.http.get<CUltimoRegxUsu[]>(`${this.apiUrlUsuarios}/geolocalizacion/webtodoslosusuarios`, { headers });
+        return this.http.get<CUltimoRegxUsu[]>(`${this.baseUrl}/geolocalizacion/webtodoslosusuarios`, { headers });
     }
     getAllListUser2(skipLoader = false): Observable<CUltimoRegxUsu[]> {
         const token = this.authService.getToken();
@@ -36,7 +37,7 @@ export class UserService {
             headers = headers.set('X-Skip-Loader', 'true');
         }
 
-        return this.http.get<CUltimoRegxUsu[]>(`${this.baseUrl}/listacompleta`, { headers });
+        return this.http.get<CUltimoRegxUsu[]>(`${this.baseUrl}/usuarios/listacompleta`, { headers });
     }
     getVendedoresConGeocercas(params?: VendedoresQueryParams): Observable<VendedoresResponse> {
         const token = this.authService.getToken();

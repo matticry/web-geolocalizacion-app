@@ -417,8 +417,10 @@ export class AppConfigurator {
     updateColors(event: any, type: string, color: any) {
         if (type === 'primary') {
             this.layoutService.layoutConfig.update((state) => ({ ...state, primary: color.name }));
+            localStorage.setItem('prycolor', color.name);
         } else if (type === 'surface') {
             this.layoutService.layoutConfig.update((state) => ({ ...state, surface: color.name }));
+            localStorage.setItem('sfcolor', color.name);
         }
         this.applyTheme(type, color);
 
@@ -434,6 +436,7 @@ export class AppConfigurator {
     }
 
     onPresetChange(event: any) {
+        localStorage.setItem('presets', event);
         this.layoutService.layoutConfig.update((state) => ({ ...state, preset: event }));
         const preset = presets[event as KeyOfType<typeof presets>];
         const surfacePalette = this.surfaces.find((s) => s.name === this.selectedSurfaceColor())?.palette;
@@ -441,6 +444,7 @@ export class AppConfigurator {
     }
 
     onMenuModeChange(event: string) {
+        localStorage.setItem('menumode', event);
         this.layoutService.layoutConfig.update((prev) => ({ ...prev, menuMode: event }));
     }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject, input, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -70,7 +70,20 @@ export class AppTopbar {
 
     constructor(public layoutService: LayoutService) {}
 
+    LayoutService = inject(LayoutService);
+
+    float = input<boolean>(true);
+
+    isDarkTheme = computed(() => this.LayoutService.layoutConfig().darkTheme);
+    
     toggleDarkMode() {
-        this.layoutService.layoutConfig.update((state) => ({ ...state, darkTheme: !state.darkTheme }));
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            this.LayoutService.layoutConfig.update((state) => ({ ...state, darkTheme: false }));
+            localStorage.setItem('theme', 'light');
+        } else if (savedTheme === 'light') {
+            this.LayoutService.layoutConfig.update((state) => ({ ...state, darkTheme: true }));
+            localStorage.setItem('theme', 'dark');
+        }
     }
 }

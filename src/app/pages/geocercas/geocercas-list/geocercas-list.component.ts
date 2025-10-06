@@ -522,7 +522,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         this.userService.getAllListUser().subscribe({
             next: (users) => {
                 this.users = users;
-                console.log(users);
                 this.filteredUsers = [...users];
                 this.resetInfiniteScroll();
                 this.updatePagination();
