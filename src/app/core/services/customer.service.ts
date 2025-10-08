@@ -6,10 +6,13 @@ import { CustomerResponseDto } from '@/core/models/Customer/CustomerResponseDto'
 import { Observable } from 'rxjs';
 import { CustomerAreaRequestDto } from '@/core/models/Customer/CustomerAreaRequestDto';
 import { FilterRequest } from '@/core/models/Filter/FilterRequest';
+import { CFiltroHistorialxDia } from '@/core/models/Filter/CFiltroHistorialxDia';
 import { TrackingResponse } from '@/core/models/Filter/TrackingResponse';
 import { CustomerUpdateInfo } from '@/core/models/Customer/CustomerUpdateInfo';
 import { SolicitudData } from '@/core/models/SolicitudData';
 import { UpdateCustomerLocation } from '@/core/models/Customer/UpdateCustomerLocation';
+import { RWebHistorialxDia } from '../models/Responses/RWebHistorialxDia';
+
 
 @Injectable({
     providedIn: 'root'
@@ -42,7 +45,29 @@ export class CustomerService {
             { headers }
         );
     }
+    POSTHistorialxDia(_CFiltroHistorialxDia: CFiltroHistorialxDia): Observable<RWebHistorialxDia> { //TrackingResponse> {
+        const token = this.authService.getToken();
 
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        });
+
+        return this.http.post<RWebHistorialxDia>(
+            `${this.baseUrl}/geolocalizacion/webhistorialxdia`,
+            _CFiltroHistorialxDia,
+            { headers }
+        );
+    }
+
+    /*POSTHistorialxDia(_CFiltroHistorialxDia: CFiltroHistorialxDia ): Observable<TrackingResponse> {
+        const token = this.authService.getToken();
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        });
+        return this.http.post<CustomerResponseDto[]>(`${this.baseUrl}/geolocalizacion/webhistorialxdia`, _CFiltroHistorialxDia, { headers });
+    }*/
     getCustomersByCodeVendor(codvendedor: string): Observable<CustomerResponseDto[]> {
         const token = this.authService.getToken();
         const headers = new HttpHeaders({

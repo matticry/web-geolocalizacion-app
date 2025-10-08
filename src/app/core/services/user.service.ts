@@ -27,6 +27,16 @@ export class UserService {
         //return this.http.get<CUltimoRegxUsu[]>(`${this.baseUrl}/listacompleta`, { headers });
         return this.http.get<CUltimoRegxUsu[]>(`${this.baseUrl}/geolocalizacion/webtodoslosusuarios`, { headers });
     }
+
+    getCosnsultaCompleta(): Observable<CUltimoRegxUsu[]> {
+        const token = this.authService.getToken();
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`
+        });
+        //return this.http.get<CUltimoRegxUsu[]>(`${this.baseUrl}/listacompleta`, { headers });
+        return this.http.get<CUltimoRegxUsu[]>(`${this.baseUrl}/geolocalizacion/webtodoslosusuarios`, { headers });
+    }
+
     getAllListUser2(skipLoader = false): Observable<CUltimoRegxUsu[]> {
         const token = this.authService.getToken();
         let headers = new HttpHeaders({

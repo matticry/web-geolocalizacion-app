@@ -42,6 +42,8 @@ import { NominatimReverseResponse } from '@/core/models/nominatim-response.inter
 import { FilterRequest, ZonaBusquedaFilter } from '@/core/models/Filter/FilterRequest';
 import { ChargeDto, OrderDto, TrackingResponse } from '@/core/models/Filter/TrackingResponse';
 import { MultiSelect } from 'primeng/multiselect';
+import { CFiltroHistorialxDia } from '@/core/models/Filter/CFiltroHistorialxDia';
+import { RWebHistorialxDia } from '@/core/models/Responses/RWebHistorialxDia';
 
 @Component({
     selector: 'app-geocercas',
@@ -561,7 +563,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         this.selectedUser = user;
         this.selectedGeofence = [];
 
-        this.mapService.focusOnUser(user);
+        //this.mapService.focusOnUser(user);
 
         const bounds = this.mapService.getCurrentBounds();
         this.searchCustomersInCurrentArea(bounds);
@@ -893,7 +895,46 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         this.loadingOrders = true;
         this.loadingCharges = true;
 
+
+        const _CFiltroHistorialxDia: CFiltroHistorialxDia = {
+            usuarios: ["AM"],
+            ifpedidos: true,
+            ifcobros: true,
+            clientesrecorrido: true,
+        };
+
         this.customerService
+            .POSTHistorialxDia(_CFiltroHistorialxDia)
+            .pipe(
+                takeUntil(this.destroy$),
+                finalize(() => {
+                    this.loading = false;
+                    this.loadingCustomers = false;
+                    this.loadingOrders = false;
+                    this.loadingCharges = false;
+                })
+            )
+            .subscribe({
+                next: (response: RWebHistorialxDia) => {
+                    //this.processTrackingResponse(response);
+                    console.log(response)
+                    this.msgService.add({
+                        severity: 'success',
+                        summary: 'Éxito',
+                        detail: 'Filtros aplicados correctamente'
+                    });
+                },
+                error: (error: HttpErrorResponse) => {
+                    console.error('Error al aplicar filtros:', error);
+                    this.msgService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'No se pudieron aplicar los filtros'
+                    });
+                }
+            });
+
+        /*this.customerService
             .getTrackingDetails(filterRequest)
             .pipe(
                 takeUntil(this.destroy$),
@@ -921,7 +962,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
                         detail: 'No se pudieron aplicar los filtros'
                     });
                 }
-            });
+            });*/
     }
 
     /**

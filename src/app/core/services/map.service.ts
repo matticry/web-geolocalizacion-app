@@ -1157,10 +1157,10 @@ export class MapService {
             mapInstance.on('moveend zoomend', () => {
                 const bounds = mapInstance.getBounds();
                 this.boundsSubject.next(bounds);
-                console.log('Nuevas coordenadas:', {
+                /*console.log('Nuevas coordenadas:', {
                     southWest: bounds.getSouthWest(),
                     northEast: bounds.getNorthEast()
-                });
+                });*/
             });
 
             await this.initializeMarkerCluster();
