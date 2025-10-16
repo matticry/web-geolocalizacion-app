@@ -10,6 +10,7 @@ import { GeofenceDto } from '@/core/models/Geocercas/GeocercaValidationResponseD
 import { ChargeDto, LocationDto, OrderDto, UserLocationDto } from '../models/Filter/TrackingResponse';
 import { SolicitudData } from '@/core/models/SolicitudData';
 import { CUltimoRegxUsu } from '../models/CUltimoRegxUsu';
+import { Mpa_GEO_Cobros, Mpa_UltUbi } from '../models/Responses/RWebHistorialxDia';
 
 
 //===== INTERFACES ======//
@@ -352,7 +353,7 @@ export class MapService {
         this.map.addLayer(this.combinedClusterGroup!);
     }
 
-    addCombinedMarkers(charges: ChargeDto[], orders: OrderDto[], customers: CustomerResponseDto[]): void {
+    addCombinedMarkers(charges: Mpa_GEO_Cobros[], orders: OrderDto[], customers: CustomerResponseDto[]): void {
         if (!this.map || !this.L) {
             console.warn('Mapa o Leaflet no están inicializados');
             return;
@@ -381,7 +382,7 @@ export class MapService {
                     chargeList.forEach((charge, idx) => {
                         const offset = this.calculateOffset(idx);
                         const marker = this.createChargeMarker(charge);
-                        this.chargeMarkers.set(charge.cabnumero.toString(), marker);
+                        this.chargeMarkers.set(charge.cobning.toString(), marker);
                         marker.options.markerType = 'charge';
                         marker.setLatLng([charge.cablat + offset.lat, charge.cablon + offset.lng]);
                         this.combinedMarkers.set(`${coordKey}_charge_${idx}`, marker);
@@ -426,11 +427,11 @@ export class MapService {
         }
     }
 
-    private detectCoincidentMarkers(charges: ChargeDto[], orders: OrderDto[], customers: CustomerResponseDto[]): {
-        combinedCoords: Map<string, { chargeList?: ChargeDto[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>,
+    private detectCoincidentMarkers(charges: Mpa_GEO_Cobros[], orders: OrderDto[], customers: CustomerResponseDto[]): {
+        combinedCoords: Map<string, { chargeList?: Mpa_GEO_Cobros[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>,
         isolatedCustomers: CustomerResponseDto[] }
     {
-        const coordMap = new Map<string, { chargeList?: ChargeDto[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>();
+        const coordMap = new Map<string, { chargeList?: Mpa_GEO_Cobros[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>();
         const proximityThreshold = 0.0001;
 
         charges.forEach(charge => {
@@ -489,7 +490,7 @@ export class MapService {
     }
 
     private generateCombinations(
-        charges: ChargeDto[],
+        charges: Mpa_GEO_Cobros[],
         orders: OrderDto[],
         customers: CustomerResponseDto[]
     ): Array<{ type: string, data: any, lat: number, lng: number }> {
@@ -886,7 +887,7 @@ export class MapService {
         });
     }
 
-    focusOnCharge(charge: ChargeDto, zoom: number = 19): void {
+    focusOnCharge(charge: Mpa_GEO_Cobros, zoom: number = 19): void {
         if (!this.map || !charge.cablat || !charge.cablon) return;
 
         this.map.flyTo([charge.cablat, charge.cablon], zoom, {
@@ -894,7 +895,7 @@ export class MapService {
         });
 
         this.map.once('moveend', () => {
-            const marker = this.chargeMarkers.get(charge.cabnumero.toString());
+            const marker = this.chargeMarkers.get(charge.cobning.toString());
             marker?.openPopup();
         });
     }
@@ -1743,8 +1744,8 @@ export class MapService {
     /**
      * Agrega marcadores de tracking (ubicaciones del vendedor) al mapa
      */
-    addTrackingMarkers(userLocations: UserLocationDto[]): void {
-        if (!this.map || !this.L || userLocations.length === 0) {
+    addTrackingMarkers(locations: Mpa_UltUbi[]): void {
+        if (!this.map || !this.L || locations.length === 0) {
             console.warn('Mapa, Leaflet o ubicaciones no están disponibles');
             return;
         }
@@ -1753,17 +1754,17 @@ export class MapService {
             this.clearTrackingMarkers();
             this.initializeTrackingCluster();
 
-            const userLocation = userLocations[0];
-            const locations = userLocation.ubicaciones;
+            //const userLocation = locations[0];
+            //const locations = userLocation;
 
-            const mostRecentLocation = locations.reduce((latest, current) => (new Date(current.tiempo) > new Date(latest.tiempo) ? current : latest));
+            const mostRecentLocation = locations.reduce((latest, current) => (new Date(current.geubfech) > new Date(latest.geubfech) ? current : latest));
 
             locations.forEach((location, index) => {
-                if (location.latitud && location.longitud) {
+                if (location.geublat && location.geublon) {
                     try {
-                        const isLastLocation = location.tiempo === mostRecentLocation.tiempo;
+                        const isLastLocation = location.geubfech === mostRecentLocation.geubfech;
                         const marker = this.createTrackingMarker(location, index, isLastLocation);
-                        const markerId = `${location.latitud}-${location.longitud}-${location.tiempo}`;
+                        const markerId = `${location.geublat}-${location.geublon}-${location.geubfech}`;
                         this.trackingMarkers.set(markerId, marker);
                         this.trackingClusterGroup?.addLayer(marker);
                     } catch (error) {
@@ -1772,7 +1773,7 @@ export class MapService {
                 }
             });
 
-            this.createTrackingPath(userLocations);
+            this.createTrackingPath(locations);
 
             setTimeout(() => {
                 this.map?.invalidateSize();
@@ -1790,7 +1791,7 @@ export class MapService {
     /**
      * Agrega marcadores de cobros al mapa
      */
-    addChargeMarkers(charges: ChargeDto[]): void {
+    addChargeMarkers(charges: Mpa_GEO_Cobros[]): void {
         if (!this.map || !this.L) {
             console.warn('Mapa o Leaflet no están inicializados');
             return;
@@ -1804,7 +1805,7 @@ export class MapService {
                 if (charge.cablat && charge.cablon) {
                     try {
                         const marker = this.createChargeMarker(charge);
-                        this.chargeMarkers.set(charge.cabnumero.toString(), marker);
+                        this.chargeMarkers.set(charge.cobning.toString(), marker);
                         this.chargeClusterGroup?.addLayer(marker);
                     } catch (error) {
                         console.error('❌ Error al agregar marcador de cobro:', error, charge);
@@ -1868,9 +1869,9 @@ export class MapService {
     /**
      * Crea marcador para ubicación de tracking
      */
-    private createTrackingMarker(location: LocationDto, index: number, isLastLocation: boolean): L.Marker {
+    private createTrackingMarker(location: Mpa_UltUbi, index: number, isLastLocation: boolean): L.Marker {
         const customIcon = this.createTrackingIcon(index, isLastLocation);
-        const marker = L.marker([location.latitud, location.longitud], {
+        const marker = L.marker([location.geublat, location.geublon], {
             icon: customIcon
         });
 
@@ -1886,7 +1887,7 @@ export class MapService {
     /**
      * Crea marcador para cobro
      */
-    private createChargeMarker(charge: ChargeDto): any {
+    private createChargeMarker(charge: Mpa_GEO_Cobros): any {
         if (!this.L) {
             throw new Error('Leaflet no está cargado');
         }
@@ -2024,8 +2025,8 @@ export class MapService {
     /**
      * Crea popup para ubicación de tracking
      */
-    private createTrackingPopupContent(location: LocationDto, index: number, isLastLocation: boolean = false): string {
-        const date = new Date(location.tiempo);
+    private createTrackingPopupContent(location: Mpa_UltUbi, index: number, isLastLocation: boolean = false): string {
+        const date = new Date(location.geubfech);
         const formattedDate = date.toLocaleDateString('es-ES');
         const formattedTime = date.toLocaleTimeString('es-ES', {
             hour: '2-digit',
@@ -2062,7 +2063,7 @@ export class MapService {
                     <svg class="w-2.5 h-2.5 text-gray-400" viewBox="0 0 20 20">
                         <path fill="currentColor" d="M10 2a6 6 0 00-6 6c0 4.314 5.686 9.32 5.814 9.45a.5.5 0 00.372 0C10.314 17.32 16 12.314 16 8a6 6 0 00-6-6z"/>
                     </svg>
-                    <span>${location.latitud.toFixed(6)}, ${location.longitud.toFixed(6)}</span>
+                    <span>${location.geublat.toFixed(6)}, ${location.geublon.toFixed(6)}</span>
                 </div>
                 <div class="flex items-center space-x-2 text-xs text-gray-600">
                     <svg class="w-2.5 h-2.5 text-gray-400" viewBox="0 0 20 20">
@@ -2078,7 +2079,7 @@ export class MapService {
     /**
      * Crea popup para cobro
      */
-    private createChargePopupContent(charge: ChargeDto): string {
+    private createChargePopupContent(charge: Mpa_GEO_Cobros): string {
         const date = new Date(charge.cabfecha);
         const formattedDate = date.toLocaleDateString('es-ES');
 
@@ -2089,7 +2090,7 @@ export class MapService {
                 <svg class="w-4 h-4" viewBox="0 0 24 24" style="fill: currentColor;">
                     <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
                 </svg>
-                <span class="font-semibold text-sm">Cobro #${charge.cabnumero}</span>
+                <span class="font-semibold text-sm">Cobro #${charge.cobning}</span>
             </div>
         </div>
         <div class="p-3 space-y-2">
@@ -2097,13 +2098,13 @@ export class MapService {
                 <svg class="w-3 h-3 text-gray-400" viewBox="0 0 20 20">
                     <path fill="currentColor" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <span class="font-medium text-gray-800">${charge.cabclave1}</span>
+                <span class="font-medium text-gray-800">${charge.cobclave1}</span>
             </div>
             <div class="flex items-center space-x-2 text-xs text-gray-600">
                 <svg class="w-2.5 h-2.5 text-gray-400" viewBox="0 0 20 20">
                     <path fill="currentColor" d="M6 2a1 1 0 000 2h8a1 1 0 100-2H6zM3 6a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V6z"/>
                 </svg>
-                <span>Recibo: ${charge.cabnrecibo}</span>
+                <span>Recibo: ${charge.cobning}</span>
             </div>
             <div class="flex items-center space-x-2 text-xs text-gray-600">
                 <svg class="w-2.5 h-2.5 text-gray-400" viewBox="0 0 20 20">
@@ -2115,13 +2116,13 @@ export class MapService {
                 <svg class="w-2.5 h-2.5 text-gray-400" viewBox="0 0 20 20">
                     <path fill="currentColor" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4z"/>
                 </svg>
-                <span>Vendedor: ${charge.cabnvendedor}</span>
+                <span>Vendedor: ${charge.cobclave}</span>
             </div>
             <div class="flex items-center space-x-2 text-xs text-gray-600">
                 <svg class="w-2.5 h-2.5 text-gray-400" viewBox="0 0 20 20">
                     <path fill="currentColor" d="M10 2L3 7v11h4v-6h6v6h4V7l-7-5z"/>
                 </svg>
-                <span>Sucursal: ${charge.cabsucu}</span>
+                <span>Sucursal: ${charge.cobnombre}</span>
             </div>
         </div>
     </div>
@@ -2265,15 +2266,15 @@ export class MapService {
     /**
      * Crea línea de recorrido del vendedor
      */
-    private createTrackingPath(userLocations: UserLocationDto[]): void {
-        if (!this.map || !this.L || userLocations.length === 0) return;
+    private createTrackingPath(userLocation: Mpa_UltUbi[]): void {
+        if (!this.map || !this.L || userLocation.length === 0) return;
 
-        const userLocation = userLocations[0]; // Solo un usuario
-        if (userLocation.ubicaciones.length < 2) return;
+        //const userLocation = userLocations[0]; // Solo un usuario
+        if (userLocation.length < 2) return;
 
-        const sortedLocations = userLocation.ubicaciones.sort((a, b) => new Date(a.tiempo).getTime() - new Date(b.tiempo).getTime());
+        const sortedLocations = userLocation.sort((a, b) => new Date(a.geubtim).getTime() - new Date(b.geubtim).getTime());
 
-        const pathCoordinates: [number, number][] = sortedLocations.map((location) => [location.latitud, location.longitud]);
+        const pathCoordinates: [number, number][] = sortedLocations.map((location) => [location.geublat, location.geublon]);
 
         this.trackingPath = this.L.polyline(pathCoordinates, {
             color: '#3B82F6',

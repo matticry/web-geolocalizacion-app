@@ -43,7 +43,7 @@ import { FilterRequest, ZonaBusquedaFilter } from '@/core/models/Filter/FilterRe
 import { ChargeDto, OrderDto, TrackingResponse } from '@/core/models/Filter/TrackingResponse';
 import { MultiSelect } from 'primeng/multiselect';
 import { CFiltroHistorialxDia } from '@/core/models/Filter/CFiltroHistorialxDia';
-import { RWebHistorialxDia } from '@/core/models/Responses/RWebHistorialxDia';
+import { Mpa_GEO_Cobros, RWebHistorialxDia } from '@/core/models/Responses/RWebHistorialxDia';
 
 @Component({
     selector: 'app-geocercas',
@@ -142,9 +142,9 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     orderSearchTerm: string = '';
 
     //Propiedades de busqueda de cobros
-    charges: ChargeDto[] = [];
+    charges: Mpa_GEO_Cobros[] = [];
     loadingCharges: boolean = false;
-    filteredCharges: ChargeDto[] = [];
+    filteredCharges: Mpa_GEO_Cobros[] = [];
     chargeSearchTerm: string = '';
 
 
@@ -457,10 +457,10 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         const term = this.chargeSearchTerm.toLowerCase().trim();
         this.filteredCharges = term
             ? chargesWithCoordinates.filter(charge =>
-                charge.cabclave1.toLowerCase().includes(term) ||
-                charge.cabnrecibo.toLowerCase().includes(term) ||
-                charge.cabnumero.toString().includes(term) ||
-                charge.cabnvendedor.toLowerCase().includes(term)
+                charge.cobclave1.toLowerCase().includes(term) ||
+                charge.cobning.toLowerCase().includes(term) ||
+                charge.total.toString().includes(term) ||
+                charge.cobnombre.toLowerCase().includes(term)
             )
             : [...chargesWithCoordinates];
     };
@@ -726,13 +726,13 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         });
     }
 
-    focusChargeOnMap(charge: ChargeDto): void {
+    focusChargeOnMap(charge: Mpa_GEO_Cobros): void {
         this.mapService.focusOnCharge(charge);
 
         this.msgService.add({
             severity: 'info',
             summary: 'Carga localizada',
-            detail: `Mapa centrado en ${charge.cabnumero}`,
+            detail: `Mapa centrado en ${charge.cobclave1}-${charge.cobning}`,
             life: 2000
         });
     }
@@ -897,7 +897,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
 
 
         const _CFiltroHistorialxDia: CFiltroHistorialxDia = {
-            usuarios: ["AM"],
+            usuarios: [this.selectedUser.usucod],
             ifpedidos: true,
             ifcobros: true,
             clientesrecorrido: true,
@@ -916,7 +916,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
             )
             .subscribe({
                 next: (response: RWebHistorialxDia) => {
-                    //this.processTrackingResponse(response);
+                    this.processTrackingResponse(response);
                     console.log(response)
                     this.msgService.add({
                         severity: 'success',
@@ -1021,11 +1021,11 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         return true;
     }
 
-    private processTrackingResponse(response: TrackingResponse): void {
+    private processTrackingResponse(response: RWebHistorialxDia): void {
         this.validateTrackingDataAvailability(response);
 
-        if (response.ubicaciones && response.ubicaciones.length > 0) {
-            this.mapService.addTrackingMarkers(response.ubicaciones);
+        if (response.recorrido && response.recorrido.length > 0) {
+            this.mapService.addTrackingMarkers(response.recorrido);
         }
 
         this.loadingCustomers = false;
@@ -1053,16 +1053,16 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     /**
      * Centra el mapa en base a los datos filtrados
      */
-    private centerMapOnFilteredData(response: TrackingResponse): void {
+    private centerMapOnFilteredData(response: RWebHistorialxDia): void {
         const allCoordinates: [number, number][] = [];
 
-        if (response.ubicaciones && response.ubicaciones.length > 0) {
-            response.ubicaciones.forEach((userLocation) => {
-                userLocation.ubicaciones.forEach((location) => {
-                    if (location.latitud && location.longitud) {
-                        allCoordinates.push([location.latitud, location.longitud]);
+        if (response.recorrido && response.recorrido.length > 0) {
+            response.recorrido.forEach((location) => {
+                //userLocation.forEach((location) => {
+                    if (location.geublat && location.geublon) {
+                        allCoordinates.push([location.geublat, location.geublon]);
                     }
-                });
+                //});
             });
         }
 
@@ -1100,7 +1100,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     /**
      * Valida la disponibilidad de datos en la respuesta y muestra mensajes informativos
      */
-    private validateTrackingDataAvailability(response: TrackingResponse): void {
+    private validateTrackingDataAvailability(response: RWebHistorialxDia): void {
         const emptyData: string[] = [];
 
         if (this.pedidosEnabled) {
@@ -1123,7 +1123,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
             });
         }
 
-        const hasAnyData = (response.ubicaciones?.length ?? 0) > 0 || (response.clientes?.length ?? 0) > 0 || (response.cobros?.length ?? 0) > 0 || (response.pedidos?.length ?? 0) > 0;
+        const hasAnyData = (response.recorrido?.length ?? 0) > 0 || (response.clientes?.length ?? 0) > 0 || (response.cobros?.length ?? 0) > 0 || (response.pedidos?.length ?? 0) > 0;
 
         if (response.clientes.length === 0) {
             this.msgService.add({

@@ -20,9 +20,9 @@ export interface Mpa_GEO_Pedidos {
     ubicacion: boolean;
 }
 export interface Mpa_GEO_Cobros {
-    cobclave1: number;
-    cobning: number;
-    cobvalida: number;
+    cobclave1: string;
+    cobning: string;
+    cobvalida: string;
     cabfecha: string;
     total: number;
     cobclave: string;
@@ -44,8 +44,10 @@ export interface Mpa_GEO_Clientes {
     longitud: number;
 }
 export interface Mpa_UltUbi {
-    tipoelementos: number;
-    recorrido: boolean;
-    usuarios: string[];
-    buscaxzona: number;
+    geubid: number;
+    geubusu: string;
+    geubfech: string;
+    geublat: number;
+    geublon: number;
+    geubtim: number;
 }

@@ -504,19 +504,19 @@
                                             </div>
                                             } @else if (charges.length > 0) {
                                             <div class="max-h-[60rem] overflow-y-auto space-y-3 custom-scrollbar">
-                                                @for (charge of filteredCharges; track charge.cabnumero) {
+                                                @for (charge of filteredCharges; track charge.cobning) {
                                                 <div
                                                     class="bg-white dark:bg-surface-800 p-4 rounded-lg border border-surface-200/60 dark:border-surface-700/60 hover:shadow-md transition-all duration-200 hover:border-emerald-200/60 dark:hover:border-emerald-600/60">
                                                     <div class="flex justify-between items-start mb-3">
                                                         <div class="flex-1 pr-2">
                                                             <h6
                                                                 class="font-semibold text-surface-900 dark:text-surface-100 text-sm m-0 leading-tight">
-                                                                Recibo: {{ charge.cabnrecibo }}
+                                                                Recibo: {{ charge.cobning }}
                                                             </h6>
                                                         </div>
                                                         <span
                                                             class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-emerald-100 dark:bg-emerald-900-40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700">
-                                                            #{{ charge.cabnumero }}
+                                                            #{{ charge.cobning }}
                                                         </span>
                                                     </div>
 
@@ -527,23 +527,23 @@
                                                                 class="pi pi-calendar w-3 text-emerald-500 dark:text-emerald-400"></i>
                                                             <span>{{ charge.cabfecha | date:'dd/MM/yyyy' }}</span>
                                                         </div>
-                                                        <div
+                                                        <!--<div
                                                             class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
                                                             <i
                                                                 class="pi pi-user w-3 text-emerald-500 dark:text-emerald-400"></i>
                                                             <span class="font-mono">{{ charge.cabnvendedor }}</span>
-                                                        </div>
+                                                        </div>-->
                                                         <div
                                                             class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
                                                             <i
                                                                 class="pi pi-building w-3 text-emerald-500 dark:text-emerald-400"></i>
-                                                            <span class="font-mono">{{ charge.cabsucu }}</span>
+                                                            <span class="font-mono">{{ charge.cobclave }}</span>
                                                         </div>
                                                         <div
                                                             class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
                                                             <i
                                                                 class="pi pi-id-card w-3 text-emerald-500 dark:text-emerald-400"></i>
-                                                            <span class="font-mono">{{ charge.cabclave1 }}</span>
+                                                            <span class="font-mono">{{ charge.cobclave1 }}</span>
                                                         </div>
                                                     </div>
 
