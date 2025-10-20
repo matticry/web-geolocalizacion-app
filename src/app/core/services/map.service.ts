@@ -1757,12 +1757,18 @@ export class MapService {
             //const userLocation = locations[0];
             //const locations = userLocation;
 
-            const mostRecentLocation = locations.reduce((latest, current) => (new Date(current.geubfech) > new Date(latest.geubfech) ? current : latest));
+            //const mostRecentLocation = locations.reduce((latest, current) => (new Date(current.geubfech) > new Date(latest.geubfech) ? current : latest));
+            const mostRecentLocation = locations[0];
+            //console.log(mostRecentLocation);
+            //console.log(locations);
 
             locations.forEach((location, index) => {
+                
                 if (location.geublat && location.geublon) {
                     try {
                         const isLastLocation = location.geubfech === mostRecentLocation.geubfech;
+                        //console.log(location);
+                        //console.log(index);
                         const marker = this.createTrackingMarker(location, index, isLastLocation);
                         const markerId = `${location.geublat}-${location.geublon}-${location.geubfech}`;
                         this.trackingMarkers.set(markerId, marker);
@@ -2272,9 +2278,11 @@ export class MapService {
         //const userLocation = userLocations[0]; // Solo un usuario
         if (userLocation.length < 2) return;
 
-        const sortedLocations = userLocation.sort((a, b) => new Date(a.geubtim).getTime() - new Date(b.geubtim).getTime());
+        //const sortedLocations = userLocation.sort((a, b) => new Date(a.geubtim).getTime() - new Date(b.geubtim).getTime());
 
-        const pathCoordinates: [number, number][] = sortedLocations.map((location) => [location.geublat, location.geublon]);
+        //const pathCoordinates: [number, number][] = sortedLocations.map((location) => [location.geublat, location.geublon]);
+const pathCoordinates: [number, number][] = userLocation.map((location) => [location.geublat, location.geublon]);
+
 
         this.trackingPath = this.L.polyline(pathCoordinates, {
             color: '#3B82F6',

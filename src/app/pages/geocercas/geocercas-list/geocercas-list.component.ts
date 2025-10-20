@@ -587,7 +587,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
             pageNumber: 1,
             pageSize: 50
         };
-
         this.userService
             .getVendedoresConGeocercas(params)
             .pipe(takeUntil(this.destroy$))
@@ -903,6 +902,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
             clientesrecorrido: true,
         };
 
+        //console.log(_CFiltroHistorialxDia)
         this.customerService
             .POSTHistorialxDia(_CFiltroHistorialxDia)
             .pipe(
@@ -917,7 +917,8 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
             .subscribe({
                 next: (response: RWebHistorialxDia) => {
                     this.processTrackingResponse(response);
-                    console.log(response)
+                    // aqui me quede
+                    //console.log(response)
                     this.msgService.add({
                         severity: 'success',
                         summary: 'Éxito',
@@ -1025,7 +1026,8 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         this.validateTrackingDataAvailability(response);
 
         if (response.recorrido && response.recorrido.length > 0) {
-            this.mapService.addTrackingMarkers(response.recorrido);
+            this.mapService.addTrackingMarkers(response.recorrido.sort((a, b) => a.geubid - b.geubid) );
+            //console.log(response.recorrido.sort((a, b) => a.geubid - b.geubid))
         }
 
         this.loadingCustomers = false;
