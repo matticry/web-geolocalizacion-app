@@ -75,6 +75,7 @@
                                             {{ selectedUser.usunombre }}
                                         </h6>
                                         <div class="flex items-center gap-2">
+                                            <!--
                                             <span
                                                 class="inline-flex items-center px-2 py-1 rounded-md bg-primary-100/80 dark:bg-primary-900/40 border border-primary-200/60 dark:border-primary-700/60 text-xs font-mono font-medium text-primary-700 dark:text-primary-300">
                                                 {{ selectedUser.usucod }}
@@ -82,6 +83,16 @@
                                             <span
                                                 class="inline-flex items-center px-2 py-0.5 rounded bg-surface-200/60 dark:bg-surface-600/40 text-xs font-mono text-surface-600 dark:text-surface-400">
                                                 {{ selectedUser.usucodv }}
+                                            </span>
+                                        -->
+                                            <span
+                                                class="inline-flex items-center px-2 py-1 rounded-md bg-surface-200/60 dark:bg-surface-600/40 text-xs font-mono text-surface-600 dark:text-surface-400">
+                                                {{ "Vendedor: " + selectedUser.usucodv }}
+                                            </span>
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-1 rounded-lg bg-surface-100/80 dark:bg-surface-600/60 border border-surface-200/60 dark:border-surface-500/60 text-xs font-mono font-medium text-surface-700 dark:text-surface-300">
+                                                <i class="pi pi-id-card mr-1.5 text-xs"></i>
+                                                {{ "Usuario: " + selectedUser.usucod }}
                                             </span>
                                         </div>
                                     </div>
@@ -174,9 +185,10 @@
                             </div>
 
                             <!-- Accordion de Clientes Asignados -->
-                            <p-accordion class="shadow-sm">
-                                <p-accordion-panel value="0">
-                                    <p-accordion-header>
+                            <!--<p-accordion  class="shadow-sm" [value]="0">-->
+                                <p-accordion >
+                                <p-accordion-panel  value="0">
+                                    <p-accordion-header style="padding: 0.8rem;">
                                         <div class="flex align-items-center gap-2 w-full">
                                             <div
                                                 class="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-purple-100 via-purple-200/60 to-purple-300/40 dark:from-purple-900/50 dark:via-purple-800/70 dark:to-purple-700/50 border border-purple-200/60 dark:border-purple-600/40 shadow-lg">
@@ -275,7 +287,7 @@
                                                 </div>
                                                 } @empty {
                                                 <div
-                                                    class="text-center text-surface-500 dark:text-surface-400 text-sm py-12">
+                                                    class="text-center text-surface-500 dark:text-surface-400 text-sm py-5">
                                                     <div
                                                         class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-surface-200 to-surface-300 dark:from-surface-700 dark:to-surface-800 rounded-2xl flex items-center justify-center border border-surface-300/60 dark:border-surface-600/60">
                                                         <i
@@ -305,12 +317,12 @@
                                         </div>
                                     </p-accordion-content>
                                 </p-accordion-panel>
-                            </p-accordion>
+                            <!--</p-accordion>-->
 
                             <!-- Accordion de Pedidos -->
-                            <p-accordion class="shadow-sm">
-                                <p-accordion-panel value="0">
-                                    <p-accordion-header>
+                            <!--<p-accordion >-->
+                                <p-accordion-panel value="1">
+                                    <p-accordion-header style="padding: 0.8rem;">
                                         <div class="flex align-items-center gap-2 w-full">
                                             <div
                                                 class="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-blue-100 via-blue-200/60 to-blue-300/40 dark:from-blue-900/50 dark:via-blue-800/70 dark:to-blue-700/50 border border-blue-200/60 dark:border-blue-600/40 shadow-lg">
@@ -443,12 +455,12 @@
                                         </div>
                                     </p-accordion-content>
                                 </p-accordion-panel>
-                            </p-accordion>
+                            <!--</p-accordion>-->
 
                             <!-- Accordion de Cobros -->
-                            <p-accordion class="shadow-sm">
-                                <p-accordion-panel value="0">
-                                    <p-accordion-header>
+                            <!--<p-accordion >-->
+                                <p-accordion-panel value="2">
+                                    <p-accordion-header style="padding: 0.8rem;">
                                         <div class="flex align-items-center gap-2 w-full">
                                             <div
                                                 class="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-emerald-100 via-emerald-200/60 to-emerald-300/40 dark:from-emerald-900/50 dark:via-emerald-800/70 dark:to-emerald-700/50 border border-emerald-200/60 dark:border-emerald-600/40 shadow-lg">

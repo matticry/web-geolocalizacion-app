@@ -10,7 +10,7 @@ import { GeofenceDto } from '@/core/models/Geocercas/GeocercaValidationResponseD
 import { ChargeDto, LocationDto, OrderDto, UserLocationDto } from '../models/Filter/TrackingResponse';
 import { SolicitudData } from '@/core/models/SolicitudData';
 import { CUltimoRegxUsu } from '../models/CUltimoRegxUsu';
-import { Mpa_GEO_Cobros, Mpa_UltUbi } from '../models/Responses/RWebHistorialxDia';
+import { Mpa_GEO_Cobros, Mpa_UltUbi, RWebHistorialxDia } from '../models/Responses/RWebHistorialxDia';
 
 
 //===== INTERFACES ======//
@@ -1499,6 +1499,21 @@ export class MapService {
         if (marker) {
             marker.openPopup();
         }
+    }
+    focusRoute(lista: Mpa_UltUbi[]): void {
+        if (!this.map) return;
+
+        /*const latitudes = lista.map(item => item.geublat);
+        const longitudes = lista.map(item => item.geublon);
+
+        const maxLat = Math.max(...latitudes);
+        const minLat = Math.min(...latitudes);
+        const maxLon = Math.max(...longitudes);
+        const minLon = Math.min(...longitudes);*/
+
+        const areaCoords: [number, number][] = lista.map(item => [item.geublat, item.geublon]);
+        const bounds = L.latLngBounds(areaCoords);
+        this.map.fitBounds(bounds);
     }
 
     focusOnCustomerChangeAddress(customer: SolicitudData): void {

@@ -241,8 +241,8 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         this.getCustomersInArea(this.selectedUser.usucodv, range);
     }
     CentrarUsuario(user: CUltimoRegxUsu) {
-        if(user.latitud!=0 && user.latitud!=0 ){
-        this.mapService.focusOnUser(user);
+        if (user.latitud != 0 && user.latitud != 0) {
+            this.mapService.focusOnUser(user);
         }
     }
     /**
@@ -566,10 +566,10 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         //this.mapService.focusOnUser(user);
 
         const bounds = this.mapService.getCurrentBounds();
-        this.searchCustomersInCurrentArea(bounds);
-
         this.loadVendorGeocercas(user.usucodv);
+        this.searchCustomersInCurrentArea(bounds);
         this.setDefaultValues();
+
     }
 
     selectOnlyUser(user: CUltimoRegxUsu): void {
@@ -917,6 +917,9 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
             .subscribe({
                 next: (response: RWebHistorialxDia) => {
                     this.processTrackingResponse(response);
+                    if (response.recorrido.length > 0) {
+                            this.mapService.focusRoute(response.recorrido);
+                    }
                     // aqui me quede
                     //console.log(response)
                     this.msgService.add({
@@ -1026,7 +1029,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         this.validateTrackingDataAvailability(response);
 
         if (response.recorrido && response.recorrido.length > 0) {
-            this.mapService.addTrackingMarkers(response.recorrido.sort((a, b) => a.geubid - b.geubid) );
+            this.mapService.addTrackingMarkers(response.recorrido.sort((a, b) => a.geubid - b.geubid));
             //console.log(response.recorrido.sort((a, b) => a.geubid - b.geubid))
         }
 
@@ -1061,9 +1064,9 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         if (response.recorrido && response.recorrido.length > 0) {
             response.recorrido.forEach((location) => {
                 //userLocation.forEach((location) => {
-                    if (location.geublat && location.geublon) {
-                        allCoordinates.push([location.geublat, location.geublon]);
-                    }
+                if (location.geublat && location.geublon) {
+                    allCoordinates.push([location.geublat, location.geublon]);
+                }
                 //});
             });
         }
