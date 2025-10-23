@@ -43,7 +43,7 @@ import { FilterRequest, ZonaBusquedaFilter } from '@/core/models/Filter/FilterRe
 import { ChargeDto, OrderDto, TrackingResponse } from '@/core/models/Filter/TrackingResponse';
 import { MultiSelect } from 'primeng/multiselect';
 import { CFiltroHistorialxDia } from '@/core/models/Filter/CFiltroHistorialxDia';
-import { Mpa_GEO_Cobros, Mpa_GEO_Pedidos, RWebHistorialxDia } from '@/core/models/Responses/RWebHistorialxDia';
+import { Mpa_GEO_Cobros, Mpa_GEO_Pedidos, Mpa_UltUbi, RWebHistorialxDia } from '@/core/models/Responses/RWebHistorialxDia';
 
 @Component({
     selector: 'app-geocercas',
@@ -137,6 +137,9 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
 
     //Propiedades de busqueda de pedidos
     orders: Mpa_GEO_Pedidos[] = [];
+    recorrido: Mpa_UltUbi[] = [];
+   ultimxrecorrido: Mpa_UltUbi | null = null;
+    
     loadingOrders: boolean = false;
     filteredOrders: Mpa_GEO_Pedidos[] = [];
     orderSearchTerm: string = '';
@@ -201,7 +204,9 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
             this.initializeMap().then(() => { });
         });
     }
-
+    get recorridoDesdeSegundo() {
+        return this.recorrido.slice(1);
+    }
     async initializeMap(): Promise<void> {
         this.mapInitialized = true;
         try {
@@ -560,6 +565,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     //=============================================================================================//
 
     selectUser(user: CUltimoRegxUsu): void {
+        console.log(user);
         this.selectedUser = user;
         this.selectedGeofence = [];
 
@@ -576,6 +582,11 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         this.selectedUser = user;
         this.mapService.focusOnUser(user);
     }
+    focusPointRecorrido(user: CUltimoRegxUsu,latitud: number,longitud: number): void {
+        //this.selectedUser = user;
+        this.mapService.focusPoint(user.usucod,latitud,longitud);
+    }
+    
 
     //===MÉTODO PARA CARGAR LAS GEOCERCAS DEL VENDEDOR====================================================//
 
@@ -922,7 +933,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
                             this.mapService.focusRoute(response.recorrido);
                     }
                     // aqui me quede
-                    console.log(response)
+                    //console.log(response)
                     this.msgService.add({
                         severity: 'success',
                         summary: 'Éxito',
@@ -1041,6 +1052,8 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         this.customers = response.clientes || [];
         this.charges = this.collectionsEnabled && response.cobros ? response.cobros : [];
         this.orders = this.pedidosEnabled && response.pedidos ? response.pedidos : [];
+        this.recorrido = response.recorrido ? response.recorrido : [];
+        this.ultimxrecorrido = this.recorrido.length>0 ? this.recorrido[0] : null;
 
         this.filterCustomers();
         this.filterCharges();
@@ -1226,6 +1239,19 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     copyCoordinates(ubicacion: any): void {
         if (ubicacion?.latitud && ubicacion?.longitud) {
             const coordinates = `${ubicacion.latitud}, ${ubicacion.longitud}`;
+            navigator.clipboard.writeText(coordinates).then(() => {
+                this.msgService.add({
+                    severity: 'success',
+                    summary: 'Copia exitosa',
+                    detail: 'Las coordenadas se copiaron al portapapeles',
+                    life: 1000
+                });
+            });
+        }
+    }
+    copyCoordinatesNumber(latitud: number, longitud: number): void {
+        if (latitud && longitud) {
+            const coordinates = `${latitud}, ${longitud}`;
             navigator.clipboard.writeText(coordinates).then(() => {
                 this.msgService.add({
                     severity: 'success',

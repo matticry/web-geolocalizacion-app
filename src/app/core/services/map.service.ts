@@ -1525,6 +1525,16 @@ export class MapService {
             marker.openPopup();
         }
     }
+    focusPoint(usucod: string ,latitud: number, longitud: number): void {
+        if (!this.map) return;
+
+        this.map.setView([latitud, longitud], 15);
+        console.log(this.userMarkers);
+        const marker = this.userMarkers.get(usucod);
+        if (marker) {
+            marker.openPopup();
+        }
+    }
     focusRoute(lista: Mpa_UltUbi[]): void {
         if (!this.map) return;
 
