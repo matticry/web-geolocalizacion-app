@@ -143,7 +143,8 @@ export class MapService {
             }
         });
 
-        this.fitGeocercasBounds();
+                    
+        //this.fitGeocercasBounds();
     }
 
     /**
@@ -265,6 +266,30 @@ export class MapService {
             this.map.fitBounds(bounds, { padding: [20, 20] });
         }
     }
+
+    private fitAllBounds(): void {
+        if (!this.map || this.geocercasMarkers.size === 0) return;
+
+        const bounds = L.latLngBounds([]);
+
+        this.geocercasMarkers.forEach((layer) => {
+            if (layer instanceof L.Polygon) {
+                bounds.extend(layer.getBounds());
+            } else if (layer instanceof L.LayerGroup) {
+                layer.eachLayer((subLayer) => {
+                    if (subLayer instanceof L.Polygon) {
+                        bounds.extend(subLayer.getBounds());
+                    }
+                });
+            }
+        });
+
+        if (bounds.isValid()) {
+            this.map.fitBounds(bounds, { padding: [20, 20] });
+        }
+    }
+
+
     /**
      * Limpia las geocercas del mapa
      */

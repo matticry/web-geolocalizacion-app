@@ -566,8 +566,8 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         //this.mapService.focusOnUser(user);
 
         const bounds = this.mapService.getCurrentBounds();
-        this.loadVendorGeocercas(user.usucodv);
         this.searchCustomersInCurrentArea(bounds);
+        this.loadVendorGeocercas(user.usucodv);
         this.setDefaultValues();
 
     }
@@ -593,14 +593,15 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
             .subscribe({
                 next: (response: VendedoresResponse) => {
                     const vendorData = this.findVendorByCode(response.data, vendorCode);
-
+                    //console.log("--------");
+                    //console.log(vendorData);
+                    //console.log(response);
                     if (vendorData && vendorData.geocercas.length > 0) {
                         this.selectedVendor = vendorData;
                         this.vendorGeocercas = vendorData.geocercas;
 
                         this.loadGeofenceOptions();
 
-                        // Mostrar geocercas en el mapa
                         this.mapService.displayVendorGeocercas(this.vendorGeocercas);
 
                         this.msgService.add({
@@ -863,7 +864,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         if (!this.validateFilters()) {
             return;
         }
-
+        /*
         const filterRequest: FilterRequest = {
             usuarios: {
                 tipoelementos: 3,
@@ -888,7 +889,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
             },
             zonasbusqueda: this.buildZonaClientes()
         };
-
+        */
         this.loading = true;
         this.loadingCustomers = true;
         this.loadingOrders = true;
@@ -921,7 +922,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
                             this.mapService.focusRoute(response.recorrido);
                     }
                     // aqui me quede
-                    //console.log(response)
+                    console.log(response)
                     this.msgService.add({
                         severity: 'success',
                         summary: 'Éxito',
