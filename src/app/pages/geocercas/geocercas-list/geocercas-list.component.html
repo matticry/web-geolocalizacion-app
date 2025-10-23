@@ -381,37 +381,44 @@
                                                 @for (order of filteredOrders; track order.pdtfactura) {
                                                 <div
                                                     class="bg-white dark:bg-surface-800 p-4 rounded-lg border border-surface-200/60 dark:border-surface-700/60 hover:shadow-md transition-all duration-200 hover:border-blue-200/60 dark:hover:border-blue-600/60">
-                                                    <div class="flex justify-between items-start mb-3">
-                                                        <div class="flex-1 pr-2">
-                                                            <h6
-                                                                class="font-semibold text-surface-900 dark:text-surface-100 text-sm m-0 leading-tight">
-                                                                {{ order.pdtnombre }}
-                                                            </h6>
-                                                        </div>
+                                                    <div class="flex justify-between items-center mb-3">
+                                                        
                                                         <span
-                                                            class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700">
+                                                            class="inline-flex items-center px-2 py-1 rounded-md text-xxs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700">
                                                             #{{ order.pdtfactura }}
                                                         </span>
-                                                    </div>
-
-                                                    <div class="space-y-2 mb-3">
                                                         <div
-                                                            class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
-                                                            <i
-                                                                class="pi pi-tag w-3 text-blue-500 dark:text-blue-400"></i>
-                                                            <span class="font-mono">{{ order.pdtclave1 }}</span>
-                                                        </div>
-                                                        <div
-                                                            class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
+                                                            class="flex items-center gap-2 text-xx text-surface-600 dark:text-surface-400">
                                                             <i
                                                                 class="pi pi-calendar w-3 text-blue-500 dark:text-blue-400"></i>
                                                             <span>{{ order.pdtfechaf | date:'dd/MM/yyyy HH:mm' }}</span>
                                                         </div>
-                                                        <div
+                                                    </div>
+
+                                                    <div class="space-y-2 mb-0">
+                                                        <div class="flex-1 pr-2">
+                                                            <h6 class="font-semibold text-surface-900 dark:text-surface-100 text-sm m-0 leading-tight"  style="margin-bottom: 0;">
+                                                                {{ order.pdtnombre }}
+                                                            </h6>
+                                                        </div>
+                                                        <!--<div
                                                             class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
+                                                            <i
+                                                                class="pi pi-tag w-3 text-blue-500 dark:text-blue-400"></i>
+                                                            <span class="font-mono">{{ order.pdtclave1 }}</span>
+                                                        </div>-->
+                                                        <div
+                                                            class="flex items-center gap-2 text-xxs text-surface-600 dark:text-surface-400">
                                                             <i
                                                                 class="pi pi-id-card w-3 text-blue-500 dark:text-blue-400"></i>
                                                             <span class="font-mono">{{ order.pdtclave }}</span>
+                                                        </div>
+                                                        <div
+                                                            class="flex items-center gap-2 text-xxs text-surface-600 dark:text-surface-400">
+                                                            <i
+                                                                class="pi pi-dollar w-3 text-blue-500 dark:text-blue-400"></i>
+                                                            <span class="font-mono">{{ order.pdttotal | number:'1.3-3' }}</span>
+                                                             <!--<span class="font-mono">{{ charge.total }}</span>-->
                                                         </div>
                                                     </div>
 
@@ -519,25 +526,29 @@
                                                 @for (charge of filteredCharges; track charge.cobning) {
                                                 <div
                                                     class="bg-white dark:bg-surface-800 p-4 rounded-lg border border-surface-200/60 dark:border-surface-700/60 hover:shadow-md transition-all duration-200 hover:border-emerald-200/60 dark:hover:border-emerald-600/60">
-                                                    <div class="flex justify-between items-start mb-3">
-                                                        <div class="flex-1 pr-2">
-                                                            <h6
-                                                                class="font-semibold text-surface-900 dark:text-surface-100 text-sm m-0 leading-tight">
-                                                                Recibo: {{ charge.cobning }}
-                                                            </h6>
-                                                        </div>
-                                                        <span
-                                                            class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-emerald-100 dark:bg-emerald-900-40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700">
+                                                    <div class="flex justify-between items-center mb-3">
+                                                        
+                                                         <span
+                                                            class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-emerald-50/80 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700">
                                                             #{{ charge.cobning }}
                                                         </span>
-                                                    </div>
-
-                                                    <div class="space-y-2 mb-3">
+                                                        
                                                         <div
-                                                            class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
+                                                            class="flex items-center gap-2 text-xx text-surface-600 dark:text-surface-400">
                                                             <i
                                                                 class="pi pi-calendar w-3 text-emerald-500 dark:text-emerald-400"></i>
-                                                            <span>{{ charge.cabfecha | date:'dd/MM/yyyy' }}</span>
+                                                            <span>{{ charge.cabfecha | date:'dd/MM/yyyy HH:mm' }}</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="space-y-2 mb-0">
+                                                        <div class="flex-1 pr-2">
+                                                            <h6 class="font-semibold text-surface-900 dark:text-surface-100 text-sm m-0 leading-tight m-1" style="margin-bottom: 0;">
+                                                                {{ charge.cobnombre }}
+                                                            </h6>
+                                                            <!--<h6 class="font-semibold text-surface-900 dark:text-surface-100 text-sm m-0 leading-tight m-1" style="margin-bottom: 0;">
+                                                                Recibo: {{ charge.cobning }}
+                                                            </h6>-->
                                                         </div>
                                                         <!--<div
                                                             class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
@@ -546,17 +557,19 @@
                                                             <span class="font-mono">{{ charge.cabnvendedor }}</span>
                                                         </div>-->
                                                         <div
-                                                            class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
+                                                            class="flex items-center gap-2 text-xss text-surface-600 dark:text-surface-400">
                                                             <i
-                                                                class="pi pi-building w-3 text-emerald-500 dark:text-emerald-400"></i>
+                                                                class="pi pi-id-card w-3 text-emerald-500 dark:text-emerald-400"></i>
                                                             <span class="font-mono">{{ charge.cobclave }}</span>
                                                         </div>
                                                         <div
-                                                            class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
+                                                            class="flex items-center gap-2 text-xxs text-surface-600 dark:text-surface-400">
                                                             <i
-                                                                class="pi pi-id-card w-3 text-emerald-500 dark:text-emerald-400"></i>
-                                                            <span class="font-mono">{{ charge.cobclave1 }}</span>
+                                                                class="pi pi-dollar w-3 text-emerald-500 dark:text-emerald-400"></i>
+                                                             <span class="font-mono">{{ charge.total | number:'1.3-3' }}</span>
+                                                             <!--<span class="font-mono">{{ charge.total }}</span>-->
                                                         </div>
+
                                                     </div>
 
                                                     <div class="flex justify-end">
