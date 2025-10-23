@@ -43,7 +43,7 @@ import { FilterRequest, ZonaBusquedaFilter } from '@/core/models/Filter/FilterRe
 import { ChargeDto, OrderDto, TrackingResponse } from '@/core/models/Filter/TrackingResponse';
 import { MultiSelect } from 'primeng/multiselect';
 import { CFiltroHistorialxDia } from '@/core/models/Filter/CFiltroHistorialxDia';
-import { Mpa_GEO_Cobros, RWebHistorialxDia } from '@/core/models/Responses/RWebHistorialxDia';
+import { Mpa_GEO_Cobros, Mpa_GEO_Pedidos, RWebHistorialxDia } from '@/core/models/Responses/RWebHistorialxDia';
 
 @Component({
     selector: 'app-geocercas',
@@ -136,9 +136,9 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     filteredCustomers: CustomerResponseDto[] = [];
 
     //Propiedades de busqueda de pedidos
-    orders: OrderDto[] = [];
+    orders: Mpa_GEO_Pedidos[] = [];
     loadingOrders: boolean = false;
-    filteredOrders: OrderDto[] = [];
+    filteredOrders: Mpa_GEO_Pedidos[] = [];
     orderSearchTerm: string = '';
 
     //Propiedades de busqueda de cobros
