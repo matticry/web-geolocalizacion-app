@@ -181,7 +181,8 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     showRangeDialog: boolean = false;
     defaultRadius: number = 1000;
 
-
+    AcordionRecorrido: string = '';
+    AcordionListas: string = '';
 
     constructor(
         private readonly userService: UserService,
@@ -204,8 +205,8 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
             this.initializeMap().then(() => { });
         });
     }
-    get recorridoDesdeSegundo() {
-        return this.recorrido.slice(1);
+    get recorridoDesdeSegundo(): Mpa_UltUbi[] {
+        return this.recorrido?.slice(1) ?? [];
     }
     async initializeMap(): Promise<void> {
         this.mapInitialized = true;
