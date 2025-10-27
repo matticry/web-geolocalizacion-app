@@ -1,688 +1,655 @@
 <div class="card">
-    <!-- Contenedor principal -->
-    <div class="flex flex-col gap-8 w-full">
+  <!-- Contenedor principal -->
+  <div class="flex flex-col gap-8 w-full">
 
-        <!-- Header con título -->
-        <div class="flex items-center gap-2 min-w-0">
-            <div class="w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-primary-100 via-primary-200/60 to-primary-300/40 dark:from-primary-900/50 dark:via-primary-800/70 dark:to-primary-700/50 border border-primary-200/60 dark:border-primary-600/40 shadow-lg">
-                <i class="pi pi-file-o text-primary-600 dark:text-primary-300 text-xl"></i>
+    <!-- Header con título -->
+    <div class="flex items-center gap-2 min-w-0">
+      <div
+        class="w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-primary-100 via-primary-200/60 to-primary-300/40 dark:from-primary-900/50 dark:via-primary-800/70 dark:to-primary-700/50 border border-primary-200/60 dark:border-primary-600/40 shadow-lg">
+        <i class="pi pi-file-o text-primary-600 dark:text-primary-300 text-xl"></i>
+      </div>
+      <div class="min-w-0">
+        <p class="text-gray-800 dark:text-white text-xl sm:text-2xl font-bold leading-snug tracking-tight">
+          Detalle del Registro
+        </p>
+        <p style="margin-top:-15px;" class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm leading-snug">
+          Análisis geoespacial y temporal de vendedores
+        </p>
+      </div>
+    </div>
+
+    <!-- Panel Único con Background Suave -->
+    <div
+      class="bg-surface-50/50 dark:bg-surface-900/50 backdrop-blur-sm rounded-xl border border-surface-200/50 dark:border-surface-700/50 p-6 space-y-8">
+
+      <!-- 1. Filtros (Full Width) -->
+      <div class="w-full">
+        @if (loadingFilters) {
+        <div
+          class="bg-surface-0/80 dark:bg-surface-900/80 border border-surface-200 dark:border-surface-700 rounded-lg p-4">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-8 h-8 bg-surface-200 dark:bg-surface-700 rounded-lg animate-pulse"></div>
+            <div class="flex-1">
+              <div class="h-4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse mb-1"></div>
+              <div class="h-3 bg-surface-100 dark:bg-surface-800 rounded animate-pulse w-24"></div>
             </div>
-            <div class="min-w-0">
-                <p class="text-gray-800 dark:text-white text-xl sm:text-2xl font-bold leading-snug tracking-tight">
-                    Detalle del Registro
-                </p>
-                <p style="margin-top:-15px;" class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm leading-snug">
-                    Análisis geoespacial y temporal de vendedores
-                </p>
-            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="h-10 bg-surface-100 dark:bg-surface-800 rounded animate-pulse"></div>
+            <div class="h-10 bg-surface-100 dark:bg-surface-800 rounded animate-pulse"></div>
+            <div class="h-32 bg-surface-100 dark:bg-surface-800 rounded animate-pulse"></div>
+          </div>
         </div>
+        } @else {
+        <!-- Accordion de Filtrado -->
+        <p-accordion class="shadow-sm" value="0">
+          <p-accordion-panel value="0">
+            <p-accordion-header>
+              <div class="flex align-items-center gap-2 w-full">
+                <div
+                  class="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-primary-100 via-primary-200/60 to-primary-300/40 dark:from-primary-900/50 dark:via-primary-800/70 dark:to-primary-700/50 border border-primary-200/60 dark:border-primary-600/40 shadow-lg">
+                  <i class="pi pi-filter text-primary-600 dark:text-primary-300 text-sm"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <span class="text-gray-800 dark:text-white font-bold text-sm">
+                    Filtrado Especial
+                  </span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400 ml-2">
+                    ({{ getActiveFiltersCount() }} activo{{ getActiveFiltersCount() !== 1 ? 's' : '' }})
+                  </span>
+                </div>
+              </div>
+            </p-accordion-header>
 
-        <!-- Panel Único con Background Suave -->
-        <div class="bg-surface-50/50 dark:bg-surface-900/50 backdrop-blur-sm rounded-xl border border-surface-200/50 dark:border-surface-700/50 p-6 space-y-8">
+            <p-accordion-content>
+              <div class="p-0 space-y-5">
 
-            <!-- 1. Filtros (Full Width) -->
-            <div class="w-full">
-                @if (loadingFilters) {
-                    <div class="bg-surface-0/80 dark:bg-surface-900/80 border border-surface-200 dark:border-surface-700 rounded-lg p-4">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-8 h-8 bg-surface-200 dark:bg-surface-700 rounded-lg animate-pulse"></div>
-                            <div class="flex-1">
-                                <div class="h-4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse mb-1"></div>
-                                <div class="h-3 bg-surface-100 dark:bg-surface-800 rounded animate-pulse w-24"></div>
-                            </div>
-                        </div>
-                        <div class="space-y-4">
-                            <div class="h-10 bg-surface-100 dark:bg-surface-800 rounded animate-pulse"></div>
-                            <div class="h-10 bg-surface-100 dark:bg-surface-800 rounded animate-pulse"></div>
-                            <div class="h-32 bg-surface-100 dark:bg-surface-800 rounded animate-pulse"></div>
-                        </div>
+                <!-- Filtros Temporales -->
+                <div>
+                  <div class="flex align-items-center gap-2 mb-3">
+                    <div
+                      class="w-8 h-8 flex items-center justify-center rounded-lg bg-gradient-to-br from-blue-100 via-blue-200/60 to-blue-300/40 dark:from-blue-900/50 dark:via-blue-800/70 dark:to-blue-700/50 border border-blue-200/60 dark:border-blue-600/40 shadow-sm">
+                      <i class="pi pi-clock text-blue-600 dark:text-blue-300 text-sm"></i>
                     </div>
-                } @else {
-                    <!-- Accordion de Filtrado -->
-                    <p-accordion class="shadow-sm" value="0">
-                        <p-accordion-panel value="0">
-                            <p-accordion-header>
-                                <div class="flex align-items-center gap-2 w-full">
-                                    <div class="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-primary-100 via-primary-200/60 to-primary-300/40 dark:from-primary-900/50 dark:via-primary-800/70 dark:to-primary-700/50 border border-primary-200/60 dark:border-primary-600/40 shadow-lg">
-                                        <i class="pi pi-filter text-primary-600 dark:text-primary-300 text-sm"></i>
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <span class="text-gray-800 dark:text-white font-bold text-sm">
-                                            Filtrado Especial
-                                        </span>
-                                        <span class="text-xs text-gray-500 dark:text-gray-400 ml-2">
-                                            ({{ getActiveFiltersCount() }} activo{{ getActiveFiltersCount() !== 1 ? 's' : '' }})
-                                        </span>
-                                    </div>
-                                </div>
-                            </p-accordion-header>
+                    <span class="font-medium text-gray-700 dark:text-gray-200 mt-1 text-sm">Período</span>
+                    <div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700"></div>
+                  </div>
 
-                            <p-accordion-content>
-                                <div class="p-0 space-y-5">
-
-                                    <!-- Filtros Temporales -->
-                                    <div>
-                                        <div class="flex align-items-center gap-2 mb-3">
-                                            <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-gradient-to-br from-blue-100 via-blue-200/60 to-blue-300/40 dark:from-blue-900/50 dark:via-blue-800/70 dark:to-blue-700/50 border border-blue-200/60 dark:border-blue-600/40 shadow-sm">
-                                                <i class="pi pi-clock text-blue-600 dark:text-blue-300 text-sm"></i>
-                                            </div>
-                                            <span class="font-medium text-gray-700 dark:text-gray-200 mt-1 text-sm">Período</span>
-                                            <div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700"></div>
-                                        </div>
-
-                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                            <!-- Fecha desde -->
-                                            <div>
-                                                <label class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
-                                                    Desde
-                                                </label>
-                                                <p-datepicker
-                                                    [(ngModel)]="filterFrom"
-                                                    [showTime]="true"
-                                                    [hourFormat]="'24'"
-                                                    dateFormat="dd/mm/yy"
-                                                    placeholder="Fecha y hora inicial"
-                                                    class="w-full">
-                                                </p-datepicker>
-                                            </div>
-
-                                            <!-- Fecha hasta -->
-                                            <div>
-                                                <label class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
-                                                    Hasta
-                                                </label>
-                                                <p-datepicker
-                                                    [(ngModel)]="filterTo"
-                                                    [showTime]="true"
-                                                    [hourFormat]="'24'"
-                                                    placeholder="Fecha y hora final"
-                                                    class="w-full">
-                                                </p-datepicker>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <!-- Filtros de selección -->
-                                    <div>
-                                        <div class="flex align-items-center gap-2 mb-3">
-                                            <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-gradient-to-br from-green-100 via-green-200/60 to-green-300/40 dark:from-green-900/50 dark:via-green-800/70 dark:to-green-700/50 border border-green-200/60 dark:border-green-600/40 shadow-sm">
-                                                <i class="pi pi-filter text-green-600 dark:text-green-300 text-sm"></i>
-                                            </div>
-                                            <span class="font-medium text-gray-700 dark:text-gray-200 mt-1 text-sm">Filtros de selección</span>
-                                            <div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700"></div>
-                                        </div>
-
-                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                            <!-- Seleccionar Vendedor -->
-                                            <div>
-                                                <label class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
-                                                    <i class="pi pi-user text-blue-500 mr-1"></i>
-                                                    Seleccionar Vendedor
-                                                </label>
-                                                <p-select
-                                                    [options]="vendorOptions"
-                                                    [(ngModel)]="selectedVendor"
-                                                    optionLabel="label"
-                                                    optionValue="value"
-                                                    [filter]="true"
-                                                    filterBy="label"
-                                                    [showClear]="true"
-                                                    placeholder="Seleccionar vendedor..."
-                                                    class="w-full"
-                                                    [disabled]="loading || vendorOptions.length === 0"
-                                                    (onChange)="onVendorChange($event)">
-
-                                                    <ng-template #selectedItem let-selectedOption>
-                                                        @if (selectedOption) {
-                                                            <div class="flex items-center gap-2">
-                                                                <div class="w-6 h-6 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center">
-                                                                    <i class="pi pi-user text-white text-xs"></i>
-                                                                </div>
-                                                                <div class="flex flex-col">
-                                                                    <span class="font-medium">{{ selectedOption.label }}</span>
-                                                                    <small class="text-surface-500">{{ selectedOption.value }}</small>
-                                                                </div>
-                                                            </div>
-                                                        }
-                                                    </ng-template>
-
-                                                    <ng-template let-vendor #item>
-                                                        <div class="flex items-center gap-3 py-1">
-                                                            <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center flex-shrink-0">
-                                                                <i class="pi pi-user text-white text-sm"></i>
-                                                            </div>
-                                                            <div class="flex-1 min-w-0">
-                                                                <div class="font-medium text-surface-900 dark:text-surface-0 truncate">
-                                                                    {{ vendor.label }}
-                                                                </div>
-                                                                <div class="text-xs text-surface-500 dark:text-surface-400 truncate">
-                                                                    {{ vendor.subtitle }}
-                                                                </div>
-                                                            </div>
-                                                            <div class="flex-shrink-0">
-                                                                <p-badge [value]="vendor.value" severity="secondary" class="text-xs"></p-badge>
-                                                            </div>
-                                                        </div>
-                                                    </ng-template>
-                                                </p-select>
-
-                                                <!-- Información del vendedor seleccionado -->
-                                                @if (selectedVendor) {
-                                                    <div class="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                                                        <div class="flex align-items-center gap-2 text-xs text-blue-700 dark:text-blue-300">
-                                                            <i class="pi pi-info-circle"></i>
-                                                            <span>Vendedor seleccionado: {{ selectedVendor }}</span>
-                                                        </div>
-                                                    </div>
-                                                }
-                                            </div>
-
-                                            <!-- Seleccionar Cliente -->
-                                            <div>
-                                                <label class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
-                                                    <i class="pi pi-building text-emerald-500 mr-1"></i>
-                                                    Seleccionar Cliente
-                                                </label>
-                                                <p-select
-                                                    [options]="customerOptions"
-                                                    [(ngModel)]="selectedCustomer"
-                                                    optionLabel="label"
-                                                    optionValue="value"
-                                                    [filter]="true"
-                                                    filterBy="label"
-                                                    [showClear]="true"
-                                                    [loading]="loadingCustomers"
-                                                    placeholder="Seleccionar cliente..."
-                                                    class="w-full"
-                                                    [disabled]="!selectedVendor || customerOptions.length === 0"
-                                                    (onChange)="onCustomerChange($event)">
-
-                                                    <ng-template #selectedItem let-selectedOption>
-                                                        @if (selectedOption) {
-                                                            <div class="flex items-center gap-2">
-                                                                <div class="w-6 h-6 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full flex items-center justify-center">
-                                                                    <i class="pi pi-building text-white text-xs"></i>
-                                                                </div>
-                                                                <div class="flex flex-col">
-                                                                    <span class="font-medium">{{ selectedOption.label }}</span>
-                                                                    <small class="text-surface-500">{{ selectedOption.subtitle }}</small>
-                                                                </div>
-                                                            </div>
-                                                        }
-                                                    </ng-template>
-
-                                                    <ng-template let-customer #item>
-                                                        <div class="flex items-center gap-3 py-1">
-                                                            <div class="w-8 h-8 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                                                                <i class="pi pi-building text-white text-sm"></i>
-                                                            </div>
-                                                            <div class="flex-1 min-w-0">
-                                                                <div class="font-medium text-surface-900 dark:text-surface-0 truncate">
-                                                                    {{ customer.label }}
-                                                                </div>
-                                                                <div class="text-xs text-surface-500 dark:text-surface-400 truncate">
-                                                                    {{ customer.subtitle }}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </ng-template>
-                                                </p-select>
-
-                                                <!-- Información del cliente seleccionado -->
-                                                @if (selectedCustomer) {
-                                                    <div class="mt-2 p-2 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800">
-                                                        <div class="flex align-items-center gap-2 text-xs text-emerald-700 dark:text-emerald-300">
-                                                            <i class="pi pi-info-circle"></i>
-                                                            <span>Cliente seleccionado: {{ selectedCustomer }}</span>
-                                                        </div>
-                                                    </div>
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <!-- Tipo de Transacción -->
-                                    <div>
-                                        <div class="flex align-items-center gap-2 mb-3">
-                                            <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-gradient-to-br from-emerald-100 via-emerald-200/60 to-emerald-300/40 dark:from-emerald-900/50 dark:via-emerald-800/70 dark:to-emerald-700/50 border border-emerald-200/60 dark:border-emerald-600/40 shadow-sm">
-                                                <i class="pi pi-database text-emerald-600 dark:text-emerald-300 text-sm"></i>
-                                            </div>
-                                            <span class="font-medium text-gray-700 dark:text-gray-200 mt-1 text-sm">Tipo de Transacción</span>
-                                            <div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700"></div>
-                                        </div>
-
-                                        <div class="flex gap-4 p-3 bg-surface-50 dark:bg-surface-800 border-round">
-                                            <div class="flex align-items-center gap-2">
-                                                <p-checkbox inputId="pedidos-filter" [(ngModel)]="pedidosEnabled" [binary]="true"></p-checkbox>
-                                                <label for="pedidos-filter" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
-                                                    <i class="pi pi-shopping-cart mr-1"></i>Pedidos
-                                                </label>
-                                            </div>
-                                            <div class="flex align-items-center gap-2">
-                                                <p-checkbox inputId="cobros-filter" [(ngModel)]="collectionsEnabled" [binary]="true"></p-checkbox>
-                                                <label for="cobros-filter" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
-                                                    <i class="pi pi-dollar mr-1"></i>Cobros
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Botones de acción -->
-                                    <div class="flex justify-content-end gap-2 pt-2">
-                                        <p-button
-                                            label="Limpiar"
-                                            icon="pi pi-refresh"
-                                            severity="secondary"
-                                            size="small"
-                                            (onClick)="clearFilters()"
-                                            [text]="true">
-                                        </p-button>
-                                        <p-button
-                                            label="Aplicar"
-                                            icon="pi pi-check"
-                                            size="small"
-                                            (onClick)="applyFilters()">
-                                        </p-button>
-                                    </div>
-                                </div>
-                            </p-accordion-content>
-                        </p-accordion-panel>
-                    </p-accordion>
-                }
-            </div>
-
-            <!-- 2. Mapa (Full Width) -->
-            <div class="w-full">
-                <!-- Título del Mapa -->
-                <div class="flex items-center gap-2 min-w-0 mb-4">
-                    <div class="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-blue-100 via-blue-200/60 to-blue-300/40 dark:from-blue-900/50 dark:via-blue-800/70 dark:to-blue-700/50 border border-blue-200/60 dark:border-blue-600/40 shadow-lg">
-                        <i class="pi pi-map text-blue-600 dark:text-blue-300 text-sm"></i>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Fecha desde -->
+                    <div>
+                      <label class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
+                        Desde
+                      </label>
+                      <p-datepicker [(ngModel)]="filterFrom" [showTime]="true" [hourFormat]="'24'" dateFormat="dd/mm/yy"
+                        placeholder="Fecha y hora inicial" class="w-full">
+                      </p-datepicker>
                     </div>
-                    <div class="min-w-0">
-                        <p class="text-gray-800 dark:text-white text-lg font-bold leading-snug tracking-tight">
-                            Mapa de Ubicaciones
-                        </p>
-                        <p style="margin-top:-10px;" class="text-gray-500 dark:text-gray-400 text-xs leading-snug">
-                            Visualización geográfica de vendedores
-                        </p>
+
+                    <!-- Fecha hasta -->
+                    <div>
+                      <label class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
+                        Hasta
+                      </label>
+                      <p-datepicker [(ngModel)]="filterTo" [showTime]="true" [hourFormat]="'24'" dateFormat="dd/mm/yy"
+                        placeholder="Fecha y hora final" class="w-full">
+                      </p-datepicker>
                     </div>
+                  </div>
                 </div>
 
-                <!-- Buscador de Ubicaciones -->
-                <div class="flex flex-col sm:flex-row gap-2 mb-4">
-                    <div class="flex-1 min-w-0">
-                        <p-iconField iconPosition="left" class="w-full">
-                            <p-inputIcon>
-                                <i class="pi pi-map-marker"></i>
-                            </p-inputIcon>
-                            <input
-                                pInputText
-                                type="text"
-                                placeholder="Buscar ubicación (ej: Quito, Ecuador)"
-                                [(ngModel)]="searchLocation"
-                                (keyup.enter)="searchLocationOnMap()"
-                                class="w-full text-sm">
-                        </p-iconField>
+
+                <!-- Filtros de selección -->
+                <div>
+                  <div class="flex align-items-center gap-2 mb-3">
+                    <div
+                      class="w-8 h-8 flex items-center justify-center rounded-lg bg-gradient-to-br from-green-100 via-green-200/60 to-green-300/40 dark:from-green-900/50 dark:via-green-800/70 dark:to-green-700/50 border border-green-200/60 dark:border-green-600/40 shadow-sm">
+                      <i class="pi pi-filter text-green-600 dark:text-green-300 text-sm"></i>
                     </div>
-                    <div class="flex gap-2 flex-shrink-0">
-                        <p-button icon="pi pi-search"
-                                  severity="primary"
-                                  size="small"
-                                  (click)="searchLocationOnMap()"
-                                  [loading]="searchingLocation"
-                                  pTooltip="Buscar ubicación"
-                                  tooltipPosition="bottom">
-                        </p-button>
-                        <p-button icon="pi pi-times"
-                                  severity="secondary"
-                                  size="small"
-                                  [text]="true"
-                                  (click)="clearLocationSearch()"
-                                  pTooltip="Limpiar búsqueda"
-                                  tooltipPosition="bottom">
-                        </p-button>
-                    </div>
-                </div>
+                    <span class="font-medium text-gray-700 dark:text-gray-200 mt-1 text-sm">Filtros de selección</span>
+                    <div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700"></div>
+                  </div>
 
-                <!-- Resultados de búsqueda -->
-                @if (searchResults.length > 0) {
-                    <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-3 mb-4">
-                        <div class="text-xs sm:text-sm text-surface-600 dark:text-surface-400 mb-2">
-                            Resultados de búsqueda:
-                        </div>
-                        <div class="space-y-1">
-                            @for (result of searchResults.slice(0, 3); track result) {
-                                <div
-                                    class="flex items-center justify-between p-2 hover:bg-surface-100 dark:hover:bg-surface-700 rounded cursor-pointer transition-colors"
-                                    (click)="selectSearchResult(result)">
-                                    <div class="flex items-center gap-2 min-w-0 flex-1">
-                                        <i class="pi pi-map-marker text-primary text-sm flex-shrink-0"></i>
-                                        <span class="text-xs sm:text-sm text-surface-900 dark:text-surface-0 truncate">{{ result.display_name }}</span>
-                                    </div>
-                                    <i class="pi pi-arrow-right text-surface-400 text-xs flex-shrink-0 ml-2"></i>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                }
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Seleccionar Vendedor -->
+                    <div>
+                      <label class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
+                        <i class="pi pi-user text-blue-500 mr-1"></i>
+                        Seleccionar Vendedor
+                      </label>
+                      <p-select [options]="vendorOptions" [(ngModel)]="selectedVendor" optionLabel="label"
+                        optionValue="value" [filter]="true" filterBy="label" [showClear]="true"
+                        placeholder="Seleccionar vendedor..." class="w-full"
+                        [disabled]="loading || vendorOptions.length === 0" (onChange)="onVendorChange($event)">
 
-                <!-- Contenedor del mapa -->
-                <div class="relative overflow-hidden">
-                    @if (loadingMap) {
-                        <!-- Skeleton Loading para Mapa -->
-                        <div class="w-full bg-surface-100 dark:bg-surface-800 rounded-lg animate-pulse" style="min-height: 400px;">
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <div class="text-center p-4">
-                                    <div class="w-12 h-12 bg-surface-200 dark:bg-surface-700 rounded-full mx-auto mb-3 animate-pulse"></div>
-                                    <div class="h-4 bg-surface-200 dark:bg-surface-700 rounded w-32 mx-auto mb-2 animate-pulse"></div>
-                                    <div class="h-3 bg-surface-100 dark:bg-surface-600 rounded w-24 mx-auto animate-pulse"></div>
-                                </div>
+                        <ng-template #selectedItem let-selectedOption>
+                          @if (selectedOption) {
+                          <div class="flex items-center gap-2">
+                            <div
+                              class="w-6 h-6 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center">
+                              <i class="pi pi-user text-white text-xs"></i>
                             </div>
-                        </div>
-                    } @else {
-                        @if (!mapInitialized) {
-                            <div class="absolute inset-0 flex items-center justify-center bg-surface-100 dark:bg-surface-800 rounded-lg z-10">
-                                <div class="text-center p-4">
-                                    <i class="pi pi-spin pi-spinner text-2xl text-primary mb-2"></i>
-                                    <p class="text-sm text-surface-600 dark:text-surface-400">Cargando mapa...</p>
-                                </div>
+                            <div class="flex flex-col">
+                              <span class="font-medium">{{ selectedOption.label }}</span>
+                              <small class="text-surface-500">{{ selectedOption.value }}</small>
                             </div>
-                        }
-                        <div #mapContainer
-                             class="w-full h-full rounded-lg shadow-sm border border-surface-200 dark:border-surface-700"
-                             style="min-height: 400px; height: 100%; width: 100%;">
-                        </div>
-                    }
-                </div>
-            </div>
-
-            <!-- 3. Tabla de Registros (Full Width) -->
-            <div class="w-full">
-
-                <!-- Header de la tabla -->
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-2 min-w-0">
-                            <div class="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-emerald-100 via-emerald-200/60 to-emerald-300/40 dark:from-emerald-900/50 dark:via-emerald-800/70 dark:to-emerald-700/50 border border-emerald-200/60 dark:border-emerald-600/40 shadow-lg">
-                                <i class="pi pi-table text-emerald-600 dark:text-emerald-300 text-sm"></i>
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-gray-800 dark:text-white text-lg font-bold leading-snug tracking-tight">
-                                    Registros de Vendedores
-                                </p>
-                                <p style="margin-top:-10px;" class="text-gray-500 dark:text-gray-400 text-xs leading-snug">
-                                    {{ totalRecords }} registros encontrados
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Indicador de estado -->
-                    <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full"
-                             [ngClass]="loading ? 'bg-orange-500 animate-pulse' : 'bg-emerald-500'"></div>
-                        <span class="text-xs font-medium text-surface-600 dark:text-surface-300">
-                        {{ loading ? 'Actualizando' : 'Actualizado' }}
-                    </span>
-                    </div>
-                </div>
-
-                <!-- Contenedor de la tabla -->
-                <div class="bg-surface-0 dark:bg-surface-900 rounded-lg shadow-sm border border-surface-200 dark:border-surface-700">
-                    @if (loadingTable) {
-                        <!-- Skeleton Loading para Tabla -->
-                        <div class="p-4 space-y-4">
-                            <!-- Header skeleton -->
-                            <div class="flex justify-between items-center">
-                                <div class="h-8 bg-surface-200 dark:bg-surface-700 rounded w-32 animate-pulse"></div>
-                                <div class="h-8 bg-surface-200 dark:bg-surface-700 rounded w-48 animate-pulse"></div>
-                            </div>
-
-                            <!-- Table header skeleton -->
-                            <div class="grid grid-cols-12 gap-2 p-3 border-b border-surface-200 dark:border-surface-700">
-                                @for (header of [1,2,3,4,5,6,7,8,9,10,11,12]; track header) {
-                                    <div class="h-4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse"></div>
-                                }
-                            </div>
-
-                            <!-- Table rows skeleton -->
-                            @for (row of [1,2,3,4,5,6,7,8]; track row) {
-                                <div class="grid grid-cols-12 gap-2 p-3 border-b border-surface-100 dark:border-surface-800">
-                                    @for (col of [1,2,3,4,5,6,7,8,9,10,11,12]; track col) {
-                                        <div class="h-4 bg-surface-100 dark:bg-surface-800 rounded animate-pulse"></div>
-                                    }
-                                </div>
-                            }
-                        </div>
-                    } @else {
-                        <!-- Tabla Real -->
-                        <p-table
-                            #dt1
-                            [value]="tableData"
-                            dataKey="id"
-                            [rows]="10"
-                            [loading]="loading"
-                            [rowHover]="true"
-                            [showGridlines]="true"
-                            [paginator]="true"
-                            [globalFilterFields]="['id', 'vendedor', 'ubicacion', 'numeroPedido', 'numeroCobo', 'cliente']"
-                            responsiveLayout="scroll"
-                            styleClass="p-datatable-sm">
-
-                        <ng-template #caption>
-                            <div class="flex justify-between items-center flex-column sm:flex-row p-4 bg-surface-50 dark:bg-surface-800">
-                                <div class="flex gap-2 mb-2">
-                                    <p-button
-                                        label="Limpiar Filtros"
-                                        class="p-button-outlined"
-                                        icon="pi pi-filter-slash"
-                                        size="small"
-                                        (onClick)="clearTableFilters(dt1)">
-                                    </p-button>
-                                    <p-button
-                                        label="Exportar Excel"
-                                        icon="pi pi-file-excel"
-                                        severity="success"
-                                        size="small"
-                                        (onClick)="exportToExcel()">
-                                    </p-button>
-                                </div>
-                                <p-iconfield iconPosition="left" class="ml-auto">
-                                    <p-inputicon>
-                                        <i class="pi pi-search"></i>
-                                    </p-inputicon>
-                                    <input
-                                        pInputText
-                                        type="text"
-                                        (input)="onGlobalFilter(dt1, $event)"
-                                        placeholder="Buscar en todos los campos..."
-                                        class="text-sm" />
-                                </p-iconfield>
-                            </div>
+                          </div>
+                          }
                         </ng-template>
 
-                            <ng-template #header>
-                                <tr>
-                                    <th style="min-width: 8rem">
-                                        <div class="flex justify-between items-center">
-                                            <span class="font-semibold text-xs">ID</span>
-                                            <p-columnFilter type="text" field="id" display="menu" placeholder="ID"></p-columnFilter>
-                                        </div>
-                                    </th>
-                                    <th style="min-width: 10rem">
-                                        <div class="flex justify-between items-center">
-                                            <span class="font-semibold text-xs">FECHA</span>
-                                            <p-columnFilter type="date" field="fecha" display="menu" placeholder="dd/mm/yyyy"></p-columnFilter>
-                                        </div>
-                                    </th>
-                                    <th style="min-width: 9rem">
-                                        <div class="flex justify-between items-center">
-                                            <span class="font-semibold text-xs">HORA INGRESO</span>
-                                            <p-columnFilter type="text" field="horaIngreso" display="menu" placeholder="HH:mm"></p-columnFilter>
-                                        </div>
-                                    </th>
-                                    <th style="min-width: 9rem">
-                                        <div class="flex justify-between items-center">
-                                            <span class="font-semibold text-xs">HORA SALIDA</span>
-                                            <p-columnFilter type="text" field="horaSalida" display="menu" placeholder="HH:mm"></p-columnFilter>
-                                        </div>
-                                    </th>
-                                    <th style="min-width: 12rem">
-                                        <div class="flex justify-between items-center">
-                                            <span class="font-semibold text-xs">VENDEDOR</span>
-                                            <p-columnFilter type="text" field="vendedor" display="menu" placeholder="Nombre"></p-columnFilter>
-                                        </div>
-                                    </th>
-                                    <th style="min-width: 14rem">
-                                        <div class="flex justify-between items-center">
-                                            <span class="font-semibold text-xs">UBICACIÓN</span>
-                                            <p-columnFilter type="text" field="ubicacion" display="menu" placeholder="Ubicación"></p-columnFilter>
-                                        </div>
-                                    </th>
-                                    <th style="min-width: 9rem">
-                                        <div class="flex justify-between items-center">
-                                            <span class="font-semibold text-xs">N° PEDIDO</span>
-                                            <p-columnFilter type="text" field="numeroPedido" display="menu" placeholder="Pedido"></p-columnFilter>
-                                        </div>
-                                    </th>
-                                    <th style="min-width: 9rem">
-                                        <div class="flex justify-between items-center">
-                                            <span class="font-semibold text-xs">N° COBRO</span>
-                                            <p-columnFilter type="text" field="numeroCobo" display="menu" placeholder="Cobro"></p-columnFilter>
-                                        </div>
-                                    </th>
-                                    <th style="min-width: 12rem">
-                                        <div class="flex justify-between items-center">
-                                            <span class="font-semibold text-xs">CLIENTE</span>
-                                            <p-columnFilter type="text" field="cliente" display="menu" placeholder="Cliente"></p-columnFilter>
-                                        </div>
-                                    </th>
-                                    <th style="min-width: 6rem" class="text-center">
-                                        <span class="font-semibold text-xs">PEDIDO</span>
-                                    </th>
-                                    <th style="min-width: 6rem" class="text-center">
-                                        <span class="font-semibold text-xs">COBRO</span>
-                                    </th>
-                                    <th style="min-width: 9rem" class="text-right">
-                                        <div class="flex justify-between items-center">
-                                            <span class="font-semibold text-xs">MONTO</span>
-                                            <p-columnFilter type="numeric" field="monto" display="menu" currency="USD"></p-columnFilter>
-                                        </div>
-                                    </th>
-                                </tr>
-                            </ng-template>
+                        <ng-template let-vendor #item>
+                          <div class="flex items-center gap-3 py-1">
+                            <div
+                              class="w-8 h-8 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center flex-shrink-0">
+                              <i class="pi pi-user text-white text-sm"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                              <div class="font-medium text-surface-900 dark:text-surface-0 truncate">
+                                {{ vendor.label }}
+                              </div>
+                              <div class="text-xs text-surface-500 dark:text-surface-400 truncate">
+                                {{ vendor.subtitle }}
+                              </div>
+                            </div>
+                            <div class="flex-shrink-0">
+                              <p-badge [value]="vendor.value" severity="secondary" class="text-xs"></p-badge>
+                            </div>
+                          </div>
+                        </ng-template>
+                      </p-select>
 
-                            <ng-template #body let-record>
-                                <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
-                                    <td>
-                                        <span class="font-mono text-xs">{{ record.id }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="text-sm font-medium">{{ record.fecha | date: 'dd/MM/yyyy' }}</span>
-                                    </td>
-                                    <td>
-                                    <span class="text-sm font-mono text-blue-600 dark:text-blue-400">
-                                        {{ record.horaIngreso }}
-                                    </span>
-                                    </td>
-                                    <td>
-                                    <span class="text-sm font-mono"
-                                          [ngClass]="record.horaSalida ? 'text-red-600 dark:text-red-400' : 'text-surface-400'">
-                                        {{ record.horaSalida || '--:--' }}
-                                    </span>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center gap-2">
-                                            <div class="w-6 h-6 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center">
-                                                <i class="pi pi-user text-white text-xs"></i>
-                                            </div>
-                                            <span class="text-sm font-medium">{{ record.vendedor }}</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center gap-2">
-                                            <i class="pi pi-map-marker text-red-500 text-sm"></i>
-                                            <span class="text-sm">{{ record.ubicacion }}</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                    <span class="text-sm font-mono text-center"
-                                          [ngClass]="record.numeroPedido ? 'text-surface-900 dark:text-surface-100' : 'text-surface-400'">
-                                        {{ record.numeroPedido || '---' }}
-                                    </span>
-                                    </td>
-                                    <td>
-                                    <span class="text-sm font-mono text-center"
-                                          [ngClass]="record.numeroCobo ? 'text-surface-900 dark:text-surface-100' : 'text-surface-400'">
-                                        {{ record.numeroCobo || '---' }}
-                                    </span>
-                                    </td>
-                                    <td>
-                                        <div class="flex items-center gap-2">
-                                            <div class="w-6 h-6 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full flex items-center justify-center">
-                                                <i class="pi pi-building text-white text-xs"></i>
-                                            </div>
-                                            <span class="text-sm font-medium">{{ record.cliente }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="flex justify-center">
-                                            @if (record.tienePedido) {
-                                                <i class="pi pi-check text-green-600 dark:text-green-400 text-lg font-bold"></i>
-                                            } @else {
-                                                <i class="pi pi-times text-surface-300 dark:text-surface-600 text-sm"></i>
-                                            }
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="flex justify-center">
-                                            @if (record.tieneCobro) {
-                                                <i class="pi pi-check text-green-600 dark:text-green-400 text-lg font-bold"></i>
-                                            } @else {
-                                                <i class="pi pi-times text-surface-300 dark:text-surface-600 text-sm"></i>
-                                            }
-                                        </div>
-                                    </td>
-                                    <td class="text-right">
-                                    <span class="text-sm font-semibold"
-                                          [ngClass]="record.monto > 0 ? 'text-green-600 dark:text-green-400' : 'text-surface-400'">
-                                        {{ record.monto | currency: 'USD':'symbol':'1.2-2' }}
-                                    </span>
-                                    </td>
-                                </tr>
-                            </ng-template>
+                      <!-- Información del vendedor seleccionado -->
+                      @if (selectedVendor) {
+                      <div
+                        class="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <div class="flex align-items-center gap-2 text-xs text-blue-700 dark:text-blue-300">
+                          <i class="pi pi-info-circle"></i>
+                          <span>Vendedor seleccionado: {{ selectedVendor }}</span>
+                        </div>
+                      </div>
+                      }
+                    </div>
 
-                            <ng-template #emptymessage>
-                                <tr>
-                                    <td colspan="12" class="text-center py-8">
-                                        <div class="flex flex-col items-center gap-3">
-                                            <i class="pi pi-search text-4xl text-surface-300 dark:text-surface-600"></i>
-                                            <div>
-                                                <p class="text-surface-500 dark:text-surface-400 font-medium">No se encontraron registros</p>
-                                                <p class="text-sm text-surface-400 dark:text-surface-500">Ajusta los filtros para ver más resultados</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </ng-template>
+                    <!-- Seleccionar Cliente -->
+                    <div>
+                      <label class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
+                        <i class="pi pi-building text-emerald-500 mr-1"></i>
+                        Seleccionar Cliente
+                      </label>
+                      <p-select [options]="customerOptions" [(ngModel)]="selectedCustomer" optionLabel="label"
+                        optionValue="value" [filter]="true" filterBy="label" [showClear]="true"
+                        [loading]="loadingCustomers" placeholder="Seleccionar cliente..." class="w-full"
+                        [disabled]="!selectedVendor || customerOptions.length === 0"
+                        (onChange)="onCustomerChange($event)">
 
-                            <ng-template #loadingbody>
-                                <tr>
-                                    <td colspan="12" class="text-center py-8">
-                                        <div class="flex items-center justify-center gap-3">
-                                            <i class="pi pi-spin pi-spinner text-xl text-primary"></i>
-                                            <span class="text-surface-600 dark:text-surface-400">Cargando registros de vendedores...</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                    }
+                        <ng-template #selectedItem let-selectedOption>
+                          @if (selectedOption) {
+                          <div class="flex items-center gap-2">
+                            <div
+                              class="w-6 h-6 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full flex items-center justify-center">
+                              <i class="pi pi-building text-white text-xs"></i>
+                            </div>
+                            <div class="flex flex-col">
+                              <span class="font-medium">{{ selectedOption.label }}</span>
+                              <small class="text-surface-500">{{ selectedOption.subtitle }}</small>
+                            </div>
+                          </div>
+                          }
+                        </ng-template>
+
+                        <ng-template let-customer #item>
+                          <div class="flex items-center gap-3 py-1">
+                            <div
+                              class="w-8 h-8 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                              <i class="pi pi-building text-white text-sm"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                              <div class="font-medium text-surface-900 dark:text-surface-0 truncate">
+                                {{ customer.label }}
+                              </div>
+                              <div class="text-xs text-surface-500 dark:text-surface-400 truncate">
+                                {{ customer.subtitle }}
+                              </div>
+                            </div>
+                          </div>
+                        </ng-template>
+                      </p-select>
+
+                      <!-- Información del cliente seleccionado -->
+                      @if (selectedCustomer) {
+                      <div
+                        class="mt-2 p-2 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800">
+                        <div class="flex align-items-center gap-2 text-xs text-emerald-700 dark:text-emerald-300">
+                          <i class="pi pi-info-circle"></i>
+                          <span>Cliente seleccionado: {{ selectedCustomer }}</span>
+                        </div>
+                      </div>
+                      }
+                    </div>
+                  </div>
                 </div>
-            </div>
+
+
+                <!-- Tipo de Transacción -->
+                <div>
+                  <div class="flex align-items-center gap-2 mb-3">
+                    <div
+                      class="w-8 h-8 flex items-center justify-center rounded-lg bg-gradient-to-br from-emerald-100 via-emerald-200/60 to-emerald-300/40 dark:from-emerald-900/50 dark:via-emerald-800/70 dark:to-emerald-700/50 border border-emerald-200/60 dark:border-emerald-600/40 shadow-sm">
+                      <i class="pi pi-database text-emerald-600 dark:text-emerald-300 text-sm"></i>
+                    </div>
+                    <span class="font-medium text-gray-700 dark:text-gray-200 mt-1 text-sm">Tipo de Transacción</span>
+                    <div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700"></div>
+                  </div>
+
+                  <div class="flex gap-4 p-3 bg-surface-50 dark:bg-surface-800 border-round">
+                    <div class="flex align-items-center gap-2">
+                      <p-checkbox inputId="pedidos-filter" [(ngModel)]="pedidosEnabled" [binary]="true"></p-checkbox>
+                      <label for="pedidos-filter" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
+                        <i class="pi pi-shopping-cart mr-1"></i>Pedidos
+                      </label>
+                    </div>
+                    <div class="flex align-items-center gap-2">
+                      <p-checkbox inputId="cobros-filter" [(ngModel)]="collectionsEnabled" [binary]="true"></p-checkbox>
+                      <label for="cobros-filter" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
+                        <i class="pi pi-dollar mr-1"></i>Cobros
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="flex justify-content-end gap-2 pt-2">
+                  <p-button label="Limpiar" icon="pi pi-refresh" severity="secondary" size="small"
+                    (onClick)="clearFilters()" [text]="true">
+                  </p-button>
+                  <p-button label="Aplicar" icon="pi pi-check" size="small" (onClick)="applyFilters()">
+                  </p-button>
+                </div>
+              </div>
+            </p-accordion-content>
+          </p-accordion-panel>
+        </p-accordion>
+        }
+      </div>
+
+      <!-- 2. Mapa (Full Width) -->
+      <div class="w-full">
+        <!-- Título del Mapa -->
+        <div class="flex items-center gap-2 min-w-0 mb-4">
+          <div
+            class="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-blue-100 via-blue-200/60 to-blue-300/40 dark:from-blue-900/50 dark:via-blue-800/70 dark:to-blue-700/50 border border-blue-200/60 dark:border-blue-600/40 shadow-lg">
+            <i class="pi pi-map text-blue-600 dark:text-blue-300 text-sm"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-gray-800 dark:text-white text-lg font-bold leading-snug tracking-tight">
+              Mapa de Ubicaciones
+            </p>
+            <p style="margin-top:-10px;" class="text-gray-500 dark:text-gray-400 text-xs leading-snug">
+              Visualización geográfica de vendedores
+            </p>
+          </div>
         </div>
+
+        <!-- Buscador de Ubicaciones -->
+        <div class="flex flex-col sm:flex-row gap-2 mb-4">
+          <div class="flex-1 min-w-0">
+            <p-iconField iconPosition="left" class="w-full">
+              <p-inputIcon>
+                <i class="pi pi-map-marker"></i>
+              </p-inputIcon>
+              <input pInputText type="text" placeholder="Buscar ubicación (ej: Quito, Ecuador)"
+                [(ngModel)]="searchLocation" (keyup.enter)="searchLocationOnMap()" class="w-full text-sm">
+            </p-iconField>
+          </div>
+          <div class="flex gap-2 flex-shrink-0">
+            <p-button icon="pi pi-search" severity="primary" size="small" (click)="searchLocationOnMap()"
+              [loading]="searchingLocation" pTooltip="Buscar ubicación" tooltipPosition="bottom">
+            </p-button>
+            <p-button icon="pi pi-times" severity="secondary" size="small" [text]="true" (click)="clearLocationSearch()"
+              pTooltip="Limpiar búsqueda" tooltipPosition="bottom">
+            </p-button>
+          </div>
+        </div>
+
+        <!-- Resultados de búsqueda -->
+        @if (searchResults.length > 0) {
+        <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-3 mb-4">
+          <div class="text-xs sm:text-sm text-surface-600 dark:text-surface-400 mb-2">
+            Resultados de búsqueda:
+          </div>
+          <div class="space-y-1">
+            @for (result of searchResults.slice(0, 3); track result) {
+            <div
+              class="flex items-center justify-between p-2 hover:bg-surface-100 dark:hover:bg-surface-700 rounded cursor-pointer transition-colors"
+              (click)="selectSearchResult(result)">
+              <div class="flex items-center gap-2 min-w-0 flex-1">
+                <i class="pi pi-map-marker text-primary text-sm flex-shrink-0"></i>
+                <span class="text-xs sm:text-sm text-surface-900 dark:text-surface-0 truncate">{{ result.display_name
+                  }}</span>
+              </div>
+              <i class="pi pi-arrow-right text-surface-400 text-xs flex-shrink-0 ml-2"></i>
+            </div>
+            }
+          </div>
+        </div>
+        }
+
+        <!-- Contenedor del mapa -->
+        <div class="relative overflow-hidden">
+          @if (loadingMap) {
+          <!-- Skeleton Loading para Mapa -->
+          <div class="w-full bg-surface-100 dark:bg-surface-800 rounded-lg animate-pulse" style="min-height: 400px;">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="text-center p-4">
+                <div class="w-12 h-12 bg-surface-200 dark:bg-surface-700 rounded-full mx-auto mb-3 animate-pulse"></div>
+                <div class="h-4 bg-surface-200 dark:bg-surface-700 rounded w-32 mx-auto mb-2 animate-pulse"></div>
+                <div class="h-3 bg-surface-100 dark:bg-surface-600 rounded w-24 mx-auto animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+          } @else {
+          @if (!mapInitialized) {
+          <div
+            class="absolute inset-0 flex items-center justify-center bg-surface-100 dark:bg-surface-800 rounded-lg z-10">
+            <div class="text-center p-4">
+              <i class="pi pi-spin pi-spinner text-2xl text-primary mb-2"></i>
+              <p class="text-sm text-surface-600 dark:text-surface-400">Cargando mapa...</p>
+            </div>
+          </div>
+          }
+          <div #mapContainer
+            class="w-full h-full rounded-lg shadow-sm border border-surface-200 dark:border-surface-700"
+            style="min-height: 400px; height: 100%; width: 100%;">
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- 3. Tabla de Registros (Full Width) -->
+      <div class="w-full">
+
+        <!-- Header de la tabla -->
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2 min-w-0">
+              <div
+                class="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-emerald-100 via-emerald-200/60 to-emerald-300/40 dark:from-emerald-900/50 dark:via-emerald-800/70 dark:to-emerald-700/50 border border-emerald-200/60 dark:border-emerald-600/40 shadow-lg">
+                <i class="pi pi-table text-emerald-600 dark:text-emerald-300 text-sm"></i>
+              </div>
+              <div class="min-w-0">
+                <p class="text-gray-800 dark:text-white text-lg font-bold leading-snug tracking-tight">
+                  Registros de Vendedores
+                </p>
+                <p style="margin-top:-10px;" class="text-gray-500 dark:text-gray-400 text-xs leading-snug">
+                  {{ totalRecords }} registros encontrados
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Indicador de estado -->
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full" [ngClass]="loading ? 'bg-orange-500 animate-pulse' : 'bg-emerald-500'">
+            </div>
+            <span class="text-xs font-medium text-surface-600 dark:text-surface-300">
+              {{ loading ? 'Actualizando' : 'Actualizado' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Contenedor de la tabla -->
+        <div
+          class="bg-surface-0 dark:bg-surface-900 rounded-lg shadow-sm border border-surface-200 dark:border-surface-700">
+          @if (loadingTable) {
+          <!-- Skeleton Loading para Tabla -->
+          <div class="p-4 space-y-4">
+            <!-- Header skeleton -->
+            <div class="flex justify-between items-center">
+              <div class="h-8 bg-surface-200 dark:bg-surface-700 rounded w-32 animate-pulse"></div>
+              <div class="h-8 bg-surface-200 dark:bg-surface-700 rounded w-48 animate-pulse"></div>
+            </div>
+
+            <!-- Table header skeleton -->
+            <div class="grid grid-cols-12 gap-2 p-3 border-b border-surface-200 dark:border-surface-700">
+              @for (header of [1,2,3,4,5,6,7,8,9,10,11,12]; track header) {
+              <div class="h-4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse"></div>
+              }
+            </div>
+
+            <!-- Table rows skeleton -->
+            @for (row of [1,2,3,4,5,6,7,8]; track row) {
+            <div class="grid grid-cols-12 gap-2 p-3 border-b border-surface-100 dark:border-surface-800">
+              @for (col of [1,2,3,4,5,6,7,8,9,10,11,12]; track col) {
+              <div class="h-4 bg-surface-100 dark:bg-surface-800 rounded animate-pulse"></div>
+              }
+            </div>
+            }
+          </div>
+          } @else {
+          <!-- Tabla Real -->
+          <p-table #dt1 [value]="tableData" dataKey="id" [rows]="10" [loading]="loading" [rowHover]="true"
+            [showGridlines]="true" [paginator]="true"
+            [globalFilterFields]="['id', 'vendedor', 'ubicacion', 'numeroPedido', 'numeroCobo', 'cliente']"
+            responsiveLayout="scroll" styleClass="p-datatable-sm">
+
+            <ng-template #caption>
+              <div
+                class="flex justify-between items-center flex-column sm:flex-row p-4 bg-surface-50 dark:bg-surface-800">
+                <div class="flex gap-2 mb-2">
+                  <p-button label="Limpiar Filtros" class="p-button-outlined" icon="pi pi-filter-slash" size="small"
+                    (onClick)="clearTableFilters(dt1)">
+                  </p-button>
+                  <p-button label="Exportar Excel" icon="pi pi-file-excel" severity="success" size="small"
+                    (onClick)="exportToExcel()">
+                  </p-button>
+                </div>
+                <p-iconfield iconPosition="left" class="ml-auto">
+                  <p-inputicon>
+                    <i class="pi pi-search"></i>
+                  </p-inputicon>
+                  <input pInputText type="text" (input)="onGlobalFilter(dt1, $event)"
+                    placeholder="Buscar en todos los campos..." class="text-sm" />
+                </p-iconfield>
+              </div>
+            </ng-template>
+
+            <ng-template #header>
+              <tr>
+                <th style="min-width: 8rem">
+                  <div class="flex justify-between items-center">
+                    <span class="font-semibold text-xs">ID</span>
+                    <p-columnFilter type="text" field="id" display="menu" placeholder="ID"></p-columnFilter>
+                  </div>
+                </th>
+                <th style="min-width: 10rem">
+                  <div class="flex justify-between items-center">
+                    <span class="font-semibold text-xs">FECHA</span>
+                    <p-columnFilter type="date" field="fecha" display="menu" placeholder="dd/mm/yyyy"></p-columnFilter>
+                  </div>
+                </th>
+                <th style="min-width: 9rem">
+                  <div class="flex justify-between items-center">
+                    <span class="font-semibold text-xs">HORA INGRESO</span>
+                    <p-columnFilter type="text" field="horaIngreso" display="menu" placeholder="HH:mm"></p-columnFilter>
+                  </div>
+                </th>
+                <th style="min-width: 9rem">
+                  <div class="flex justify-between items-center">
+                    <span class="font-semibold text-xs">HORA SALIDA</span>
+                    <p-columnFilter type="text" field="horaSalida" display="menu" placeholder="HH:mm"></p-columnFilter>
+                  </div>
+                </th>
+                <th style="min-width: 12rem">
+                  <div class="flex justify-between items-center">
+                    <span class="font-semibold text-xs">VENDEDOR</span>
+                    <p-columnFilter type="text" field="vendedor" display="menu" placeholder="Nombre"></p-columnFilter>
+                  </div>
+                </th>
+                <th style="min-width: 14rem">
+                  <div class="flex justify-between items-center">
+                    <span class="font-semibold text-xs">UBICACIÓN</span>
+                    <p-columnFilter type="text" field="ubicacion" display="menu"
+                      placeholder="Ubicación"></p-columnFilter>
+                  </div>
+                </th>
+                <th style="min-width: 9rem">
+                  <div class="flex justify-between items-center">
+                    <span class="font-semibold text-xs">N° PEDIDO</span>
+                    <p-columnFilter type="text" field="numeroPedido" display="menu"
+                      placeholder="Pedido"></p-columnFilter>
+                  </div>
+                </th>
+                <th style="min-width: 9rem">
+                  <div class="flex justify-between items-center">
+                    <span class="font-semibold text-xs">N° COBRO</span>
+                    <p-columnFilter type="text" field="numeroCobo" display="menu" placeholder="Cobro"></p-columnFilter>
+                  </div>
+                </th>
+                <th style="min-width: 12rem">
+                  <div class="flex justify-between items-center">
+                    <span class="font-semibold text-xs">CLIENTE</span>
+                    <p-columnFilter type="text" field="cliente" display="menu" placeholder="Cliente"></p-columnFilter>
+                  </div>
+                </th>
+                <th style="min-width: 6rem" class="text-center">
+                  <span class="font-semibold text-xs">PEDIDO</span>
+                </th>
+                <th style="min-width: 6rem" class="text-center">
+                  <span class="font-semibold text-xs">COBRO</span>
+                </th>
+                <th style="min-width: 9rem" class="text-right">
+                  <div class="flex justify-between items-center">
+                    <span class="font-semibold text-xs">MONTO PEDIDO</span>
+                    <p-columnFilter type="numeric" field="monto" display="menu" currency="USD"></p-columnFilter>
+                  </div>
+                </th>
+                <th style="min-width: 9rem" class="text-right">
+                  <div class="flex justify-between items-center">
+                    <span class="font-semibold text-xs">MONTO COBRO</span>
+                    <p-columnFilter type="numeric" field="monto" display="menu" currency="USD"></p-columnFilter>
+                  </div>
+                </th>
+              </tr>
+            </ng-template>
+
+            <ng-template #body let-record>
+              <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
+                <td>
+                  <span class="font-mono text-xs">{{ record.id }}</span>
+                </td>
+                <td>
+                  <span class="text-sm font-medium">{{ record.fecha | date: 'dd/MM/yyyy' }}</span>
+                </td>
+                <td>
+                  <span class="text-sm font-mono text-blue-600 dark:text-blue-400">
+                    {{ record.tiempoinicio }}
+                  </span>
+                </td>
+                <td>
+                  <span class="text-sm font-mono"
+                    [ngClass]="record.horaSalida ? 'text-red-600 dark:text-red-400' : 'text-surface-400'">
+                    {{ record.tiempofinal || '--:--' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div
+                      class="w-6 h-6 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center">
+                      <i class="pi pi-user text-white text-xs"></i>
+                    </div>
+                    <span class="text-sm font-medium">{{ record.vendedor }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <i class="pi pi-map-marker text-red-500 text-sm"></i>
+                    <span class="text-sm">{{ record.latitud + ", " + record.longitud}}</span>
+                  </div>
+                </td>
+                <td>
+                  <span class="text-sm font-mono text-center"
+                    [ngClass]="record.numeroPedido ? 'text-surface-900 dark:text-surface-100' : 'text-surface-400'">
+                    {{ record.numeropedido || '---' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="text-sm font-mono text-center"
+                    [ngClass]="record.numeroCobo ? 'text-surface-900 dark:text-surface-100' : 'text-surface-400'">
+                    {{ record.numerocobro || '---' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div
+                      class="w-6 h-6 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full flex items-center justify-center">
+                      <i class="pi pi-building text-white text-xs"></i>
+                    </div>
+                    <span class="text-sm font-medium">{{ record.nomcliente }}</span>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="flex justify-center">
+                    @if (record.pedido) {
+                    <i class="pi pi-check text-green-600 dark:text-green-400 text-lg font-bold"></i>
+                    } @else {
+                    <i class="pi pi-times text-surface-300 dark:text-surface-600 text-sm"></i>
+                    }
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="flex justify-center">
+                    @if (record.cobro) {
+                    <i class="pi pi-check text-green-600 dark:text-green-400 text-lg font-bold"></i>
+                    } @else {
+                    <i class="pi pi-times text-surface-300 dark:text-surface-600 text-sm"></i>
+                    }
+                  </div>
+                </td>
+                <td class="text-right">
+                  <span class="text-sm font-semibold"
+                    [ngClass]="record.monto > 0 ? 'text-green-600 dark:text-green-400' : 'text-surface-400'">
+                    {{ record.montopedido | currency: 'USD':'symbol':'1.2-2' }}
+                  </span>
+                </td>
+                <td class="text-right">
+                  <span class="text-sm font-semibold"
+                    [ngClass]="record.monto > 0 ? 'text-green-600 dark:text-green-400' : 'text-surface-400'">
+                    {{ record.montocobro | currency: 'USD':'symbol':'1.2-2' }}
+                  </span>
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template #emptymessage>
+              <tr>
+                <td colspan="12" class="text-center py-8">
+                  <div class="flex flex-col items-center gap-3">
+                    <i class="pi pi-search text-4xl text-surface-300 dark:text-surface-600"></i>
+                    <div>
+                      <p class="text-surface-500 dark:text-surface-400 font-medium">No se encontraron registros</p>
+                      <p class="text-sm text-surface-400 dark:text-surface-500">Ajusta los filtros para ver más
+                        resultados</p>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template #loadingbody>
+              <tr>
+                <td colspan="12" class="text-center py-8">
+                  <div class="flex items-center justify-center gap-3">
+                    <i class="pi pi-spin pi-spinner text-xl text-primary"></i>
+                    <span class="text-surface-600 dark:text-surface-400">Cargando registros de vendedores...</span>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+          }
+        </div>
+      </div>
     </div>
+  </div>
 
 </div>

@@ -12,6 +12,8 @@ import { CustomerUpdateInfo } from '@/core/models/Customer/CustomerUpdateInfo';
 import { SolicitudData } from '@/core/models/SolicitudData';
 import { UpdateCustomerLocation } from '@/core/models/Customer/UpdateCustomerLocation';
 import { RWebHistorialxDia } from '../models/Responses/RWebHistorialxDia';
+import { CFiltroHistorialxFecha } from '../models/Filter/CFiltroHistorialxFecha';
+import { MTabla } from '../models/Responses/MTabla';
 
 
 @Injectable({
@@ -56,6 +58,20 @@ export class CustomerService {
         return this.http.post<RWebHistorialxDia>(
             `${this.baseUrl}/geolocalizacion/webhistorialxdia`,
             _CFiltroHistorialxDia,
+            { headers }
+        );
+    }
+    POSTHistorialxFecha(_CFiltroHistorialxFecha: CFiltroHistorialxFecha): Observable<MTabla[]> { //TrackingResponse> {
+        const token = this.authService.getToken();
+
+        const headers = new HttpHeaders({
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        });
+
+        return this.http.post<MTabla[]>(
+            `${this.baseUrl}/geolocalizacion/webhistorial`,
+            _CFiltroHistorialxFecha,
             { headers }
         );
     }

@@ -907,7 +907,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
         this.loadingOrders = true;
         this.loadingCharges = true;
 
-
+        
         const _CFiltroHistorialxDia: CFiltroHistorialxDia = {
             usuarios: [this.selectedUser.usucod],
             ifpedidos: true,
@@ -934,7 +934,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
                             this.mapService.focusRoute(response.recorrido);
                     }
                     // aqui me quede
-                    //console.log(response)
+                    console.log(response)
                     this.msgService.add({
                         severity: 'success',
                         summary: 'Éxito',
