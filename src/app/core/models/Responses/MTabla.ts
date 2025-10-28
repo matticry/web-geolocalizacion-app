@@ -7,6 +7,7 @@ export interface MTabla {
     nomcliente: string;
     dircliente: string;
     vendedor: string;
+    nomvendedor: string;
     numeropedido: number;
     numerocobro: number;
     pedido: boolean;

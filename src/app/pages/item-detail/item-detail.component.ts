@@ -92,8 +92,8 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
    timeValue: number | null = null;
    selectedGeofence: string[] = [];
    geofenceEnabled: boolean = true;
-   pedidosEnabled: boolean = false;
-   collectionsEnabled: boolean = false;
+   pedidosEnabled: boolean = true;
+   collectionsEnabled: boolean = true;
    clientesNone: boolean = false;
    clientesAll: boolean = false;
    clientesAssigned: boolean = false;
@@ -125,6 +125,15 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
    //region Lifecycle Hooks
 
    ngOnInit(): void {
+      const today = new Date();
+      // Fecha desde (00:00:00)
+      this.filterFrom = new Date(today);
+      this.filterFrom.setHours(0, 0, 0, 0);
+
+      // Fecha hasta (23:59:59)
+      this.filterTo = new Date(today);
+      this.filterTo.setHours(23, 59, 59, 999);
+
       this.getAllUsers();
       this.subscribeToMapService();
       //this.mapService.hideAllUserMarkers();
@@ -502,7 +511,7 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
             })
          )
          .subscribe({
-            next: (response : MTabla[]) => {
+            next: (response: MTabla[]) => {
                console.log(response);
                this.tableData = response;
                /*this.processTrackingResponse(response);
@@ -530,15 +539,31 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
    }
    private buildFechaInicio(): string {
       if (this.filterFrom) {
-         console.log(this.filterFrom);
-         return this.filterFrom.toISOString();
+         //console.log(this.filterFrom);
+         //return this.filterFrom.toISOString();
+         const year = this.filterFrom.getFullYear();
+         const month = (this.filterFrom.getMonth() + 1).toString().padStart(2, '0');
+         const day = this.filterFrom.getDate().toString().padStart(2, '0');
+         const hours = this.filterFrom.getHours().toString().padStart(2, '0');
+         const minutes = this.filterFrom.getMinutes().toString().padStart(2, '0');
+         const seconds = this.filterFrom.getSeconds().toString().padStart(2, '0');
+         return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
       }
       return new Date().toISOString();
    }
    private buildFechaFinal(): string {
       if (this.filterTo) {
-         console.log(this.filterTo);
-         return this.filterTo.toISOString();
+         //console.log(this.filterTo);
+         //return this.filterTo.toISOString();
+         const year = this.filterTo.getFullYear();
+         const month = (this.filterTo.getMonth() + 1).toString().padStart(2, '0');
+         const day = this.filterTo.getDate().toString().padStart(2, '0');
+         const hours = this.filterTo.getHours().toString().padStart(2, '0');
+         const minutes = this.filterTo.getMinutes().toString().padStart(2, '0');
+         const seconds = this.filterTo.getSeconds().toString().padStart(2, '0');
+         return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
       }
       return new Date().toISOString();
    }

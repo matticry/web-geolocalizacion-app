@@ -455,25 +455,25 @@
 
             <ng-template #header>
               <tr>
-                <th style="min-width: 8rem">
+                <th>
                   <div class="flex justify-between items-center">
                     <span class="font-semibold text-xs">ID</span>
                     <p-columnFilter type="text" field="id" display="menu" placeholder="ID"></p-columnFilter>
                   </div>
                 </th>
-                <th style="min-width: 10rem">
+                <th style="min-width: 6rem">
                   <div class="flex justify-between items-center">
                     <span class="font-semibold text-xs">FECHA</span>
                     <p-columnFilter type="date" field="fecha" display="menu" placeholder="dd/mm/yyyy"></p-columnFilter>
                   </div>
                 </th>
-                <th style="min-width: 9rem">
+                <th style="min-width: 6rem">
                   <div class="flex justify-between items-center">
                     <span class="font-semibold text-xs">HORA INGRESO</span>
                     <p-columnFilter type="text" field="horaIngreso" display="menu" placeholder="HH:mm"></p-columnFilter>
                   </div>
                 </th>
-                <th style="min-width: 9rem">
+                <th style="min-width: 6rem">
                   <div class="flex justify-between items-center">
                     <span class="font-semibold text-xs">HORA SALIDA</span>
                     <p-columnFilter type="text" field="horaSalida" display="menu" placeholder="HH:mm"></p-columnFilter>
@@ -492,38 +492,38 @@
                       placeholder="Ubicación"></p-columnFilter>
                   </div>
                 </th>
-                <th style="min-width: 9rem">
+                <th style="min-width: 2rem">
                   <div class="flex justify-between items-center">
                     <span class="font-semibold text-xs">N° PEDIDO</span>
                     <p-columnFilter type="text" field="numeroPedido" display="menu"
                       placeholder="Pedido"></p-columnFilter>
                   </div>
                 </th>
-                <th style="min-width: 9rem">
+                <th style="min-width: 2rem">
                   <div class="flex justify-between items-center">
                     <span class="font-semibold text-xs">N° COBRO</span>
                     <p-columnFilter type="text" field="numeroCobo" display="menu" placeholder="Cobro"></p-columnFilter>
                   </div>
                 </th>
-                <th style="min-width: 12rem">
+                <th style="min-width: 20rem">
                   <div class="flex justify-between items-center">
                     <span class="font-semibold text-xs">CLIENTE</span>
                     <p-columnFilter type="text" field="cliente" display="menu" placeholder="Cliente"></p-columnFilter>
                   </div>
                 </th>
-                <th style="min-width: 6rem" class="text-center">
+                <th style="min-width: 1rem" class="text-center">
                   <span class="font-semibold text-xs">PEDIDO</span>
                 </th>
-                <th style="min-width: 6rem" class="text-center">
+                <th style="min-width: 1rem" class="text-center">
                   <span class="font-semibold text-xs">COBRO</span>
                 </th>
-                <th style="min-width: 9rem" class="text-right">
+                <th style="min-width: 6rem" class="text-right">
                   <div class="flex justify-between items-center">
                     <span class="font-semibold text-xs">MONTO PEDIDO</span>
                     <p-columnFilter type="numeric" field="monto" display="menu" currency="USD"></p-columnFilter>
                   </div>
                 </th>
-                <th style="min-width: 9rem" class="text-right">
+                <th style="min-width: 6rem" class="text-right">
                   <div class="flex justify-between items-center">
                     <span class="font-semibold text-xs">MONTO COBRO</span>
                     <p-columnFilter type="numeric" field="monto" display="menu" currency="USD"></p-columnFilter>
@@ -563,7 +563,7 @@
                 <td>
                   <div class="flex items-center gap-2">
                     <i class="pi pi-map-marker text-red-500 text-sm"></i>
-                    <span class="text-sm">{{ record.latitud + ", " + record.longitud}}</span>
+                    <span class="text-sm">{{ record.latitud.toFixed(8) + ", " + record.longitud.toFixed(8) }}</span>
                   </div>
                 </td>
                 <td>
@@ -584,7 +584,10 @@
                       class="w-6 h-6 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full flex items-center justify-center">
                       <i class="pi pi-building text-white text-xs"></i>
                     </div>
-                    <span class="text-sm font-medium">{{ record.nomcliente }}</span>
+                    <div class="flex flex-col">
+                      <span class="text-sm font-medium">{{ record.nomcliente }}</span>
+                      <span class="text-xs font-medium">{{ record.codcliente }}</span>
+                    </div>
                   </div>
                 </td>
                 <td class="text-center">
