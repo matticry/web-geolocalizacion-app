@@ -23,6 +23,8 @@ import { Select } from 'primeng/select';
 import { CustomerResponseDto } from '@/core/models/Customer/CustomerResponseDto';
 import { CFiltroHistorialxFecha } from '@/core/models/Filter/CFiltroHistorialxFecha';
 import { MTabla } from '@/core/models/Responses/MTabla';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 @Component({
    selector: 'app-item-detail',
@@ -125,6 +127,15 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
    //region Lifecycle Hooks
 
    ngOnInit(): void {
+      
+      this.filterDefault();
+      this.getAllUsers();
+      this.subscribeToMapService();
+      //this.mapService.hideAllUserMarkers();
+   }
+   filterDefault(): void {
+      this.pedidosEnabled=true;
+      this.collectionsEnabled=true;
       const today = new Date();
       // Fecha desde (00:00:00)
       this.filterFrom = new Date(today);
@@ -134,9 +145,6 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       this.filterTo = new Date(today);
       this.filterTo.setHours(23, 59, 59, 999);
 
-      this.getAllUsers();
-      this.subscribeToMapService();
-      //this.mapService.hideAllUserMarkers();
    }
 
    ngAfterViewInit(): void {
@@ -590,9 +598,19 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
    }
 
    clearFilters(): void {
+
+       const today = new Date();
+      // Fecha desde (00:00:00)
+      this.filterFrom = new Date(today);
+      this.filterFrom.setHours(0, 0, 0, 0);
+
+      // Fecha hasta (23:59:59)
+      this.filterTo = new Date(today);
+      this.filterTo.setHours(23, 59, 59, 999);
+
       // Filtros temporales
-      this.filterFrom = null;
-      this.filterTo = null;
+      //this.filterFrom = null;
+      //this.filterTo = null;
       this.selectedTimeUnit = null;
       this.timeValue = null;
 
@@ -606,8 +624,8 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       this.selectedGeofence = [];
 
       // Filtros de transacciones
-      this.pedidosEnabled = false;
-      this.collectionsEnabled = false;
+      this.pedidosEnabled = true;
+      this.collectionsEnabled = true;
 
       // Filtros de clientes (si los tienes)
       this.clientesNone = false;
@@ -628,5 +646,51 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       });
    }
 
-   exportToExcel() { }
+   exportToExcel() {
+      if (this.tableData.length <= 0) {
+         this.msgService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No Existen Registros'
+         });
+         return;
+      }
+      // 1️⃣ Convertir tus datos (JSON) a una hoja de Excel
+      const exportData = this.tableData.map(item => ({
+         'ID': item.id,
+         'FECHA': item.fecha,
+         'HORA INICIO': item.tiempoinicio,
+         'HORA FINAL': item.tiempofinal,
+         'CODIGO CLIENTE': item.codcliente,
+         'CLIENTE': item.nomcliente,
+         'DIRECCION': item.dircliente,
+         'CODIGO VENDEDOR': item.vendedor,
+         'VENDEDOR': item.nomvendedor,
+         'NUMERO PEDIDO': item.numeropedido,
+         'NUMERO COBRO': item.numerocobro,
+         'PEDIDO': item.pedido,
+         'COBRO': item.cobro,
+         'MONTO PEDIDO': item.montopedido,
+         'MONTO COBRO': item.montocobro,
+         'LATITUD': item.latitud,
+         'LONGITUD': item.longitud
+      }));
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+      // 2️⃣ Crear el libro (workbook)
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos');
+
+      // 3️⃣ Generar el buffer en formato Excel
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+      // 4️⃣ Crear un archivo Blob y descargarlo
+      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+
+      // 5️⃣ Asignar nombre al archivo
+      const fileName = `reporte_${new Date().toISOString().slice(0, 19).replace(/[-T:]/g, '')}.xlsx`;
+      saveAs(blob, fileName);
+
+
+   }
 }

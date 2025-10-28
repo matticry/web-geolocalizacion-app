@@ -28,8 +28,7 @@ import {
   withI18nSupport,
   withIncrementalHydration,
   withNoHttpTransferCache
-} from "./chunk-6Y5JLKHV.js";
-import "./chunk-LA6THYPY.js";
+} from "./chunk-PUTSO7FR.js";
 import {
   DomRendererFactory2,
   EVENT_MANAGER_PLUGINS,
@@ -41,10 +40,11 @@ import {
 import {
   getDOM
 } from "./chunk-DWGP2BTT.js";
+import "./chunk-LA6THYPY.js";
 import "./chunk-HACFVF7Q.js";
 import "./chunk-EUNHGKBA.js";
-import "./chunk-6XXUSXOD.js";
 import "./chunk-4ALNEIOD.js";
+import "./chunk-6XXUSXOD.js";
 import "./chunk-PZP3Q6FW.js";
 import "./chunk-3OV72XIM.js";
 export {

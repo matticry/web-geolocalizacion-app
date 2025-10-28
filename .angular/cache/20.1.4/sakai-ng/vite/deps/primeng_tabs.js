@@ -1,34 +1,22 @@
 import {
   Ripple,
   RippleModule
-} from "./chunk-6CT4MMFV.js";
+} from "./chunk-IP2DRTIK.js";
 import {
   ChevronLeftIcon,
   ChevronRightIcon
-} from "./chunk-OQM7IITL.js";
-import "./chunk-R7GZDAMF.js";
+} from "./chunk-SUCLWWJX.js";
+import "./chunk-4D6ABBJ3.js";
 import {
   BaseComponent
-} from "./chunk-EHX4J55E.js";
+} from "./chunk-7VIKPRKO.js";
 import {
   BaseStyle
-} from "./chunk-SNPGDEKO.js";
-import "./chunk-Q7GDTJC3.js";
+} from "./chunk-BZDIWF5B.js";
 import {
   PrimeTemplate,
   SharedModule
-} from "./chunk-RPPCTGNN.js";
-import {
-  K,
-  Q2 as Q,
-  Rt,
-  V,
-  bt,
-  k,
-  s3 as s,
-  v,
-  z2 as z
-} from "./chunk-TMXM24YL.js";
+} from "./chunk-D3KF2K3Z.js";
 import {
   CommonModule,
   NgTemplateOutlet,
@@ -88,9 +76,21 @@ import {
   ɵɵtemplate,
   ɵɵviewQuery
 } from "./chunk-EUNHGKBA.js";
-import "./chunk-6XXUSXOD.js";
 import "./chunk-4ALNEIOD.js";
+import "./chunk-6XXUSXOD.js";
 import "./chunk-PZP3Q6FW.js";
+import "./chunk-Q7GDTJC3.js";
+import {
+  K,
+  Q2 as Q,
+  Rt,
+  V,
+  bt,
+  k,
+  s3 as s,
+  v,
+  z2 as z
+} from "./chunk-TMXM24YL.js";
 import "./chunk-3OV72XIM.js";
 
 // node_modules/@primeuix/styles/dist/tabs/index.mjs
