@@ -1,6 +1,7 @@
 export interface CFiltroHistorialxDia {
     usuarios: string[];
+    fecha: string;
     ifpedidos: boolean;
     ifcobros: boolean;
-    clientesrecorrido: boolean;
+    clientes: number;
 }

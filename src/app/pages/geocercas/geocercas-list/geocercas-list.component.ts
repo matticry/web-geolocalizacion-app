@@ -816,8 +816,8 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
 
   private setDefaultValues(): void {
     const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    yesterday.setHours(9, 39, 0, 0);
+    yesterday.setDate(yesterday.getDate());
+    //yesterday.setHours(9, 39, 0, 0);
     this.filterFrom = yesterday;
 
     this.selectedTimeUnit = 'Días';
@@ -840,16 +840,24 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   clearFilters(): void {
-    this.filterFrom = null;
-    this.selectedTimeUnit = null;
-    this.timeValue = null;
+    
     this.geofenceEnabled = false;
     this.selectedGeofence = [];
-    this.pedidosEnabled = false;
-    this.collectionsEnabled = false;
-    this.clientesNone = false;
-    this.clientesAll = false;
+    
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate());
+    //yesterday.setHours(9, 39, 0, 0);
+    this.filterFrom = yesterday;
+
+    this.selectedTimeUnit = 'Días';
+    this.timeValue = 2;
+
+    this.pedidosEnabled = true;
+    this.collectionsEnabled = true;
+
+    this.clientesAll = true;
     this.clientesAssigned = false;
+
 
     this.msgService.add({
       severity: 'info',
@@ -883,10 +891,12 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
 
     const _CFiltroHistorialxDia: CFiltroHistorialxDia = {
       usuarios: [this.selectedUser?.usucod],
+      fecha: this.buildFechaInicio(),
       ifpedidos: this.pedidosEnabled,
       ifcobros: this.collectionsEnabled,
-      clientesrecorrido: true,
+      clientes: this.clientesAll?1:this.clientesAssigned?2:0,
     };
+    console.log(_CFiltroHistorialxDia);
     this.customerService
       .POSTHistorialxDia(_CFiltroHistorialxDia)
       .pipe(
@@ -904,7 +914,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
           if (response.recorrido.length > 0) {
             this.mapService.focusRoute(response.recorrido);
           }
-          this.setDefaultValues();
+          //this.setDefaultValues();
           this.msgService.add({
             severity: 'success',
             summary: 'Éxito',
@@ -933,12 +943,13 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
 
     const _CFiltroHistorialxDia: CFiltroHistorialxDia = {
       usuarios: [codigvendedor],
+      fecha: this.buildFechaInicio(),
       ifpedidos: true,
       ifcobros: true,
-      clientesrecorrido: true,
+      clientes: 1,
     };
 
-    //console.log(_CFiltroHistorialxDia)
+    console.log(_CFiltroHistorialxDia);
     //return;
     this.customerService
       .POSTHistorialxDia(_CFiltroHistorialxDia)
@@ -992,7 +1003,15 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
    */
   private buildFechaInicio(): string {
     if (this.filterFrom) {
-      return this.filterFrom.toISOString();
+      //return this.filterFrom.toISOString();
+         const year = this.filterFrom.getFullYear();
+         const month = (this.filterFrom.getMonth() + 1).toString().padStart(2, '0');
+         const day = this.filterFrom.getDate().toString().padStart(2, '0');
+         const hours = this.filterFrom.getHours().toString().padStart(2, '0');
+         const minutes = this.filterFrom.getMinutes().toString().padStart(2, '0');
+         const seconds = this.filterFrom.getSeconds().toString().padStart(2, '0');
+         return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
     }
     return new Date().toISOString();
   }

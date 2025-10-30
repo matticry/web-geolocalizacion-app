@@ -1284,19 +1284,22 @@
 													Desde
 												</label>
 												<p-datepicker inputId="filter-datetime-compact" [(ngModel)]="filterFrom"
-													dateFormat="dd/mm/yy" [showTime]="true" [hourFormat]="'24'"
-													placeholder="Fecha y hora..." class="w-full">
+													dateFormat="dd/mm/yy"
+													placeholder="Fecha ..." class="w-full">
 												</p-datepicker>
+												<!--<p-datepicker inputId="filter-datetime-compact" [(ngModel)]="filterFrom"
+													dateFormat="dd/mm/yyyy" [showTime]="true" [hourFormat]="'24'"
+													placeholder="Fecha y hora..." class="w-full">
+												</p-datepicker>-->
 											</div>
 
 											<!-- Extensión temporal compacta -->
 											<div class="col-span-12 sm:col-span-5">
-												<label
+												<!--<label
 													class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
 													Tiempo
 												</label>
 												<div class="flex gap-1">
-													<!-- Para unidades de tiempo -->
 													<p-autoComplete [(ngModel)]="selectedTimeUnit"
 														[suggestions]="timeUnitOptions"
 														(completeMethod)="searchTimeUnit($event)" optionLabel="label"
@@ -1305,7 +1308,7 @@
 
 													<input pInputText [(ngModel)]="timeValue" placeholder="2"
 														type="number" min="1" class="w-16 flex-1 text-center text-sm">
-												</div>
+												</div>-->
 											</div>
 										</div>
 									</div>
