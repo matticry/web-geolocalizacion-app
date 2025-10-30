@@ -717,6 +717,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
   }
   //=============================================================================================//
   focusCustomerOnMap(customer: CustomerResponseDto): void {
+    //console.log(customer);
     this.mapService.focusOnCustomer(customer);
 
     this.msgService.add({
@@ -764,25 +765,32 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
   /**
    * Maneja el cambio de checkboxes de clientes (mutuamente excluyentes)
    */
-  onClientFilterChange(filterType: 'none' | 'all' | 'assigned'): void {
+  /*onClientFilterChange(filterType: 'none' | 'all' | 'assigned'): void {
     // Resetear todos
-    this.clientesNone = false;
-    this.clientesAll = false;
-    this.clientesAssigned = false;
-
+    //this.clientesNone = false;
+    //this.clientesAll = false;
+    //this.clientesAssigned = false;
+    if(this.clientesAll)
+    {
+      this.clientesAssigned = false;
+    }
+    if(this.clientesAssigned)
+    {
+      this.clientesAll = false;
+    
     switch (filterType) {
       case 'none':
-        this.clientesNone = true;
-        this.mapService.clearCustomerMarkers();
+        //this.clientesNone = true;
+        //this.mapService.clearCustomerMarkers();
         break;
       case 'all':
-        this.clientesAll = true;
+        //this.clientesAll = true;
         break;
       case 'assigned':
-        this.clientesAssigned = true;
+        //this.clientesAssigned = true;
         break;
     }
-  }
+  }*/
 
   onToggleChange() {
     if (this.geofenceEnabled) {
@@ -870,6 +878,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
    * Aplica los filtros seleccionados y realiza la petición
    */
   applyFilters(): void {
+
     if (!this.selectedUser) {
       this.msgService.add({
         severity: 'warn',
@@ -887,7 +896,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     this.loadingCustomers = true;
     this.loadingOrders = true;
     this.loadingCharges = true;
-
 
     const _CFiltroHistorialxDia: CFiltroHistorialxDia = {
       usuarios: [this.selectedUser?.usucod],
@@ -1007,10 +1015,10 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
          const year = this.filterFrom.getFullYear();
          const month = (this.filterFrom.getMonth() + 1).toString().padStart(2, '0');
          const day = this.filterFrom.getDate().toString().padStart(2, '0');
-         const hours = this.filterFrom.getHours().toString().padStart(2, '0');
-         const minutes = this.filterFrom.getMinutes().toString().padStart(2, '0');
-         const seconds = this.filterFrom.getSeconds().toString().padStart(2, '0');
-         return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+         //const hours = this.filterFrom.getHours().toString().padStart(2, '0');
+         //const minutes = this.filterFrom.getMinutes().toString().padStart(2, '0');
+         //const seconds = this.filterFrom.getSeconds().toString().padStart(2, '0');
+         return `${year}-${month}-${day}T00:00:00`;
 
     }
     return new Date().toISOString();
@@ -1065,10 +1073,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
   private processTrackingResponse(response: RWebHistorialxDia): void {
     this.validateTrackingDataAvailability(response);
 
-    if (response.recorrido && response.recorrido.length > 0) {
-      this.mapService.addTrackingMarkers(response.recorrido.sort((a, b) => a.geubid - b.geubid));
-      //console.log(response.recorrido.sort((a, b) => a.geubid - b.geubid))
-    }
 
     this.loadingCustomers = false;
     this.loadingCharges = false;
@@ -1088,6 +1092,12 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     this.mapService.clearOrderMarkers();
     this.mapService.clearCustomerMarkers();
     this.mapService.clearCombinedMarkers();
+    this.mapService.clearTrackingMarkers();
+
+    if (response.recorrido && response.recorrido.length > 0) {
+      this.mapService.addTrackingMarkers(response.recorrido.sort((a, b) => a.geubid - b.geubid));
+      //console.log(response.recorrido.sort((a, b) => a.geubid - b.geubid))
+    }
 
     this.mapService.addCombinedMarkers(this.charges, this.orders, this.customers);
 

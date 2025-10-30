@@ -396,7 +396,6 @@ export class MapService {
 
                 if (hasMultiple) {
                     const combinations = this.generateCombinations(chargeList, orderList, customerList);
-
                     combinations.forEach((combo, idx) => {
                         const offset = this.calculateOffset(idx);
                         const marker = this.createDynamicMarker(combo, offset);
@@ -457,7 +456,7 @@ export class MapService {
         isolatedCustomers: CustomerResponseDto[] }
     {
         const coordMap = new Map<string, { chargeList?: Mpa_GEO_Cobros[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>();
-        const proximityThreshold = 0.0001;
+        const proximityThreshold = 0.001;
 
         charges.forEach(charge => {
             if (charge.cablat && charge.cablon) {
@@ -520,7 +519,6 @@ export class MapService {
         customers: CustomerResponseDto[]
     ): Array<{ type: string, data: any, lat: number, lng: number }> {
         const combinations: Array<{ type: string, data: any, lat: number, lng: number }> = [];
-
         if (charges.length > 0 && orders.length > 0 && customers.length > 0) {
             charges.forEach(charge => {
                 orders.forEach(order => {
@@ -566,6 +564,25 @@ export class MapService {
                         lng: order.pdtlon
                     });
                 });
+            });
+        }else if (charges.length > 0 ) {
+            charges.forEach(charge => {
+                
+                combinations.push({
+                        type: 'charge',
+                        data: { charge },
+                        lat: charge.cablat,
+                        lng: charge.cablon
+                    });
+            });
+        }else if (orders.length > 0 ) {
+            orders.forEach(order => {
+                    combinations.push({
+                        type: 'order',
+                        data: { order },
+                        lat: order.pdtlat,
+                        lng: order.pdtlon
+                    });
             });
         }
 
@@ -644,6 +661,28 @@ export class MapService {
                 badge: '2'
             },
             'order_customer': {
+                gradient: 'from-purple-600 to-blue-600',
+                icons: `
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" style="fill: currentColor;">
+                    <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z"/>
+                </svg>
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" style="fill: currentColor;">
+                    <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                </svg>`,
+                badge: '2'
+            },
+            'order': {
+                gradient: 'from-purple-600 to-blue-600',
+                icons: `
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" style="fill: currentColor;">
+                    <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z"/>
+                </svg>
+                <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" style="fill: currentColor;">
+                    <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                </svg>`,
+                badge: '2'
+            },
+            'charge': {
                 gradient: 'from-purple-600 to-blue-600',
                 icons: `
                 <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" style="fill: currentColor;">

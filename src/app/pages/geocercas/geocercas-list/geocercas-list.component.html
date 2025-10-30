@@ -1428,8 +1428,11 @@
 										<div class="flex gap-4 p-2 bg-surface-50 dark:bg-surface-800 border-round">
 											<div class="flex align-items-center gap-2">
 												<p-checkbox inputId="clientes-all" [(ngModel)]="clientesAll"
-													[binary]="true" (onChange)="onClientFilterChange('all')">
+													[binary]="true" (onChange)="clientesAll?clientesAssigned=false:true">
 												</p-checkbox>
+												<!--<p-checkbox inputId="clientes-all" [(ngModel)]="clientesAll"
+													[binary]="true" (onChange)="onClientFilterChange('all')">
+												</p-checkbox>-->
 												<label for="clientes-all"
 													class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
 													<i class="pi pi-users mr-1"></i>Todos
@@ -1437,8 +1440,11 @@
 											</div>
 											<div class="flex align-items-center gap-2">
 												<p-checkbox inputId="clientes-assigned" [(ngModel)]="clientesAssigned"
-													[binary]="true" (onChange)="onClientFilterChange('assigned')">
+													[binary]="true" (onChange)="clientesAssigned?clientesAll=false:true">
 												</p-checkbox>
+												<!--<p-checkbox inputId="clientes-assigned" [(ngModel)]="clientesAssigned"
+													[binary]="true" (onChange)="onClientFilterChange('assigned')">
+												</p-checkbox>-->
 												<label for="clientes-assigned"
 													class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
 													<i class="pi pi-user-check mr-1"></i>Asignados
