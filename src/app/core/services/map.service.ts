@@ -96,7 +96,7 @@ export class MapService {
     constructor(
         private http: HttpClient,
         private msgService: MessageService
-    ) {}
+    ) { }
 
     get currentUserRange$(): Observable<RangeDisplayInfo | null> {
         return this.userRange$.asObservable();
@@ -143,7 +143,7 @@ export class MapService {
             }
         });
 
-                    
+
         //this.fitGeocercasBounds();
     }
 
@@ -450,26 +450,199 @@ export class MapService {
             });
         }
     }
-
     private detectCoincidentMarkers(charges: Mpa_GEO_Cobros[], orders: OrderDto[], customers: CustomerResponseDto[]): {
         combinedCoords: Map<string, { chargeList?: Mpa_GEO_Cobros[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>,
-        isolatedCustomers: CustomerResponseDto[] }
-    {
+        isolatedCustomers: CustomerResponseDto[]
+    } {
         const coordMap = new Map<string, { chargeList?: Mpa_GEO_Cobros[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>();
-        const proximityThreshold = 0.001;
+
+        const cobrocoordMap = new Map<string, { chargeList?: Mpa_GEO_Cobros[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>();
+        const pedidocoordMap = new Map<string, { chargeList?: Mpa_GEO_Cobros[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>();
+        const clientecoordMap = new Map<string, { chargeList?: Mpa_GEO_Cobros[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>();
+
+        const proximityThreshold = 0.002;
 
         charges.forEach(charge => {
             if (charge.cablat && charge.cablon) {
-                const key = `${charge.cablat.toFixed(6)}_${charge.cablon.toFixed(6)}`;
-                const existing = coordMap.get(key) || {};
-                coordMap.set(key, {
+                let nearbyKey: string | undefined;
+                for (const [key, group] of cobrocoordMap.entries()) {
+                    const firstCharge = group.chargeList?.[0];
+                    if (firstCharge) {
+                        const distance = Math.sqrt(
+                            Math.pow(firstCharge.cablat - charge.cablat, 2) +
+                            Math.pow(firstCharge.cablon - charge.cablon, 2)
+                        );
+                        if (distance <= proximityThreshold) {
+                            nearbyKey = key;
+                            break;
+                        }
+                    }
+                }
+                const key = nearbyKey || `${charge.cablat.toFixed(6)}_${charge.cablon.toFixed(6)}`;
+                const existing = cobrocoordMap.get(key) || {};
+                cobrocoordMap.set(key, {
                     ...existing,
                     chargeList: [...(existing.chargeList || []), charge]
                 });
             }
         });
-
         orders.forEach(order => {
+            if (order.pdtlat && order.pdtlon) {
+                let nearbyKey: string | undefined;
+                for (const [key, group] of pedidocoordMap.entries()) {
+                    const firstCharge = group.orderList?.[0];
+                    if (firstCharge) {
+                        const distance = Math.sqrt(
+                            Math.pow(firstCharge.pdtlat - order.pdtlat, 2) +
+                            Math.pow(firstCharge.pdtlon - order.pdtlon, 2)
+                        );
+                        if (distance <= proximityThreshold) {
+                            nearbyKey = key;
+                            break;
+                        }
+                    }
+                }
+                const key = nearbyKey || `${order.pdtlat.toFixed(6)}_${order.pdtlon.toFixed(6)}`;
+                const existing = pedidocoordMap.get(key) || {};
+                pedidocoordMap.set(key, {
+                    ...existing,
+                    orderList: [...(existing.orderList || []), order]
+                });
+            }
+        });
+        customers.forEach(customer => {
+            if (customer.latitud && customer.longitud) {
+                let nearbyKey: string | undefined;
+                for (const [key, group] of clientecoordMap.entries()) {
+                    const firstCharge = group.customerList?.[0];
+                    if (firstCharge) {
+                        const distance = Math.sqrt(
+                            Math.pow(firstCharge.latitud - customer.latitud, 2) +
+                            Math.pow(firstCharge.longitud - customer.longitud, 2)
+                        );
+                        if (distance <= proximityThreshold) {
+                            nearbyKey = key;
+                            break;
+                        }
+                    }
+                }
+                const key = nearbyKey || `${customer.latitud.toFixed(6)}_${customer.longitud.toFixed(6)}`;
+                const existing = clientecoordMap.get(key) || {};
+
+                clientecoordMap.set(key, {
+                    ...existing,
+                    customerList: [...(existing.customerList || []), customer]
+                });
+            }
+        });
+        const isolatedCustomers: CustomerResponseDto[] = [];
+        // --- Fusionar los 3 mapas en coordMap ---
+        const mergeMaps = [cobrocoordMap, pedidocoordMap, clientecoordMap];
+        mergeMaps.forEach(map => {
+            for (const [, group] of map.entries()) {
+                const firstItem = group.chargeList?.[0] || group.orderList?.[0] || group.customerList?.[0];
+                if (!firstItem) continue;
+
+                const lat = (firstItem as any).cablat ?? (firstItem as any).pdtlat ?? (firstItem as any).latitud;
+                const lon = (firstItem as any).cablon ?? (firstItem as any).pdtlon ?? (firstItem as any).longitud;
+                if (lat == null || lon == null) continue;
+
+                // Buscar grupo cercano existente en coordMap
+                let nearbyKey: string | undefined;
+                for (const [key, existingGroup] of coordMap.entries()) {
+                    const base = existingGroup.chargeList?.[0] || existingGroup.orderList?.[0] || existingGroup.customerList?.[0];
+                    if (!base) continue;
+                    const baseLat = (base as any).cablat ?? (base as any).pdtlat ?? (base as any).latitud;
+                    const baseLon = (base as any).cablon ?? (base as any).pdtlon ?? (base as any).longitud;
+                    if (baseLat == null || baseLon == null) continue;
+
+                    const distance = Math.sqrt(Math.pow(baseLat - lat, 2) + Math.pow(baseLon - lon, 2));
+                    if (distance <= proximityThreshold) {
+                        nearbyKey = key;
+                        break;
+                    }
+                }
+
+                const key = nearbyKey || `${lat.toFixed(6)}_${lon.toFixed(6)}`;
+                const existing = coordMap.get(key) || {};
+                coordMap.set(key, {
+                    chargeList: [...(existing.chargeList || []), ...(group.chargeList || [])],
+                    orderList: [...(existing.orderList || []), ...(group.orderList || [])],
+                    customerList: [...(existing.customerList || []), ...(group.customerList || [])],
+                });
+            }
+        });
+
+        // --- Detectar clientes que no están en ningún grupo ---
+        const allGroupedCustomers = new Set<CustomerResponseDto>();
+        for (const group of coordMap.values()) {
+            group.customerList?.forEach(c => allGroupedCustomers.add(c));
+        }
+
+        customers.forEach(c => {
+            if (!allGroupedCustomers.has(c)) {
+                isolatedCustomers.push(c);
+            }
+        });
+        console.log(coordMap);
+        console.log(isolatedCustomers);
+        //const isolatedCustomers: CustomerResponseDto[] = [];
+        return { combinedCoords: coordMap, isolatedCustomers };
+    }
+    private detectCoincidentMarkers2(charges: Mpa_GEO_Cobros[], orders: OrderDto[], customers: CustomerResponseDto[]): {
+        combinedCoords: Map<string, { chargeList?: Mpa_GEO_Cobros[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>,
+        isolatedCustomers: CustomerResponseDto[]
+    } {
+        const coordMap = new Map<string, { chargeList?: Mpa_GEO_Cobros[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>();
+
+        const cobrocoordMap = new Map<string, { chargeList?: Mpa_GEO_Cobros[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>();
+        const pedidocoordMap = new Map<string, { chargeList?: Mpa_GEO_Cobros[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>();
+        const clientecoordMap = new Map<string, { chargeList?: Mpa_GEO_Cobros[], orderList?: OrderDto[], customerList?: CustomerResponseDto[] }>();
+
+        const proximityThreshold = 0.002;
+        /*
+                charges.forEach(charge => {
+                    if (charge.cablat && charge.cablon) {
+                        const key = `${charge.cablat.toFixed(6)}_${charge.cablon.toFixed(6)}`;
+                        const existing = coordMap.get(key) || {};
+                        coordMap.set(key, {
+                            ...existing,
+                            chargeList: [...(existing.chargeList || []), charge]
+                        });
+                    }
+                });
+        */
+        charges.forEach(charge => {
+            if (charge.cablat && charge.cablon) {
+
+                // 🔹 Buscar si ya existe un grupo cercano
+                let nearbyKey: string | undefined;
+                for (const [key, group] of cobrocoordMap.entries()) {
+                    const firstCharge = group.chargeList?.[0];
+                    if (firstCharge) {
+                        const distance = Math.sqrt(
+                            Math.pow(firstCharge.cablat - charge.cablat, 2) +
+                            Math.pow(firstCharge.cablon - charge.cablon, 2)
+                        );
+                        if (distance <= proximityThreshold) {
+                            nearbyKey = key;
+                            break;
+                        }
+                    }
+                }
+
+                // 🔹 Si hay un grupo cercano, lo uso; si no, creo uno nuevo
+                const key = nearbyKey || `${charge.cablat.toFixed(6)}_${charge.cablon.toFixed(6)}`;
+                const existing = cobrocoordMap.get(key) || {};
+
+                cobrocoordMap.set(key, {
+                    ...existing,
+                    chargeList: [...(existing.chargeList || []), charge]
+                });
+            }
+        });
+        /////////////////////////////////////////////////////
+        /*orders.forEach(order => {
             if (order.pdtlat && order.pdtlon) {
                 const key = `${order.pdtlat.toFixed(6)}_${order.pdtlon.toFixed(6)}`;
                 const existing = coordMap.get(key) || {};
@@ -478,37 +651,106 @@ export class MapService {
                     orderList: [...(existing.orderList || []), order]
                 });
             }
-        });
+        });*/
+        orders.forEach(order => {
+            if (order.pdtlat && order.pdtlon) {
 
-        const isolatedCustomers: CustomerResponseDto[] = [];
-
-        customers.forEach(customer => {
-            if (customer.latitud && customer.longitud) {
-                let hasNearbyChargeOrOrder = false;
-
-                for (const [coordKey, items] of coordMap.entries()) {
-                    const [lat, lng] = coordKey.split('_').map(Number);
-                    const distance = Math.sqrt(
-                        Math.pow(customer.latitud - lat, 2) +
-                        Math.pow(customer.longitud - lng, 2)
-                    );
-
-                    if (distance <= proximityThreshold && (items.chargeList?.length || items.orderList?.length)) {
-                        hasNearbyChargeOrOrder = true;
-                        const existing = coordMap.get(coordKey) || {};
-                        coordMap.set(coordKey, {
-                            ...existing,
-                            customerList: [...(existing.customerList || []), customer]
-                        });
-                        break;
+                // 🔹 Buscar si ya existe un grupo cercano
+                let nearbyKey: string | undefined;
+                for (const [key, group] of pedidocoordMap.entries()) {
+                    const firstCharge = group.orderList?.[0];
+                    if (firstCharge) {
+                        const distance = Math.sqrt(
+                            Math.pow(firstCharge.pdtlat - order.pdtlat, 2) +
+                            Math.pow(firstCharge.pdtlon - order.pdtlon, 2)
+                        );
+                        if (distance <= proximityThreshold) {
+                            nearbyKey = key;
+                            break;
+                        }
                     }
                 }
 
-                if (!hasNearbyChargeOrOrder) {
-                    isolatedCustomers.push(customer);
-                }
+                // 🔹 Si hay un grupo cercano, lo uso; si no, creo uno nuevo
+                const key = nearbyKey || `${order.pdtlat.toFixed(6)}_${order.pdtlon.toFixed(6)}`;
+                const existing = pedidocoordMap.get(key) || {};
+
+                pedidocoordMap.set(key, {
+                    ...existing,
+                    orderList: [...(existing.orderList || []), order]
+                });
             }
         });
+
+        /////////////////////////////////////////////////////////
+        customers.forEach(customer => {
+            if (customer.latitud && customer.longitud) {
+
+                // 🔹 Buscar si ya existe un grupo cercano
+                let nearbyKey: string | undefined;
+                for (const [key, group] of clientecoordMap.entries()) {
+                    const firstCharge = group.customerList?.[0];
+                    if (firstCharge) {
+                        const distance = Math.sqrt(
+                            Math.pow(firstCharge.latitud - customer.latitud, 2) +
+                            Math.pow(firstCharge.longitud - customer.longitud, 2)
+                        );
+                        if (distance <= proximityThreshold) {
+                            nearbyKey = key;
+                            break;
+                        }
+                    }
+                }
+
+                // 🔹 Si hay un grupo cercano, lo uso; si no, creo uno nuevo
+                const key = nearbyKey || `${customer.latitud.toFixed(6)}_${customer.longitud.toFixed(6)}`;
+                const existing = clientecoordMap.get(key) || {};
+
+                clientecoordMap.set(key, {
+                    ...existing,
+                    customerList: [...(existing.customerList || []), customer]
+                });
+            }
+        });
+
+        /////////////////////////////////////////////////////////
+        /*
+                console.log(cobrocoordMap);
+                console.log(pedidocoordMap);
+                console.log(clientecoordMap);
+        */
+        const isolatedCustomers: CustomerResponseDto[] = [];
+
+
+
+        /*
+                customers.forEach(customer => {
+                    if (customer.latitud && customer.longitud) {
+                        let hasNearbyChargeOrOrder = false;
+        
+                        for (const [coordKey, items] of coordMap.entries()) {
+                            const [lat, lng] = coordKey.split('_').map(Number);
+                            const distance = Math.sqrt(
+                                Math.pow(customer.latitud - lat, 2) +
+                                Math.pow(customer.longitud - lng, 2)
+                            );
+        
+                            if (distance <= proximityThreshold && (items.chargeList?.length || items.orderList?.length)) {
+                                hasNearbyChargeOrOrder = true;
+                                const existing = coordMap.get(coordKey) || {};
+                                coordMap.set(coordKey, {
+                                    ...existing,
+                                    customerList: [...(existing.customerList || []), customer]
+                                });
+                                break;
+                            }
+                        }
+        
+                        if (!hasNearbyChargeOrOrder) {
+                            isolatedCustomers.push(customer);
+                        }
+                    }
+                });*/
 
         return { combinedCoords: coordMap, isolatedCustomers };
     }
@@ -565,24 +807,24 @@ export class MapService {
                     });
                 });
             });
-        }else if (charges.length > 0 ) {
+        } else if (charges.length > 0) {
             charges.forEach(charge => {
-                
+
                 combinations.push({
-                        type: 'charge',
-                        data: { charge },
-                        lat: charge.cablat,
-                        lng: charge.cablon
-                    });
+                    type: 'charge',
+                    data: { charge },
+                    lat: charge.cablat,
+                    lng: charge.cablon
+                });
             });
-        }else if (orders.length > 0 ) {
+        } else if (orders.length > 0) {
             orders.forEach(order => {
-                    combinations.push({
-                        type: 'order',
-                        data: { order },
-                        lat: order.pdtlat,
-                        lng: order.pdtlon
-                    });
+                combinations.push({
+                    type: 'order',
+                    data: { order },
+                    lat: order.pdtlat,
+                    lng: order.pdtlon
+                });
             });
         }
 
@@ -791,9 +1033,9 @@ export class MapService {
         return `
     <div class="bg-white rounded-lg shadow-sm border-0 overflow-hidden">
         <div class="bg-gradient-to-r ${combo.type === 'charge_order_customer' ? 'from-green-600 via-purple-600 to-blue-600' :
-            combo.type === 'charge_order' ? 'from-green-600 to-purple-600' :
-                combo.type === 'charge_customer' ? 'from-green-600 to-blue-600' :
-                    'from-purple-600 to-blue-600'} px-3 py-2">
+                combo.type === 'charge_order' ? 'from-green-600 to-purple-600' :
+                    combo.type === 'charge_customer' ? 'from-green-600 to-blue-600' :
+                        'from-purple-600 to-blue-600'} px-3 py-2">
             <div class="flex items-center space-x-2 text-white">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" style="fill: currentColor;">
                     <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M11,7V13H13V7H11M11,15V17H13V15H11Z"/>
@@ -1044,7 +1286,7 @@ export class MapService {
     }
 
     focusOnUserWithRange(user: CUltimoRegxUsu, radiusMeters: number = 1000): RangeDisplayInfo | null {
-        if (!this.map ) return null;
+        if (!this.map) return null;
 
         this.hideAllUserMarkersExcept(user.usucod);
 
@@ -1460,7 +1702,7 @@ export class MapService {
             <span class="text-gray-400">•</span>
             <span class="text-gray-500">${user.usucodv}</span>
           </div>
-`+ (user.usuemail==""?``:`
+`+ (user.usuemail == "" ? `` : `
           <div class="flex items-center space-x-1.5 text-xs">
             <svg class="w-2.5 h-2.5 text-gray-400" viewBox="0 0 20 20">
               <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"
@@ -1468,7 +1710,7 @@ export class MapService {
             </svg>
             <span class="text-gray-600 text-xs">${user.usuemail}</span>
           </div>
-`)+`
+`) + `
           <div class="flex items-center space-x-1.5 text-xs">
             <svg class="w-2.5 h-2.5 text-gray-400" viewBox="0 0 20 20">
               <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"
@@ -1476,16 +1718,16 @@ export class MapService {
             </svg>
             <span class="text-gray-500">Última ubicación: ${lastUpdate}</span>
           </div>
-          `+ (!user.enlinea?``:`
+          `+ (!user.enlinea ? `` : `
           <div class="flex items-center space-x-1.5 mt-2">
             <div class="w-2 h-2 bg-green-400 rounded-full"></div>
             <span class="text-xs text-green-600 font-medium">En Linea</span>
           </div>
-          `)+`
+          `) + `
         </div>
       </div>
     `;
-    return resultado;
+        return resultado;
     }
 
     /**
@@ -1564,7 +1806,7 @@ export class MapService {
             marker.openPopup();
         }
     }
-    focusPoint(usucod: string ,latitud: number, longitud: number): void {
+    focusPoint(usucod: string, latitud: number, longitud: number): void {
         if (!this.map) return;
 
         this.map.setView([latitud, longitud], 15);
@@ -1852,7 +2094,7 @@ export class MapService {
             //console.log(locations);
 
             locations.forEach((location, index) => {
-                
+
                 if (location.geublat && location.geublon) {
                     try {
                         const isLastLocation = location.geubfech === mostRecentLocation.geubfech;
@@ -2137,11 +2379,10 @@ export class MapService {
             <div class="${headerColor} px-3 py-2">
                 <div class="flex items-center space-x-2 text-white">
                     <svg class="w-4 h-4" viewBox="0 0 24 24" style="fill: currentColor;">
-                        ${
-                            isLastLocation
-                                ? '<path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>'
-                                : '<path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>'
-                        }
+                        ${isLastLocation
+                ? '<path d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>'
+                : '<path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>'
+            }
                     </svg>
                     <span class="font-semibold text-sm">${title}</span>
                     ${isLastLocation ? '<div class="w-2 h-2 bg-green-300 rounded-full animate-pulse ml-1"></div>' : ''}
@@ -2370,7 +2611,7 @@ export class MapService {
         //const sortedLocations = userLocation.sort((a, b) => new Date(a.geubtim).getTime() - new Date(b.geubtim).getTime());
 
         //const pathCoordinates: [number, number][] = sortedLocations.map((location) => [location.geublat, location.geublon]);
-const pathCoordinates: [number, number][] = userLocation.map((location) => [location.geublat, location.geublon]);
+        const pathCoordinates: [number, number][] = userLocation.map((location) => [location.geublat, location.geublon]);
 
 
         this.trackingPath = this.L.polyline(pathCoordinates, {
