@@ -27,670 +27,714 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
 @Component({
-   selector: 'app-item-detail',
-   imports: [
-      Accordion,
-      AccordionContent,
-      FormsModule,
-      DatePicker,
-      NgClass,
-      Checkbox,
-      Button,
-      TableModule,
-      IconField,
-      InputIcon,
-      InputText,
-      AccordionPanel,
-      AccordionHeader,
-      DatePipe,
-      CurrencyPipe,
-      Tooltip,
-      Badge,
-      Select
-   ],
-   templateUrl: './item-detail.component.html',
-   styleUrl: './item-detail.component.scss',
-   standalone: true,
-   providers: [MapService]
+  selector: 'app-item-detail',
+  imports: [
+    Accordion,
+    AccordionContent,
+    FormsModule,
+    DatePicker,
+    NgClass,
+    Checkbox,
+    Button,
+    TableModule,
+    IconField,
+    InputIcon,
+    InputText,
+    AccordionPanel,
+    AccordionHeader,
+    DatePipe,
+    CurrencyPipe,
+    Tooltip,
+    Badge,
+    Select
+  ],
+  templateUrl: './item-detail.component.html',
+  styleUrl: './item-detail.component.scss',
+  standalone: true,
+  providers: [MapService]
 })
 export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
-   @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;
+  @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;
 
-   // Subject para manejo de subscripciones
-   private destroy$ = new Subject<void>();
+  // Subject para manejo de subscripciones
+  private destroy$ = new Subject<void>();
 
-   active: number = 0;
-   activeIndex: number | undefined = 0;
+  active: number = 0;
+  activeIndex: number | undefined = 0;
 
-   // Propiedades de usuarios
-   users: CUltimoRegxUsu[] = [];
-   filteredUsers: CUltimoRegxUsu[] = [];
-   paginatedUsers: CUltimoRegxUsu[] = [];
-   selectedUser: CUltimoRegxUsu | null = null;
-   loading: boolean = true;
+  // Propiedades de usuarios
+  users: CUltimoRegxUsu[] = [];
+  filteredUsers: CUltimoRegxUsu[] = [];
+  paginatedUsers: CUltimoRegxUsu[] = [];
+  selectedUser: CUltimoRegxUsu | null = null;
+  loading: boolean = true;
 
-   // Propiedades de paginación
-   first: number = 0;
-   itemsPerPage: number = 5;
+  // Propiedades de paginación
+  first: number = 0;
+  itemsPerPage: number = 5;
 
-   // Propiedades para geocercas
-   vendorGeocercas: GeocercaDto[] = [];
-   loadingGeocercas: boolean = false;
-   selectedVendor: VendedorDto | null = null;
+  // Propiedades para geocercas
+  vendorGeocercas: GeocercaDto[] = [];
+  loadingGeocercas: boolean = false;
+  selectedVendor: VendedorDto | null = null;
 
-   // Propiedades del mapa (delegadas al servicio)
-   searchLocation: string = '';
-   searchingLocation: boolean = false;
-   searchResults: SearchResult[] = [];
-   mapInitialized: boolean = false;
-   loadingMap: boolean = false;
+  // Propiedades del mapa (delegadas al servicio)
+  searchLocation: string = '';
+  searchingLocation: boolean = false;
+  searchResults: SearchResult[] = [];
+  mapInitialized: boolean = false;
+  loadingMap: boolean = false;
 
-   // Propiedades de filtros
-   filterFrom: Date | null = null;
-   // Propiedades de filtros actualizadas
-   filterTo: Date | null = null;
+  // Propiedades de filtros
+  filterFrom: Date | null = null;
+  // Propiedades de filtros actualizadas
+  filterTo: Date | null = null;
 
-   selectedTimeUnit: any = null;
-   timeValue: number | null = null;
-   selectedGeofence: string[] = [];
-   geofenceEnabled: boolean = true;
-   pedidosEnabled: boolean = true;
-   collectionsEnabled: boolean = true;
-   clientesNone: boolean = false;
-   clientesAll: boolean = false;
-   clientesAssigned: boolean = false;
-   geofenceOptions: any[] = [];
+  selectedTimeUnit: any = null;
+  timeValue: number | null = null;
+  selectedGeofence: string[] = [];
+  geofenceEnabled: boolean = true;
+  pedidosEnabled: boolean = true;
+  collectionsEnabled: boolean = true;
+  clientesNone: boolean = false;
+  clientesAll: boolean = false;
+  clientesAssigned: boolean = false;
+  geofenceOptions: any[] = [];
 
-   // Propiedades para el loading
-   loadingFilters: boolean = false;
-
-
-   // Propiedades de tablas
-   totalRecords: number = 0;
-   loadingTable: boolean = false;
-   tableData: MTabla[] = [];
-
-   // Opciones para multiselects
-   vendorOptions: any[] = [];
-   customerOptions: any[] = [];
-   selectedCustomer: string | null = null;
-   loadingCustomers: boolean = false;
+  // Propiedades para el loading
+  loadingFilters: boolean = false;
 
 
-   constructor(
-      private readonly userService: UserService,
-      private readonly msgService: MessageService,
-      private readonly mapService: MapService,
-      private readonly customerService: CustomerService
-   ) { }
+  // Propiedades de tablas
+  totalRecords: number = 0;
+  loadingTable: boolean = false;
+  tableData: MTabla[] = [];
 
-   //region Lifecycle Hooks
+  // Opciones para multiselects
+  vendorOptions: any[] = [];
+  customerOptions: any[] = [];
+  selectedCustomer: string | null = null;
+  loadingCustomers: boolean = false;
 
-   ngOnInit(): void {
-      
-      this.filterDefault();
-      this.getAllUsers();
-      this.subscribeToMapService();
-      //this.mapService.hideAllUserMarkers();
-   }
-   filterDefault(): void {
-      this.pedidosEnabled=true;
-      this.collectionsEnabled=true;
-      const today = new Date();
-      // Fecha desde (00:00:00)
-      this.filterFrom = new Date(today);
-      this.filterFrom.setHours(0, 0, 0, 0);
 
-      // Fecha hasta (23:59:59)
-      this.filterTo = new Date(today);
-      this.filterTo.setHours(23, 59, 59, 999);
+  constructor(
+    private readonly userService: UserService,
+    private readonly msgService: MessageService,
+    private readonly mapService: MapService,
+    private readonly customerService: CustomerService
+  ) { }
 
-   }
+  //region Lifecycle Hooks
 
-   ngAfterViewInit(): void {
-      requestAnimationFrame(() => {
-         this.initializeMap().then(() => { });
-      });
-   }
-   ngOnDestroy(): void {
-      this.destroy$.next();
-      this.destroy$.complete();
-      this.mapService.destroyMap();
-   }
+  ngOnInit(): void {
 
-   /**
-    * Suscribe a los observables del servicio de mapas
-    */
-   private subscribeToMapService(): void {
-      // Estado de inicialización del mapa
-      this.mapService.isMapInitialized$.pipe(takeUntil(this.destroy$)).subscribe((initialized) => {
-         this.mapInitialized = initialized;
-      });
-      this.mapService.isSearchingLocation$.pipe(takeUntil(this.destroy$)).subscribe((searching) => {
-         this.searchingLocation = searching;
-      });
+    this.filterDefault();
+    this.getAllUsers();
+    this.subscribeToMapService();
+    //this.mapService.hideAllUserMarkers();
+  }
+  filterDefault(): void {
+    this.pedidosEnabled = true;
+    this.collectionsEnabled = true;
+    const today = new Date();
+    // Fecha desde (00:00:00)
+    this.filterFrom = new Date(today);
+    this.filterFrom.setHours(0, 0, 0, 0);
 
-      this.mapService.searchResultsList$.pipe(takeUntil(this.destroy$)).subscribe((results) => {
-         this.searchResults = results;
-      });
-   }
+    // Fecha hasta (23:59:59)
+    this.filterTo = new Date(today);
+    this.filterTo.setHours(23, 59, 59, 999);
 
-   getCustomersByCodeVendor(vendorCode: string): void {
-      this.loadingCustomers = true;
+  }
 
-      this.customerService.getCustomersByCodeVendor(vendorCode).subscribe({
-         next: (customers: CustomerResponseDto[]) => {
-            this.mapCustomersToOptions(customers);
-            this.loadingCustomers = false;
+  ngAfterViewInit(): void {
+    requestAnimationFrame(() => {
+      this.initializeMap().then(() => { });
+    });
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.mapService.destroyMap();
+  }
 
-            this.msgService.add({
-               severity: 'success',
-               summary: 'Clientes cargados',
-               detail: `${customers.length} clientes encontrados`,
-               life: 2000
-            });
-         },
-         error: (error: HttpErrorResponse) => {
-            console.error('Error al cargar clientes:', error);
-            this.loadingCustomers = false;
-            this.customerOptions = [];
+  /**
+   * Suscribe a los observables del servicio de mapas
+   */
+  private subscribeToMapService(): void {
+    // Estado de inicialización del mapa
+    this.mapService.isMapInitialized$.pipe(takeUntil(this.destroy$)).subscribe((initialized) => {
+      this.mapInitialized = initialized;
+    });
+    this.mapService.isSearchingLocation$.pipe(takeUntil(this.destroy$)).subscribe((searching) => {
+      this.searchingLocation = searching;
+    });
 
-            this.msgService.add({
-               severity: 'error',
-               summary: 'Error',
-               detail: 'No se pudieron cargar los clientes del vendedor'
-            });
-         }
-      });
-   }
+    this.mapService.searchResultsList$.pipe(takeUntil(this.destroy$)).subscribe((results) => {
+      this.searchResults = results;
+    });
+  }
 
-   // Mapear clientes a opciones
-   private mapCustomersToOptions(customers: CustomerResponseDto[]): void {
-      this.customerOptions = customers.map(customer => ({
-         label: customer.dirnombre,
-         value: customer.dirclave,
-         customer: customer,
-         subtitle: `${customer.dirruc} • Código: ${customer.dirclave}`
-      }));
-   }
+  getCustomersByCodeVendor(vendorCode: string): void {
+    this.loadingCustomers = true;
 
-   // Método para manejar cambios en la selección de clientes (ahora selección única)
-   onCustomerChange(event: any): void {
-      const selectedCode = event.value;
+    this.customerService.getCustomersByCodeVendor(vendorCode).subscribe({
+      next: (customers: CustomerResponseDto[]) => {
+        this.mapCustomersToOptions(customers);
+        this.loadingCustomers = false;
 
-      if (selectedCode) {
-         const selectedCustomer = this.customerOptions.find(option => option.value === selectedCode);
+        this.msgService.add({
+          severity: 'success',
+          summary: 'Clientes cargados',
+          detail: `${customers.length} clientes encontrados`,
+          life: 2000
+        });
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al cargar clientes:', error);
+        this.loadingCustomers = false;
+        this.customerOptions = [];
 
-         this.msgService.add({
-            severity: 'info',
-            summary: 'Cliente seleccionado',
-            detail: `Cliente: ${selectedCustomer?.label || selectedCode}`,
-            life: 2000
-         });
-      } else {
-         this.msgService.add({
-            severity: 'info',
-            summary: 'Selección removida',
-            detail: 'Ningún cliente seleccionado',
-            life: 2000
-         });
+        this.msgService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudieron cargar los clientes del vendedor'
+        });
       }
-   }
+    });
+  }
 
+  // Mapear clientes a opciones
+  private mapCustomersToOptions(customers: CustomerResponseDto[]): void {
+    this.customerOptions = customers.map(customer => ({
+      label: customer.dirnombre,
+      value: customer.dirclave,
+      customer: customer,
+      subtitle: `${customer.dirruc} • Código: ${customer.dirclave}`
+    }));
+  }
 
-   getAllUsers(): void {
-      this.loading = true;
-      this.userService.getAllListUser().subscribe({
-         next: (data: CUltimoRegxUsu[]) => {
-            this.users = data;
-            this.filteredUsers = [...this.users];
-            this.updatePagination();
-            this.loading = false;
-            this.mapUsersToVendorOptions(this.users);
+  // Método para manejar cambios en la selección de clientes (ahora selección única)
+  onCustomerChange(event: any): void {
+    const selectedCode = event.value;
 
-            //  Si el mapa está inicializado, agregar marcadores
-            if (this.mapInitialized) {
-               this.mapService.addUserMarkers(this.users);
-            }
-         },
-         error: (error: HttpErrorResponse) => {
-            console.error('Error al cargar usuarios:', error);
-            this.loading = false;
-            this.msgService.add({
-               severity: 'error',
-               summary: 'Error',
-               detail: 'No se pudieron cargar los usuarios'
-            });
-         }
-      });
-   }
+    if (selectedCode) {
+      const selectedCustomer = this.customerOptions.find(option => option.value === selectedCode);
 
-   // Nuevo método para mapear usuarios a opciones
-
-   private mapUsersToVendorOptions(users: CUltimoRegxUsu[]): void {
-      this.vendorOptions = users.map((user) => ({
-         label: user.usunombre,
-         value: user.usucodv,
-         user: user, // Guardar referencia completa del usuario
-         subtitle: `${user.usuemail || 'Sin correo electrónico'}`
-      }));
-   }
-
-   /*
-    * Obtiene el número de filtros activos
-    */
-   getActiveFiltersCount(): number {
-      let count = 0;
-      if (this.filterFrom) count++;
-      if (this.filterTo) count++;
-      if (this.geofenceEnabled && this.selectedGeofence) count++;
-      if (this.pedidosEnabled) count++;
-      if (this.collectionsEnabled) count++;
-      if (this.timeValue && this.selectedTimeUnit) count++;
-      if (this.clientesNone || this.clientesAll || this.clientesAssigned) count++;
-      return count;
-   }
-
-   onToggleChange() {
-      if (this.geofenceEnabled) {
-         if (this.vendorGeocercas.length > 0) {
-            this.selectedGeofence = this.vendorGeocercas.map((geocerca) => geocerca.geoccod);
-            this.onGeofencesChange({ value: this.selectedGeofence });
-         }
-      } else {
-         this.selectedGeofence = [];
-         this.mapService.clearGeocercas();
-
-         this.msgService.add({
-            severity: 'info',
-            summary: 'Geocercas deshabilitadas',
-            detail: 'Se ha limpiado la selección de geocercas',
-            life: 2000
-         });
-      }
-   }
-
-   // Métodos de tabla
-   clearTableFilters(dt: any): void {
-      dt.clear();
       this.msgService.add({
-         severity: 'info',
-         summary: 'Filtros de tabla',
-         detail: 'Filtros de tabla limpiados'
+        severity: 'info',
+        summary: 'Cliente seleccionado',
+        detail: `Cliente: ${selectedCustomer?.label || selectedCode}`,
+        life: 2000
       });
-   }
-
-   onGlobalFilter(dt: any, event: Event): void {
-      dt.filterGlobal((event.target as HTMLInputElement).value, 'contains');
-   }
-
-   onVendorChange(event: any): void {
-      const selectedCode = event.value; // Ahora es un string único
-
-      if (selectedCode) {
-         const selectedUser = this.users.find(user => user.usucodv === selectedCode);
-
-         if (selectedUser) {
-            // Limpiar clientes anteriores
-            this.customerOptions = [];
-            this.selectedCustomer = null;
-
-            // Cargar clientes del vendedor seleccionado
-            this.getCustomersByCodeVendor(selectedCode);
-
-            // Actualizar mapa con el vendedor seleccionado
-            this.mapService.clearUserMarkers();
-            this.mapService.addUserMarkers([selectedUser]);
-            this.mapService.focusOnUser(selectedUser);
-
-            this.msgService.add({
-               severity: 'success',
-               summary: 'Vendedor seleccionado',
-               detail: `Cargando clientes de ${selectedUser.usunombre}`,
-               life: 3000
-            });
-         }
-      } else {
-         // Si no hay selección, mostrar todos los usuarios
-         this.customerOptions = [];
-         this.selectedCustomer = null;
-         this.mapService.clearUserMarkers();
-         this.mapService.addUserMarkers(this.users);
-
-         this.msgService.add({
-            severity: 'info',
-            summary: 'Selección removida',
-            detail: 'Mostrando todos los vendedores',
-            life: 2000
-         });
-      }
-   }
-
-
-   // Método para manejar cambios en la selección
-
-   onGeofencesChange(event: any): void {
-      const selectedCodes = event.value; // Array de códigos seleccionados
-
-      const selectedGeocercasData = this.vendorGeocercas.filter((geocerca) => selectedCodes.includes(geocerca.geoccod));
-
-      if (selectedGeocercasData.length > 0) {
-         this.mapService.displayVendorGeocercas(selectedGeocercasData);
-
-         this.msgService.add({
-            severity: 'info',
-            summary: 'Filtro aplicado',
-            detail: `Mostrando ${selectedGeocercasData.length} de ${this.vendorGeocercas.length} geocerca${selectedGeocercasData.length === 1 ? '' : 's'}`,
-            life: 2000
-         });
-      } else {
-         this.mapService.clearGeocercas();
-         this.msgService.add({
-            severity: 'warn',
-            summary: 'Sin filtro',
-            detail: 'No hay geocercas seleccionadas para mostrar',
-            life: 2000
-         });
-      }
-   }
-
-   // Método para manejar cambios en la selección de vendedores
-   onVendorsChange(event: any): void {
-      const selectedCodes = event.value; // Array de códigos seleccionados
-
-      // Filtrar usuarios seleccionados
-      const selectedUsers = this.users.filter((user) => selectedCodes.includes(user.usucod));
-
-      if (selectedUsers.length > 0) {
-         // Actualizar marcadores en el mapa
-         this.mapService.clearUserMarkers();
-         this.mapService.addUserMarkers(selectedUsers);
-
-         this.msgService.add({
-            severity: 'success',
-            summary: 'Vendedores filtrados',
-            detail: `Mostrando ${selectedUsers.length} de ${this.users.length} vendedor${selectedUsers.length === 1 ? '' : 'es'}`,
-            life: 3000
-         });
-      } else {
-         // Mostrar todos los usuarios si no hay selección
-         this.mapService.clearUserMarkers();
-         this.mapService.addUserMarkers(this.users);
-
-         this.msgService.add({
-            severity: 'info',
-            summary: 'Filtro removido',
-            detail: 'Mostrando todos los vendedores',
-            life: 2000
-         });
-      }
-   }
-
-   onSearch(event: Event): void {
-      const value = (event.target as HTMLInputElement).value.toLowerCase();
-      this.filteredUsers = this.users.filter((user) => user.usunombre.toLowerCase().includes(value) || user.usucod.toLowerCase().includes(value) || user.usuemail.toLowerCase().includes(value));
-      this.first = 0;
-      this.updatePagination();
-   }
-
-   updatePagination(): void {
-      const start = this.first;
-      const end = start + this.itemsPerPage;
-      this.paginatedUsers = this.filteredUsers.slice(start, end);
-   }
-
-   selectUser(user: CUltimoRegxUsu): void {
-      this.selectedUser = user;
-      this.mapService.focusOnUser(user);
-   }
-
-   async initializeMap(): Promise<void> {
-      try {
-         await this.mapService.initializeMap(this.mapContainer, {
-            center: [-0.2298, -78.5249],
-            zoom: 13,
-            defaultLocation: 'Quito, Ecuador'
-         });
-         if (!this.loading && this.users.length > 0) {
-            this.mapService.addUserMarkers(this.users);
-         }
-      } catch (error) {
-         console.error('Error al inicializar el mapa:', error);
-      }
-   }
-
-   searchLocationOnMap(): void {
-      if (!this.searchLocation.trim()) return;
-
-      this.mapService.searchLocation(this.searchLocation).subscribe({
-         next: (results) => {
-            if (results.length === 1) {
-               this.selectSearchResult(results[0]);
-            } else if (results.length === 0) {
-               this.msgService.add({
-                  severity: 'info',
-                  summary: 'Sin resultados',
-                  detail: 'No se encontraron ubicaciones para la búsqueda'
-               });
-            }
-         },
-         error: (error) => {
-            console.error('Error en búsqueda:', error);
-         }
+    } else {
+      this.msgService.add({
+        severity: 'info',
+        summary: 'Selección removida',
+        detail: 'Ningún cliente seleccionado',
+        life: 2000
       });
-   }
+    }
+  }
 
-   applyFilters(): void {
 
-      if (!this.selectedVendor) {
-         this.msgService.add({
-            severity: 'warn',
-            summary: 'Advertencia',
-            detail: 'Seleccione un usuario primero'
-         });
-         return;
+  getAllUsers(): void {
+    this.loading = true;
+    this.userService.getAllListUser().subscribe({
+      next: (data: CUltimoRegxUsu[]) => {
+        this.users = data;
+        this.filteredUsers = [...this.users];
+        this.updatePagination();
+        this.loading = false;
+        this.mapUsersToVendorOptions(this.users);
+
+        //  Si el mapa está inicializado, agregar marcadores
+        if (this.mapInitialized) {
+          this.mapService.addUserMarkers(this.users);
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al cargar usuarios:', error);
+        this.loading = false;
+        this.msgService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudieron cargar los usuarios'
+        });
       }
-      this.mapService.hideAllUserMarkers();
-      /*if (!this.validateFilters()) {
-          return;
-      }*/
+    });
+  }
 
-      //console.log(this.selectedVendor);
+  // Nuevo método para mapear usuarios a opciones
 
-      const _CFiltroHistorialxFecha: CFiltroHistorialxFecha = {
-         usuarios: ["" + this.selectedVendor],
-         clientes: [],
-         ifpedidos: true,
-         ifcobros: true,
-         fechainicio: this.buildFechaInicio(),
-         fechafinal: this.buildFechaFinal()
-      };
-      console.log(_CFiltroHistorialxFecha)
-      //console.log(_CFiltroHistorialxDia)
-      this.customerService
-         .POSTHistorialxFecha(_CFiltroHistorialxFecha)
-         .pipe(
-            takeUntil(this.destroy$),
-            finalize(() => {
-               this.loading = false;
-               this.loadingCustomers = false;
-               //this.loadingOrders = false;
-               //this.loadingCharges = false;
-            })
-         )
-         .subscribe({
-            next: (response: MTabla[]) => {
-               console.log(response);
-               this.tableData = response;
-               /*this.processTrackingResponse(response);
-               if (response.recorrido.length > 0) {
-                   this.mapService.focusRoute(response.recorrido);
-               }
-               // aqui me quede
-               console.log(response)
-               this.msgService.add({
-                   severity: 'success',
-                   summary: 'Éxito',
-                   detail: 'Filtros aplicados correctamente'
-               });*/
-            },
-            error: (error: HttpErrorResponse) => {
-               console.error('Error al aplicar filtros:', error);
-               this.msgService.add({
-                  severity: 'error',
-                  summary: 'Error',
-                  detail: 'No se pudieron aplicar los filtros'
-               });
-            }
-         });
+  private mapUsersToVendorOptions(users: CUltimoRegxUsu[]): void {
+    this.vendorOptions = users.map((user) => ({
+      label: user.usunombre,
+      value: user.usucodv,
+      user: user, // Guardar referencia completa del usuario
+      subtitle: `${user.usuemail || 'Sin correo electrónico'}`
+    }));
+  }
 
-   }
-   private buildFechaInicio(): string {
-      if (this.filterFrom) {
-         //console.log(this.filterFrom);
-         //return this.filterFrom.toISOString();
-         const year = this.filterFrom.getFullYear();
-         const month = (this.filterFrom.getMonth() + 1).toString().padStart(2, '0');
-         const day = this.filterFrom.getDate().toString().padStart(2, '0');
-         const hours = this.filterFrom.getHours().toString().padStart(2, '0');
-         const minutes = this.filterFrom.getMinutes().toString().padStart(2, '0');
-         const seconds = this.filterFrom.getSeconds().toString().padStart(2, '0');
-         return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+  /*
+   * Obtiene el número de filtros activos
+   */
+  getActiveFiltersCount(): number {
+    let count = 0;
+    if (this.filterFrom) count++;
+    if (this.filterTo) count++;
+    if (this.geofenceEnabled && this.selectedGeofence) count++;
+    if (this.pedidosEnabled) count++;
+    if (this.collectionsEnabled) count++;
+    if (this.timeValue && this.selectedTimeUnit) count++;
+    if (this.clientesNone || this.clientesAll || this.clientesAssigned) count++;
+    return count;
+  }
 
+  onToggleChange() {
+    if (this.geofenceEnabled) {
+      if (this.vendorGeocercas.length > 0) {
+        this.selectedGeofence = this.vendorGeocercas.map((geocerca) => geocerca.geoccod);
+        this.onGeofencesChange({ value: this.selectedGeofence });
       }
-      return new Date().toISOString();
-   }
-   private buildFechaFinal(): string {
-      if (this.filterTo) {
-         //console.log(this.filterTo);
-         //return this.filterTo.toISOString();
-         const year = this.filterTo.getFullYear();
-         const month = (this.filterTo.getMonth() + 1).toString().padStart(2, '0');
-         const day = this.filterTo.getDate().toString().padStart(2, '0');
-         const hours = this.filterTo.getHours().toString().padStart(2, '0');
-         const minutes = this.filterTo.getMinutes().toString().padStart(2, '0');
-         const seconds = this.filterTo.getSeconds().toString().padStart(2, '0');
-         return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-
-      }
-      return new Date().toISOString();
-   }
-
-   selectSearchResult(result: SearchResult): void {
-      this.mapService.selectSearchResult(result);
-   }
-
-   clearLocationSearch(): void {
-      this.searchLocation = '';
-      this.mapService.clearSearchMarker();
-      this.searchResults = [];
-   }
-
-   resetMapView(): void {
-      this.mapService.resetMapView();
-   }
-
-   refreshData(): void {
-      this.loading = true;
-      this.selectedUser = null;
-      this.getAllUsers();
-      this.resetMapView();
-   }
-
-   clearFilters(): void {
-
-       const today = new Date();
-      // Fecha desde (00:00:00)
-      this.filterFrom = new Date(today);
-      this.filterFrom.setHours(0, 0, 0, 0);
-
-      // Fecha hasta (23:59:59)
-      this.filterTo = new Date(today);
-      this.filterTo.setHours(23, 59, 59, 999);
-
-      // Filtros temporales
-      //this.filterFrom = null;
-      //this.filterTo = null;
-      this.selectedTimeUnit = null;
-      this.timeValue = null;
-
-      // Filtros de vendedor y clientes
-      this.selectedVendor = null;
-      this.selectedCustomer = null;
-      this.customerOptions = [];
-
-      // Filtros espaciales
-      this.geofenceEnabled = false;
+    } else {
       this.selectedGeofence = [];
-
-      // Filtros de transacciones
-      this.pedidosEnabled = true;
-      this.collectionsEnabled = true;
-
-      // Filtros de clientes (si los tienes)
-      this.clientesNone = false;
-      this.clientesAll = false;
-      this.clientesAssigned = false;
-
-      // Restaurar vista del mapa con todos los usuarios
-      if (this.users.length > 0) {
-         this.mapService.clearUserMarkers();
-         this.mapService.addUserMarkers(this.users);
-         this.mapService.resetMapView();
-      }
+      this.mapService.clearGeocercas();
 
       this.msgService.add({
-         severity: 'info',
-         summary: 'Filtros limpiados',
-         detail: 'Todos los filtros han sido reiniciados'
+        severity: 'info',
+        summary: 'Geocercas deshabilitadas',
+        detail: 'Se ha limpiado la selección de geocercas',
+        life: 2000
       });
-   }
+    }
+  }
 
-   exportToExcel() {
-      if (this.tableData.length <= 0) {
-         this.msgService.add({
+  // Métodos de tabla
+  clearTableFilters(dt: any): void {
+    dt.clear();
+    this.msgService.add({
+      severity: 'info',
+      summary: 'Filtros de tabla',
+      detail: 'Filtros de tabla limpiados'
+    });
+  }
+
+  onGlobalFilter(dt: any, event: Event): void {
+    dt.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+  }
+
+  onVendorChange(event: any): void {
+    const selectedCode = event.value; // Ahora es un string único
+
+    if (selectedCode) {
+      const selectedUser = this.users.find(user => user.usucodv === selectedCode);
+
+      if (selectedUser) {
+        // Limpiar clientes anteriores
+        this.customerOptions = [];
+        this.selectedCustomer = null;
+
+        // Cargar clientes del vendedor seleccionado
+        this.getCustomersByCodeVendor(selectedCode);
+
+        // Actualizar mapa con el vendedor seleccionado
+        this.mapService.clearUserMarkers();
+        this.mapService.addUserMarkers([selectedUser]);
+        this.mapService.focusOnUser(selectedUser);
+
+        this.msgService.add({
+          severity: 'success',
+          summary: 'Vendedor seleccionado',
+          detail: `Cargando clientes de ${selectedUser.usunombre}`,
+          life: 3000
+        });
+      }
+    } else {
+      // Si no hay selección, mostrar todos los usuarios
+      this.customerOptions = [];
+      this.selectedCustomer = null;
+      this.mapService.clearUserMarkers();
+      this.mapService.addUserMarkers(this.users);
+
+      this.msgService.add({
+        severity: 'info',
+        summary: 'Selección removida',
+        detail: 'Mostrando todos los vendedores',
+        life: 2000
+      });
+    }
+  }
+
+
+  // Método para manejar cambios en la selección
+
+  onGeofencesChange(event: any): void {
+    const selectedCodes = event.value; // Array de códigos seleccionados
+
+    const selectedGeocercasData = this.vendorGeocercas.filter((geocerca) => selectedCodes.includes(geocerca.geoccod));
+
+    if (selectedGeocercasData.length > 0) {
+      this.mapService.displayVendorGeocercas(selectedGeocercasData);
+
+      this.msgService.add({
+        severity: 'info',
+        summary: 'Filtro aplicado',
+        detail: `Mostrando ${selectedGeocercasData.length} de ${this.vendorGeocercas.length} geocerca${selectedGeocercasData.length === 1 ? '' : 's'}`,
+        life: 2000
+      });
+    } else {
+      this.mapService.clearGeocercas();
+      this.msgService.add({
+        severity: 'warn',
+        summary: 'Sin filtro',
+        detail: 'No hay geocercas seleccionadas para mostrar',
+        life: 2000
+      });
+    }
+  }
+
+  // Método para manejar cambios en la selección de vendedores
+  onVendorsChange(event: any): void {
+    const selectedCodes = event.value; // Array de códigos seleccionados
+
+    // Filtrar usuarios seleccionados
+    const selectedUsers = this.users.filter((user) => selectedCodes.includes(user.usucod));
+
+    if (selectedUsers.length > 0) {
+      // Actualizar marcadores en el mapa
+      this.mapService.clearUserMarkers();
+      this.mapService.addUserMarkers(selectedUsers);
+
+      this.msgService.add({
+        severity: 'success',
+        summary: 'Vendedores filtrados',
+        detail: `Mostrando ${selectedUsers.length} de ${this.users.length} vendedor${selectedUsers.length === 1 ? '' : 'es'}`,
+        life: 3000
+      });
+    } else {
+      // Mostrar todos los usuarios si no hay selección
+      this.mapService.clearUserMarkers();
+      this.mapService.addUserMarkers(this.users);
+
+      this.msgService.add({
+        severity: 'info',
+        summary: 'Filtro removido',
+        detail: 'Mostrando todos los vendedores',
+        life: 2000
+      });
+    }
+  }
+
+  onSearch(event: Event): void {
+    const value = (event.target as HTMLInputElement).value.toLowerCase();
+    this.filteredUsers = this.users.filter((user) => user.usunombre.toLowerCase().includes(value) || user.usucod.toLowerCase().includes(value) || user.usuemail.toLowerCase().includes(value));
+    this.first = 0;
+    this.updatePagination();
+  }
+
+  updatePagination(): void {
+    const start = this.first;
+    const end = start + this.itemsPerPage;
+    this.paginatedUsers = this.filteredUsers.slice(start, end);
+  }
+
+  selectUser(user: CUltimoRegxUsu): void {
+    this.selectedUser = user;
+    this.mapService.focusOnUser(user);
+  }
+
+  async initializeMap(): Promise<void> {
+    try {
+      await this.mapService.initializeMap(this.mapContainer, {
+        center: [-0.2298, -78.5249],
+        zoom: 13,
+        defaultLocation: 'Quito, Ecuador'
+      });
+      if (!this.loading && this.users.length > 0) {
+        this.mapService.addUserMarkers(this.users);
+      }
+    } catch (error) {
+      console.error('Error al inicializar el mapa:', error);
+    }
+  }
+
+  searchLocationOnMap(): void {
+    if (!this.searchLocation.trim()) return;
+
+    this.mapService.searchLocation(this.searchLocation).subscribe({
+      next: (results) => {
+        if (results.length === 1) {
+          this.selectSearchResult(results[0]);
+        } else if (results.length === 0) {
+          this.msgService.add({
+            severity: 'info',
+            summary: 'Sin resultados',
+            detail: 'No se encontraron ubicaciones para la búsqueda'
+          });
+        }
+      },
+      error: (error) => {
+        console.error('Error en búsqueda:', error);
+      }
+    });
+  }
+
+  applyFilters(): void {
+
+    if (!this.selectedVendor) {
+      this.msgService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Seleccione un usuario primero'
+      });
+      return;
+    }
+    this.mapService.hideAllUserMarkers();
+    /*if (!this.validateFilters()) {
+        return;
+    }*/
+
+    //console.log(this.selectedVendor);
+
+    const _CFiltroHistorialxFecha: CFiltroHistorialxFecha = {
+      usuarios: ["" + this.selectedVendor],
+      clientes: [],
+      ifpedidos: true,
+      ifcobros: true,
+      fechainicio: this.buildFechaInicio(),
+      fechafinal: this.buildFechaFinal()
+    };
+    console.log(_CFiltroHistorialxFecha)
+    //console.log(_CFiltroHistorialxDia)
+    this.customerService
+      .POSTHistorialxFecha(_CFiltroHistorialxFecha)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => {
+          this.loading = false;
+          this.loadingCustomers = false;
+          //this.loadingOrders = false;
+          //this.loadingCharges = false;
+        })
+      )
+      .subscribe({
+        next: (response: MTabla[]) => {
+          console.log(response);
+          this.tableData = response;
+          if (response.length > 0) {
+            this.processTrackingResponse(response);
+            this.msgService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Filtros aplicados correctamente'
+            });
+          } else {
+            this.msgService.add({
+              severity: 'warn',
+              summary: 'Advertencia',
+              detail: 'Consulta exitosa sin registros'
+            });
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error al aplicar filtros:', error);
+          this.msgService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'No Existen Registros'
-         });
-         return;
+            detail: 'No se pudieron aplicar los filtros'
+          });
+        }
+      });
+
+  }
+  copyCoordinatesNumber(latitud: number, longitud: number): void {
+    if (latitud && longitud) {
+      const coordinates = `${latitud}, ${longitud}`;
+      navigator.clipboard.writeText(coordinates).then(() => {
+        this.msgService.add({
+          severity: 'success',
+          summary: 'Copia exitosa',
+          detail: 'Las coordenadas se copiaron al portapapeles',
+          life: 1000
+        });
+      });
+    }
+  }
+  private processTrackingResponse(response: MTabla[]): void {
+    //this.mapService.clearOrderMarkers();
+    this.mapService.clearMarkersTabla();
+    //this.mapService.addTrackingMarkers(response);
+    this.mapService.addMarkersTabla(response);
+    this.centerMapOnFilteredData(response);
+  }
+  focusTabla(fila: MTabla): void {
+    //this.selectedUser = user;
+    this.mapService.focusTabla(fila);
+  }
+  private centerMapOnFilteredData(response: MTabla[]): void {
+    const allCoordinates: [number, number][] = [];
+
+    response.forEach((fila) => {
+      if (fila.latitud && fila.longitud) {
+        allCoordinates.push([fila.latitud, fila.longitud]);
       }
-      // 1️⃣ Convertir tus datos (JSON) a una hoja de Excel
-      const exportData = this.tableData.map(item => ({
-         'ID': item.id,
-         'FECHA': item.fecha,
-         'HORA INICIO': item.tiempoinicio,
-         'HORA FINAL': item.tiempofinal,
-         'CODIGO CLIENTE': item.codcliente,
-         'CLIENTE': item.nomcliente,
-         'DIRECCION': item.dircliente,
-         'CODIGO VENDEDOR': item.vendedor,
-         'VENDEDOR': item.nomvendedor,
-         'NUMERO PEDIDO': item.numeropedido,
-         'NUMERO COBRO': item.numerocobro,
-         'PEDIDO': item.pedido,
-         'COBRO': item.cobro,
-         'MONTO PEDIDO': item.montopedido,
-         'MONTO COBRO': item.montocobro,
-         'LATITUD': item.latitud,
-         'LONGITUD': item.longitud
-      }));
-      const worksheet = XLSX.utils.json_to_sheet(exportData);
-
-      // 2️⃣ Crear el libro (workbook)
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos');
-
-      // 3️⃣ Generar el buffer en formato Excel
-      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-
-      // 4️⃣ Crear un archivo Blob y descargarlo
-      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-
-      // 5️⃣ Asignar nombre al archivo
-      const fileName = `reporte_${new Date().toISOString().slice(0, 19).replace(/[-T:]/g, '')}.xlsx`;
-      saveAs(blob, fileName);
+    });
+    if (allCoordinates.length > 0) {
+      this.mapService.fitBoundsToCoordinates(allCoordinates);
+    } else if (this.selectedUser) {
+      this.mapService.focusOnUser(this.selectedUser);
+    }
+  }
 
 
-   }
+
+  private buildFechaInicio(): string {
+    if (this.filterFrom) {
+      //console.log(this.filterFrom);
+      //return this.filterFrom.toISOString();
+      const year = this.filterFrom.getFullYear();
+      const month = (this.filterFrom.getMonth() + 1).toString().padStart(2, '0');
+      const day = this.filterFrom.getDate().toString().padStart(2, '0');
+      const hours = this.filterFrom.getHours().toString().padStart(2, '0');
+      const minutes = this.filterFrom.getMinutes().toString().padStart(2, '0');
+      const seconds = this.filterFrom.getSeconds().toString().padStart(2, '0');
+      return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
+    }
+    return new Date().toISOString();
+  }
+  private buildFechaFinal(): string {
+    if (this.filterTo) {
+      //console.log(this.filterTo);
+      //return this.filterTo.toISOString();
+      const year = this.filterTo.getFullYear();
+      const month = (this.filterTo.getMonth() + 1).toString().padStart(2, '0');
+      const day = this.filterTo.getDate().toString().padStart(2, '0');
+      const hours = this.filterTo.getHours().toString().padStart(2, '0');
+      const minutes = this.filterTo.getMinutes().toString().padStart(2, '0');
+      const seconds = this.filterTo.getSeconds().toString().padStart(2, '0');
+      return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
+    }
+    return new Date().toISOString();
+  }
+
+  selectSearchResult(result: SearchResult): void {
+    this.mapService.selectSearchResult(result);
+  }
+
+  clearLocationSearch(): void {
+    this.searchLocation = '';
+    this.mapService.clearSearchMarker();
+    this.searchResults = [];
+  }
+
+  resetMapView(): void {
+    this.mapService.resetMapView();
+  }
+
+  refreshData(): void {
+    this.loading = true;
+    this.selectedUser = null;
+    this.getAllUsers();
+    this.resetMapView();
+  }
+
+  clearFilters(): void {
+
+    const today = new Date();
+    // Fecha desde (00:00:00)
+    this.filterFrom = new Date(today);
+    this.filterFrom.setHours(0, 0, 0, 0);
+
+    // Fecha hasta (23:59:59)
+    this.filterTo = new Date(today);
+    this.filterTo.setHours(23, 59, 59, 999);
+
+    // Filtros temporales
+    //this.filterFrom = null;
+    //this.filterTo = null;
+    this.selectedTimeUnit = null;
+    this.timeValue = null;
+
+    // Filtros de vendedor y clientes
+    this.selectedVendor = null;
+    this.selectedCustomer = null;
+    this.customerOptions = [];
+
+    // Filtros espaciales
+    this.geofenceEnabled = false;
+    this.selectedGeofence = [];
+
+    // Filtros de transacciones
+    this.pedidosEnabled = true;
+    this.collectionsEnabled = true;
+
+    // Filtros de clientes (si los tienes)
+    this.clientesNone = false;
+    this.clientesAll = false;
+    this.clientesAssigned = false;
+
+    // Restaurar vista del mapa con todos los usuarios
+    if (this.users.length > 0) {
+      this.mapService.clearUserMarkers();
+      this.mapService.addUserMarkers(this.users);
+      this.mapService.resetMapView();
+    }
+
+    this.msgService.add({
+      severity: 'info',
+      summary: 'Filtros limpiados',
+      detail: 'Todos los filtros han sido reiniciados'
+    });
+  }
+
+  exportToExcel() {
+    if (this.tableData.length <= 0) {
+      this.msgService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No Existen Registros'
+      });
+      return;
+    }
+    // 1️⃣ Convertir tus datos (JSON) a una hoja de Excel
+    const exportData = this.tableData.map(item => ({
+      'ID': item.id,
+      'FECHA': item.fecha,
+      'HORA INICIO': item.tiempoinicio,
+      'HORA FINAL': item.tiempofinal,
+      'CODIGO CLIENTE': item.codcliente,
+      'CLIENTE': item.nomcliente,
+      'DIRECCION': item.dircliente,
+      'CODIGO VENDEDOR': item.vendedor,
+      'VENDEDOR': item.nomvendedor,
+      'NUMERO PEDIDO': item.numeropedido,
+      'NUMERO COBRO': item.numerocobro,
+      'PEDIDO': item.pedido,
+      'COBRO': item.cobro,
+      'MONTO PEDIDO': item.montopedido,
+      'MONTO COBRO': item.montocobro,
+      'LATITUD': item.latitud,
+      'LONGITUD': item.longitud
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+    // 2️⃣ Crear el libro (workbook)
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos');
+
+    // 3️⃣ Generar el buffer en formato Excel
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+    // 4️⃣ Crear un archivo Blob y descargarlo
+    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+
+    // 5️⃣ Asignar nombre al archivo
+    const fileName = `reporte_${new Date().toISOString().slice(0, 19).replace(/[-T:]/g, '')}.xlsx`;
+    saveAs(blob, fileName);
+
+
+  }
 }

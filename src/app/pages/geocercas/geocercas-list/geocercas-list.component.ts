@@ -582,6 +582,17 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     this.selectedUser = user;
     this.mapService.focusOnUser(user);
   }
+  focusallmarkers(): void {
+    let response: RWebHistorialxDia= {
+    clientes: this.customers,
+    cobros: this.charges,
+    pedidos: this.orders,
+    //usuarios: this.customers,
+    usuarios: this.selectedUser ?? {} as CUltimoRegxUsu,
+    recorrido: this.recorrido
+};
+    this.centerMapOnFilteredData(response);
+  }
   focusPointRecorrido(user: CUltimoRegxUsu, latitud: number, longitud: number): void {
     //this.selectedUser = user;
     this.mapService.focusPoint(user.usucod, latitud, longitud);

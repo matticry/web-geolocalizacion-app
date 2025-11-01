@@ -12,6 +12,7 @@ import { SolicitudData } from '@/core/models/SolicitudData';
 import { CUltimoRegxUsu } from '../models/CUltimoRegxUsu';
 import { Mpa_GEO_Clientes, Mpa_GEO_Cobros, Mpa_GEO_Pedidos, Mpa_UltUbi, RWebHistorialxDia } from '../models/Responses/RWebHistorialxDia';
 import { TooltipModule } from 'primeng/tooltip';
+import { MTabla } from '../models/Responses/MTabla';
 
 
 //===== INTERFACES ======//
@@ -57,10 +58,12 @@ export class MapService {
   private trackingMarkers = new Map<string, L.Marker>();
   private chargeMarkers = new Map<string, L.Marker>();
   private orderMarkers = new Map<string, L.Marker>();
+  private tablaMarkers = new Map<string, L.Marker>();
   private trackingPath: L.Polyline | null = null;
   private trackingClusterGroup: L.MarkerClusterGroup | null = null;
   private chargeClusterGroup: L.MarkerClusterGroup | null = null;
   private orderClusterGroup: L.MarkerClusterGroup | null = null;
+  private TablaClusterGroup: L.MarkerClusterGroup | null = null;
 
   private markerClusterLoaded = false;
   private geocercasLayer: L.FeatureGroup | null = null;
@@ -981,15 +984,15 @@ export class MapService {
       'charge_order_customer': {
         gradient: 'from-green-600 via-purple-600 to-blue-600',
         icons: `
-                < svg class="w-3 h-3 text-white" viewBox = "0 0 24 24"  style = "fill: currentColor;" >
-                    <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z" />
-                        </svg>
-                        < svg class="w-3 h-3 text-white" viewBox = "0 0 24 24" style = "fill: currentColor;" >
-                            <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z" />
-                                </svg>
-                                < svg class="w-3 h-3 text-white" viewBox = "0 0 24 24" style = "fill: currentColor;" >
-                                    <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
-                                        </svg>`,
+                <svg class="w-3 h-3 text-white" viewBox = "0 0 24 24"  style = "fill: currentColor;" >
+                  <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z" />
+                </svg>
+                <svg class="w-3 h-3 text-white" viewBox = "0 0 24 24" style = "fill: currentColor;" >
+                  <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z" />
+                </svg>
+                <svg class="w-3 h-3 text-white" viewBox = "0 0 24 24" style = "fill: currentColor;" >
+                  <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+                </svg>`,
         badge: cantidad.toString()
       },
       'charge_order': {
@@ -1085,6 +1088,80 @@ export class MapService {
       iconAnchor: [24, 24]
     });
   }
+
+  private createDynamicPopupContentAuxTabla(fila: MTabla): string {
+    const titleText = 'Registro N: '+fila.id;
+    const totalcobro = fila.montocobro.toFixed(3);
+    const totalpedido = fila.montopedido.toFixed(3);
+    const orderDate = new Date(fila.fecha).toLocaleDateString('es-ES');
+
+    return `
+<div class="bg-white rounded-lg shadow-sm border-0 overflow-hidden">
+  <div class="bg-gradient-to-r from-purple-600 to-blue-600 px-2 py-1">
+    <div class="flex items-center space-x-1 text-white">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" style="fill: currentColor;">
+        <path
+          d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M11,7V13H13V7H11M11,15V17H13V15H11Z" />
+      </svg>
+      <span class="font-semibold text-sm">${titleText}</span>
+    </div>
+  </div>
+  <div class="flex flex-col">
+
+  <div class=" rounded-lg p-2 border border-blue-200">
+      <div class="space-y-1">
+        <div class="text-xs text-gray-700">Fecha: ${orderDate}</div>
+        <div class="text-xs text-gray-700">Hora Ingreso: ${fila.tiempoinicio}</div>
+        <div class="text-xs text-gray-700">Hora Salida: ${fila.tiempofinal}</div>
+      </div>
+    </div>
+  <div class="bg-blue-50 rounded-lg p-2 border border-blue-200">
+      <div class="flex items-center space-x-1 mb-1">
+        <svg class="w-3.5 h-3.5 text-blue-600" viewBox="0 0 24 24" style="fill: currentColor;">
+          <path
+            d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+        </svg>
+        <span class="font-semibold text-xs text-blue-700 whitespace-nowrap">Cliente</span>
+      </div>
+      <div class="space-y-1">
+        <div class="text-xs text-gray-700">${fila.nomcliente}</div>
+        <div class="text-xs text-gray-700">${fila.codcliente}</div>
+        <div class="text-xs text-gray-600">${fila.dircliente}</div>
+      </div>
+    </div>
+${fila.cobro?`
+    <div class="bg-green-50 rounded-lg p-2 border border-green-200">
+      <div class="flex items-center space-x-1 mb-1">
+          <svg class="w-3.5 h-3.5 text-green-600" viewBox="0 0 24 24" style="fill: currentColor;">
+              <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
+          </svg>
+          <span class="font-semibold text-xs text-green-700 whitespace-nowrap">Cobro #${fila.numerocobro}</span>
+      </div>
+      <div class="space-y-1">
+        <div class="text-xs text-gray-700">Total: $ ${totalcobro}</div>
+
+      </div>
+    </div>
+    `:``}
+${fila.pedido?`
+    <div class="bg-purple-50 rounded-lg p-2 border border-purple-200">
+
+      <div class="flex items-center space-x-1 mb-1">
+          <svg class="w-3.5 h-3.5 text-purple-600" viewBox="0 0 24 24" style="fill: currentColor;">
+              <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z"/>
+          </svg>
+          <span class="font-semibold text-xs text-purple-700 whitespace-nowrap ">Pedido #${fila.numeropedido}</span>
+      </div>
+      <div class="space-y-1">
+        <div class="text-xs text-gray-700">Total: $ ${totalpedido}</div>
+      </div>
+    </div>
+`:``}
+  </div>
+</div>
+    `;
+  }
+
 private createDynamicPopupContentAuxCliente(customer: Mpa_GEO_Clientes): string {
     const sectionsclientes: string[] = [];
       sectionsclientes.push(`<div class="max-w-[13rem]  max-h-[20rem] overflow-y-auto  space-y-1 custom-scrollbar p-1">`);
@@ -1548,6 +1625,33 @@ focusRecorrido(recorrido: Mpa_UltUbi, zoom: number = 19): void {
     });
   }
 
+  focusTabla(fila: MTabla, zoom: number = 19): void {
+    if (!this.map || !fila.latitud || !fila.longitud) return;
+
+    this.map.flyTo([fila.latitud, fila.longitud], zoom, {
+      duration: 1
+    });
+    const map = this.map;
+    this.map.once('moveend', () => {
+      //const marker = this.tablaMarkers.get(fila.id.toString());
+      //console.log(marker)
+      //if (marker != undefined) {
+      //marker?.openPopup();
+        //return
+      //}else{
+        const popupContent = this.createDynamicPopupContentAuxTabla(fila);
+      L.popup({
+        maxWidth: 360,
+      className: 'custom-combined-popup'
+      })
+        .setLatLng([fila.latitud, fila.longitud])
+        .setContent(popupContent)
+        .openOn(map);
+      //}
+    });
+  }
+
+
   /**
    * Crea icono para cliente
    */
@@ -1567,7 +1671,6 @@ focusRecorrido(recorrido: Mpa_UltUbi, zoom: number = 19): void {
                     <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
                 </svg>
             </div>
-            <div class="absolute -top-0.5 -right-0.5 w-3 h-3 ${indicatorColor} border border-white rounded-full"></div>
         </div>`,
       className: 'custom-customer-marker',
       iconSize: [40, 40],
@@ -2431,6 +2534,47 @@ focusRecorrido(recorrido: Mpa_UltUbi, zoom: number = 19): void {
       });
     }
   }
+ addMarkersTabla(tabla: MTabla[]): void {
+    if (!this.map || !this.L || tabla.length === 0) {
+      console.warn('Mapa, Leaflet o ubicaciones no están disponibles');
+      return;
+    }
+
+    try {
+      this.clearMarkersTabla();
+      this.initializeClusterTabla();
+
+      
+      //const mostRecentLocation = tabla[0];
+
+      tabla.forEach((fila, index) => {
+
+        if (fila.latitud && fila.longitud) {
+          try {
+            const marker = this.createMarkerTabla(fila, index);
+            const markerId = fila.id.toString();
+            this.tablaMarkers.set(markerId, marker);
+            this.TablaClusterGroup?.addLayer(marker);
+          } catch (error) {
+            console.error('Error al agregar marcador de tracking:', error, location);
+          }
+        }
+      });
+
+      //this.createPathTabla(tabla);
+
+      setTimeout(() => {
+        this.map?.invalidateSize();
+      }, 100);
+    } catch (error) {
+      console.error('Error general en addTrackingMarkers:', error);
+      this.msgService?.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error al agregar marcadores de tracking'
+      });
+    }
+  }
 
   /**
    * Agrega marcadores de cobros al mapa
@@ -2527,7 +2671,20 @@ focusRecorrido(recorrido: Mpa_UltUbi, zoom: number = 19): void {
 
     return marker;
   }
+private createMarkerTabla(fila: MTabla, index: number ): L.Marker {
+    const customIcon = this.creatIconTabla(fila.pedido,fila.cobro);
+    const marker = L.marker([fila.latitud, fila.longitud], {
+      icon: customIcon
+    });
 
+    const popupContent = this.createPopupContentTable(fila, index);
+    marker.bindPopup(popupContent, {
+      maxWidth: 260,
+      className: 'custom-tracking-popup'
+    });
+
+    return marker;
+  }
   /**
    * Crea marcador para cobro
    */
@@ -2593,6 +2750,27 @@ focusRecorrido(recorrido: Mpa_UltUbi, zoom: number = 19): void {
       iconAnchor: [6, 6]
     });
   }
+  private creatIconTabla(espedido: boolean,escobro: boolean): L.DivIcon {
+    return L.divIcon({
+      html: `
+        <div class="relative">
+          <div class="w-12 h-12 bg-gradient-to-br from-green-600 to-purple-600 rounded-full border-2 border-white shadow-lg flex items-center justify-center space-x-0.5">
+            ${espedido?`<svg class="w-${espedido?3:4} h-${espedido?3:4} text-white" viewBox = "0 0 24 24"  style = "fill: currentColor;" >
+              <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z" />
+            </svg>`:``}
+            ${escobro?`<svg class="w-${escobro?3:4} h-${escobro?3:4} text-white" viewBox = "0 0 24 24" style = "fill: currentColor;" >
+              <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z" />
+            </svg>`:``}
+            <svg class="w-${espedido||escobro?3:4} h-${espedido||escobro?3:4} text-white" viewBox = "0 0 24 24" style = "fill: currentColor;" >
+              <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+            </svg>
+          </div>
+        </div>`,
+      className: 'custom-tracking-marker',
+      iconSize: [12, 12],
+      iconAnchor: [6, 6]
+    });
+  }
 
   /**
    * Crea icono para repartidor/persona en movimiento
@@ -2616,20 +2794,7 @@ focusRecorrido(recorrido: Mpa_UltUbi, zoom: number = 19): void {
   /**
    * Crea icono para cobro
    */
-  private createChargeIconVacio(): any {
-    if (!this.L) {
-      throw new Error('Leaflet no está cargado');
-    }
 
-    return this.L.divIcon({
-      html: `
-        <div class="relative">
-        </div>`,
-      className: 'custom-charge-marker',
-      iconSize: [1, 1],
-      iconAnchor: [1, 1]
-    });
-  }
   private createChargeIcon(): any {
     if (!this.L) {
       throw new Error('Leaflet no está cargado');
@@ -2643,9 +2808,7 @@ focusRecorrido(recorrido: Mpa_UltUbi, zoom: number = 19): void {
                     <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
                 </svg>
             </div>
-            <div class="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 border border-white rounded-full flex items-center justify-center">
-                <span class="text-xs font-bold text-green-800">$</span>
-            </div>
+            
         </div>`,
       className: 'custom-charge-marker',
       iconSize: [40, 40],
@@ -2669,9 +2832,7 @@ focusRecorrido(recorrido: Mpa_UltUbi, zoom: number = 19): void {
                         <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z"/>
                     </svg>
                 </div>
-                <div class="absolute -top-1 -right-1 w-4 h-4 bg-purple-400 border border-white rounded-full flex items-center justify-center">
-                    <span class="text-xs font-bold text-purple-800">P</span>
-                </div>
+                
             </div>`,
       className: 'custom-order-marker',
       iconSize: [40, 40],
@@ -2727,6 +2888,81 @@ focusRecorrido(recorrido: Mpa_UltUbi, zoom: number = 19): void {
         </div>
     `;
   }
+
+
+  private createPopupContentTable(fila: MTabla, index: number): string {
+    const titleText = 'Registro N: '+fila.id;
+    const totalcobro = fila.montocobro.toFixed(3);
+    const totalpedido = fila.montopedido.toFixed(3);
+    const orderDate = new Date(fila.fecha).toLocaleDateString('es-ES');
+
+    return `
+<div class="bg-white rounded-lg shadow-sm border-0 overflow-hidden">
+  <div class="bg-gradient-to-r from-purple-600 to-blue-600 px-2 py-1">
+    <div class="flex items-center space-x-1 text-white">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" style="fill: currentColor;">
+        <path
+          d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M11,7V13H13V7H11M11,15V17H13V15H11Z" />
+      </svg>
+      <span class="font-semibold text-sm">${titleText}</span>
+    </div>
+  </div>
+  <div class="flex flex-col">
+
+  <div class=" rounded-lg p-2 border border-blue-200">
+      <div class="space-y-1">
+        <div class="text-xs text-gray-700">Fecha: ${orderDate}</div>
+        <div class="text-xs text-gray-700">Hora Ingreso: ${fila.tiempoinicio}</div>
+        <div class="text-xs text-gray-700">Hora Salida: ${fila.tiempofinal}</div>
+      </div>
+    </div>
+  <div class="bg-blue-50 rounded-lg p-2 border border-blue-200">
+      <div class="flex items-center space-x-1 mb-1">
+        <svg class="w-3.5 h-3.5 text-blue-600" viewBox="0 0 24 24" style="fill: currentColor;">
+          <path
+            d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+        </svg>
+        <span class="font-semibold text-xs text-blue-700 whitespace-nowrap">Cliente</span>
+      </div>
+      <div class="space-y-1">
+        <div class="text-xs text-gray-700">${fila.nomcliente}</div>
+        <div class="text-xs text-gray-700">${fila.codcliente}</div>
+        <div class="text-xs text-gray-600">${fila.dircliente}</div>
+      </div>
+    </div>
+${fila.cobro?`
+    <div class="bg-green-50 rounded-lg p-2 border border-green-200">
+      <div class="flex items-center space-x-1 mb-1">
+          <svg class="w-3.5 h-3.5 text-green-600" viewBox="0 0 24 24" style="fill: currentColor;">
+              <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
+          </svg>
+          <span class="font-semibold text-xs text-green-700 whitespace-nowrap">Cobro #${fila.numerocobro}</span>
+      </div>
+      <div class="space-y-1">
+        <div class="text-xs text-gray-700">Total: $ ${totalcobro}</div>
+
+      </div>
+    </div>
+    `:``}
+${fila.pedido?`
+    <div class="bg-purple-50 rounded-lg p-2 border border-purple-200">
+
+      <div class="flex items-center space-x-1 mb-1">
+          <svg class="w-3.5 h-3.5 text-purple-600" viewBox="0 0 24 24" style="fill: currentColor;">
+              <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z"/>
+          </svg>
+          <span class="font-semibold text-xs text-purple-700 whitespace-nowrap ">Pedido #${fila.numeropedido}</span>
+      </div>
+      <div class="space-y-1">
+        <div class="text-xs text-gray-700">Total: $ ${totalpedido}</div>
+      </div>
+    </div>
+`:``}
+  </div>
+</div>
+    `;
+  }
+
 
   /**
    * Crea popup para cobro
@@ -2838,6 +3074,31 @@ focusRecorrido(recorrido: Mpa_UltUbi, zoom: number = 19): void {
     this.map.addLayer(this.chargeClusterGroup!);
   }
 
+
+private initializeClusterTabla(): void {
+    if (!this.map || !this.L) return;
+
+    if (!this.L.MarkerClusterGroup) {
+      throw new Error('leaflet.markercluster no está disponible');
+    }
+
+    this.TablaClusterGroup = new this.L.MarkerClusterGroup({
+      iconCreateFunction: (cluster: any) => {
+        const count = cluster.getChildCount();
+        return this.L.divIcon({
+          html: `<div class="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-semibold text-sm shadow-lg border-2 border-white">${count}</div>`,
+          className: 'custom-charge-cluster',
+          iconSize: [20, 20]
+        });
+      },
+      spiderfyOnMaxZoom: true,
+      showCoverageOnHover: false,
+      zoomToBoundsOnClick: true
+    });
+
+    this.map.addLayer(this.TablaClusterGroup!);
+  }
+
   /**
    * Inicializa cluster para marcadores de pedidos
    */
@@ -2889,6 +3150,27 @@ focusRecorrido(recorrido: Mpa_UltUbi, zoom: number = 19): void {
 
     this.trackingPath?.addTo(this.map);
   }
+  private createPathTabla(userLocation: MTabla[]): void {
+    if (!this.map || !this.L || userLocation.length === 0) return;
+
+    //const userLocation = userLocations[0]; // Solo un usuario
+    if (userLocation.length < 2) return;
+
+    //const sortedLocations = userLocation.sort((a, b) => new Date(a.geubtim).getTime() - new Date(b.geubtim).getTime());
+
+    //const pathCoordinates: [number, number][] = sortedLocations.map((location) => [location.geublat, location.geublon]);
+    const pathCoordinates: [number, number][] = userLocation.map((location) => [location.latitud, location.longitud]);
+
+
+    this.trackingPath = this.L.polyline(pathCoordinates, {
+      color: '#3B82F6',
+      weight: 3,
+      opacity: 0.7,
+      smoothFactor: 1
+    });
+
+    this.trackingPath?.addTo(this.map);
+  }
 
   /**
    * Limpia marcadores de tracking
@@ -2907,6 +3189,7 @@ focusRecorrido(recorrido: Mpa_UltUbi, zoom: number = 19): void {
 
     this.trackingMarkers.clear();
   }
+  
 
   /**
    * Limpia marcadores de cobros
@@ -2932,6 +3215,15 @@ focusRecorrido(recorrido: Mpa_UltUbi, zoom: number = 19): void {
     }
 
     this.orderMarkers.clear();
+  }
+   clearMarkersTabla(): void {
+    if (this.TablaClusterGroup && this.map) {
+      this.TablaClusterGroup.clearLayers();
+      this.map.removeLayer(this.TablaClusterGroup);
+      this.TablaClusterGroup = null;
+    }
+
+    this.tablaMarkers.clear();
   }
 
   /**
