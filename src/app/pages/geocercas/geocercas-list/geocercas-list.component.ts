@@ -43,7 +43,7 @@ import { FilterRequest, ZonaBusquedaFilter } from '@/core/models/Filter/FilterRe
 import { ChargeDto, OrderDto, TrackingResponse } from '@/core/models/Filter/TrackingResponse';
 import { MultiSelect } from 'primeng/multiselect';
 import { CFiltroHistorialxDia } from '@/core/models/Filter/CFiltroHistorialxDia';
-import { Mpa_GEO_Cobros, Mpa_GEO_Pedidos, Mpa_UltUbi, RWebHistorialxDia } from '@/core/models/Responses/RWebHistorialxDia';
+import { Mpa_GEO_Clientes, Mpa_GEO_Cobros, Mpa_GEO_Pedidos, Mpa_UltUbi, RWebHistorialxDia } from '@/core/models/Responses/RWebHistorialxDia';
 
 @Component({
   selector: 'app-geocercas',
@@ -716,7 +716,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     this.customers = [];
   }
   //=============================================================================================//
-  focusCustomerOnMap(customer: CustomerResponseDto): void {
+  focusCustomerOnMap(customer: Mpa_GEO_Clientes): void {
     //console.log(customer);
     this.mapService.focusOnCustomer(customer);
 
@@ -728,7 +728,7 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     });
   }
 
-  focusOrderOnMap(order: OrderDto): void {
+  focusOrderOnMap(order: Mpa_GEO_Pedidos): void {
     this.mapService.focusOnOrder(order);
 
     this.msgService.add({
