@@ -7,7 +7,8 @@
 			<div
 				class="flex flex-col flex-1 overflow-hidden h-full bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg shadow-sm">
 				<!-- Header + Toolbar OPTIMIZADO -->
-				<div class="relative overflow-hidden p-4 bg-gradient-to-br from-white via-surface-50/80 to-surface-100/30 dark:from-surface-900 dark:via-surface-800/90 dark:to-surface-900/60 rounded-t-lg border-b border-surface-200/60 dark:border-surface-700/60"
+				<div
+					class="relative overflow-hidden p-4 bg-gradient-to-br from-white via-surface-50/80 to-surface-100/30 dark:from-surface-900 dark:via-surface-800/90 dark:to-surface-900/60 rounded-t-lg border-b border-surface-200/60 dark:border-surface-700/60"
 					style="
     padding: 0.8rem 1rem 0.3rem 1rem;">
 					<!-- Background pattern -->
@@ -38,8 +39,7 @@
 
 						<!-- Información de estado -->
 						@if (filteredUsers.length > 0) {
-						<div
-							class="mt-1 flex justify-between items-center text-xs text-surface-600 dark:text-surface-400">
+						<div class="mt-1 flex justify-between items-center text-xs text-surface-600 dark:text-surface-400">
 							<span>{{ filteredUsers.length }} usuarios disponibles</span>
 						</div>
 						}
@@ -114,8 +114,7 @@
 											class="flex items-center justify-center w-6 h-6 rounded-lg bg-blue-100/80 dark:bg-blue-900/30 border border-blue-200/60 dark:border-blue-700/40">
 											<i class="pi pi-map-marker text-blue-600 dark:text-blue-400 text-xs"></i>
 										</div>
-										<span
-											class="text-sm text-surface-700 dark:text-surface-300 font-medium truncate"
+										<span class="text-sm text-surface-700 dark:text-surface-300 font-medium truncate"
 											[title]="selectedUser.latitud + ', ' + selectedUser.longitud">
 											{{ getUserLocationName(selectedUser) }}
 										</span>
@@ -154,15 +153,13 @@
 									<span class="flex items-center justify-between px-2.5 py-1 rounded-lg bg-surface-100/80 dark:bg-surface-900/60 border border-surface-200/60 dark:border-surface-500/60 text-xs font-mono font-medium text-surface-700 dark:text-surface-300 
 												 mt-2">
 										<div>
-											<div
-												class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400 pb-1">
+											<div class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400 pb-1">
 												<i class="pi pi-map-marker text-green-500 w-3"></i>
 												<span class="font-mono text-surface-700 dark:text-surface-300">{{
 													selectedUser.latitud | number:'1.6-6' }},{{
 													selectedUser.longitud | number:'1.6-6' }}</span>
 											</div>
-											<div
-												class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
+											<div class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
 												<i class="pi pi-clock text-blue-500 w-3"></i>
 												<span class="font-mono text-surface-700 dark:text-surface-300">{{
 													selectedUser.fechaubicacion | date:'dd/MM/yyyy HH:mm:ss'
@@ -177,8 +174,7 @@
 												<i class="pi pi-map-marker text-xs"></i>
 											</button>
 											}
-											<button
-												(click)="copyCoordinatesNumber(selectedUser.latitud,selectedUser.longitud)"
+											<button (click)="copyCoordinatesNumber(selectedUser.latitud,selectedUser.longitud)"
 												class="inline-flex items-center gap-2 px-1.5 py-1.5 rounded-lg bg-primary-100/80 dark:bg-primary-900/40 hover:bg-primary-200/80 dark:hover:bg-primary-900/60 border border-primary-200/60 dark:border-primary-700/60 text-primary-700 dark:text-primary-300 text-xs font-medium transition-all duration-200"
 												title="Copiar coordenadas">
 												<i class="pi pi-copy text-xs"></i>
@@ -210,15 +206,13 @@
 												{{ultimxrecorrido.geubid}}
 											</span>
 											<div>
-												<div
-													class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400 pb-1">
+												<div class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400 pb-1">
 													<i class="pi pi-map-marker text-green-500 w-3"></i>
 													<span class="font-mono text-surface-700 dark:text-surface-300">{{
 														ultimxrecorrido.geublat | number:'1.6-6' }},{{
 														ultimxrecorrido.geublon | number:'1.6-6' }}</span>
 												</div>
-												<div
-													class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
+												<div class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
 													<i class="pi pi-clock text-blue-500 w-3"></i>
 													<span class="font-mono text-surface-700 dark:text-surface-300">{{
 														ultimxrecorrido.geubfech | date:'dd/MM/yyyy HH:mm:ss'
@@ -235,8 +229,7 @@
 												<i class="pi pi-map-marker text-xs"></i>
 											</button>
 											}
-											<button
-												(click)="copyCoordinatesNumber(ultimxrecorrido.geublat,ultimxrecorrido.geublon)"
+											<button (click)="copyCoordinatesNumber(ultimxrecorrido.geublat,ultimxrecorrido.geublon)"
 												class="inline-flex items-center gap-2 px-1.5 py-1.5 rounded-lg bg-primary-100/80 dark:bg-primary-900/40 hover:bg-primary-200/80 dark:hover:bg-primary-900/60 border border-primary-200/60 dark:border-primary-700/60 text-primary-700 dark:text-primary-300 text-xs font-medium transition-all duration-200"
 												title="Copiar coordenadas">
 												<i class="pi pi-copy text-xs"></i>
@@ -244,25 +237,15 @@
 										</div>
 									</span>
 									}
-
-
-
 									}@else{
-
-
-
-
-
-
 									<p-accordion [(value)]="AcordionRecorrido" (click)="AcordionListas=''">
 										<p-accordion-panel value="0">
 											<p-accordion-header
 												class="flex items-center justify-between  rounded-lg border border-surface-100/60 dark:border-surface-500/60 text-xs font-mono font-medium text-surface-700 dark:text-surface-300 mt-1"
 												style="padding: 0.5rem 0.5rem;">
-												<div class="flex items-center justify-between mr-2" style="
-    flex: 1;">
+												<div class="flex items-center justify-between mr-2" style="flex: 1;">
 													@if (ultimxrecorrido != null) {
-													<div>
+													<div >
 														<div class="flex items-center justify-between">
 															<span
 																class="inline-flex items-center gap-2 px-1.5 py-1.5 rounded-lg bg-primary-100/80 dark:bg-primary-900/40 hover:bg-primary-200/80 dark:hover:bg-primary-900/60 border border-primary-200/60 dark:border-primary-700/60 text-primary-700 dark:text-primary-300 text-xs font-medium transition-all duration-200 mr-1">
@@ -272,17 +255,14 @@
 																<div
 																	class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400 pb-1">
 																	<i class="pi pi-map-marker text-green-500 w-3"></i>
-																	<span
-																		class="font-mono text-surface-700 dark:text-surface-300">{{
+																	<span class="font-mono text-surface-700 dark:text-surface-300">{{
 																		ultimxrecorrido.geublat | number:'1.6-6' }},{{
 																		ultimxrecorrido.geublon | number:'1.6-6'
 																		}}</span>
 																</div>
-																<div
-																	class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
+																<div class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
 																	<i class="pi pi-clock text-blue-500 w-3"></i>
-																	<span
-																		class="font-mono text-surface-700 dark:text-surface-300">{{
+																	<span class="font-mono text-surface-700 dark:text-surface-300">{{
 																		ultimxrecorrido.geubfech | date:'dd/MM/yyyy
 																		HH:mm:ss'
 																		}}</span>
@@ -293,14 +273,13 @@
 													<div>
 														@if (ultimxrecorrido.geublat && ultimxrecorrido.geublon) {
 														<button
-															(click)="focusPointRecorrido(selectedUser,ultimxrecorrido.geublat,ultimxrecorrido.geublon)"
+															(click)="focusRecorridoUltimo(ultimxrecorrido)"
 															class="inline-flex items-center gap-2 px-1.5 py-1.5 rounded-lg bg-primary-100/80 dark:bg-primary-900/40 hover:bg-primary-200/80 dark:hover:bg-primary-900/60 border border-primary-200/60 dark:border-primary-700/60 text-primary-700 dark:text-primary-300 text-xs font-medium transition-all duration-200 mr-1"
 															title="Ubicar Mapa">
 															<i class="pi pi-map-marker text-xs"></i>
 														</button>
 														}
-														<button
-															(click)="copyCoordinatesNumber(ultimxrecorrido.geublat,ultimxrecorrido.geublon)"
+														<button (click)="copyCoordinatesNumber(ultimxrecorrido.geublat,ultimxrecorrido.geublon)"
 															class="inline-flex items-center gap-2 px-1.5 py-1.5 rounded-lg bg-primary-100/80 dark:bg-primary-900/40 hover:bg-primary-200/80 dark:hover:bg-primary-900/60 border border-primary-200/60 dark:border-primary-700/60 text-primary-700 dark:text-primary-300 text-xs font-medium transition-all duration-200"
 															title="Copiar coordenadas">
 															<i class="pi pi-copy text-xs"></i>
@@ -324,26 +303,22 @@
 																<div
 																	class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400 pb-1">
 																	<i class="pi pi-map-marker text-green-500 w-3"></i>
-																	<span
-																		class="font-mono text-surface-700 dark:text-surface-300">
+																	<span class="font-mono text-surface-700 dark:text-surface-300">
 																		{{item.geublat | number:'1.6-6'
 																		}},{{item.geublon |
 																		number:'1.6-6' }}
 																	</span>
 																</div>
-																<div
-																	class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
+																<div class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
 																	<i class="pi pi-clock text-blue-500 w-3"></i>
-																	<span
-																		class="font-mono text-surface-700 dark:text-surface-300">
+																	<span class="font-mono text-surface-700 dark:text-surface-300">
 																		{{item.geubfech | date:'dd/MM/yyyy HH:mm:ss'}}
 																	</span>
 																</div>
 															</div>
 														</div>
 														<div>
-															<button
-																(click)="focusPointRecorrido(selectedUser,item.geublat,item.geublon)"
+															<button (click)="focusRecorrido(item)"
 																class="inline-flex items-center gap-2 px-1.5 py-1.5 rounded-lg bg-primary-100/80 dark:bg-primary-900/40 hover:bg-primary-200/80 dark:hover:bg-primary-900/60 border border-primary-200/60 dark:border-primary-700/60 text-primary-700 dark:text-primary-300 text-xs font-medium transition-all duration-200 mr-1"
 																title="Ubicar Mapa">
 																<i class="pi pi-map-marker text-xs"></i>
@@ -357,7 +332,7 @@
 													</span>
 													}
 												</div>
-					
+
 											</p-accordion-content>
 										</p-accordion-panel>
 									</p-accordion>
@@ -455,13 +430,12 @@
 										<div class="p-0 space-y-3">
 											<!-- Buscador de clientes -->
 											<div class="relative">
-												<input type="text" [(ngModel)]="customerSearchTerm"
-													(input)="filterCustomers()" placeholder="Buscar clientes..."
+												<input type="text" [(ngModel)]="customerSearchTerm" (input)="filterCustomers()"
+													placeholder="Buscar clientes..."
 													class="w-full py-2.5 pl-10 pr-4 text-sm rounded-lg border border-surface-200/80 dark:border-surface-600/80 bg-white dark:bg-surface-800 hover:border-purple-300/60 dark:hover:border-purple-600/60 focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500/80 transition-all duration-200">
 
 												<div class="absolute left-3 top-1/2 transform -translate-y-1/2">
-													<i
-														class="pi pi-search text-surface-400 dark:text-surface-500 text-sm"></i>
+													<i class="pi pi-search text-surface-400 dark:text-surface-500 text-sm"></i>
 												</div>
 											</div>
 
@@ -472,14 +446,11 @@
 												<div
 													class="bg-white dark:bg-surface-800 p-4 rounded-lg border border-surface-200/60 dark:border-surface-700/60">
 													<div class="space-y-3">
-														<div
-															class="h-4 w-3/4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
+														<div class="h-4 w-3/4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
 														</div>
-														<div
-															class="h-3 w-1/2 bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
+														<div class="h-3 w-1/2 bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
 														</div>
-														<div
-															class="h-3 w-full bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
+														<div class="h-3 w-full bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
 														</div>
 													</div>
 												</div>
@@ -494,8 +465,7 @@
 
 													<div class="flex justify-between items-center mb-1">
 														<div class="flex justify-between items-center mb-1">
-															<span
-																class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium"
+															<span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium"
 																[class]="customer.asignado
 																		? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-700'
 																		: 'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-700'">
@@ -503,8 +473,7 @@
 															</span>
 														</div>
 														<div class="flex justify-end">
-															<button
-																(click)="copyCoordinatesNumber(customer.latitud,customer.longitud)"
+															<button (click)="copyCoordinatesNumber(customer.latitud,customer.longitud)"
 																class="inline-flex items-center gap-2 px-1.5 py-1.5 mr-1 rounded-lg border border-purple-200/60 dark:border-purple-700/60 bg-purple-50/80 dark:bg-purple-900/40 hover:bg-purple-100/80 dark:hover:bg-purple-900/60 text-purple-700 dark:text-purple-300 text-xs font-medium transition-all duration-200 hover:shadow-sm"
 																title="Copiar coordenadas">
 																<i class="pi pi-copy text-xs"></i>
@@ -521,7 +490,8 @@
 
 													<div class="space-y-1 mb-0">
 														<div class="flex-1 pr-1">
-															<h6 class="font-semibold text-surface-900 dark:text-surface-100 text-sm m-0 leading-tight m-1"
+															<h6
+																class="font-semibold text-surface-900 dark:text-surface-100 text-sm m-0 leading-tight m-1"
 																style="margin-bottom: 0;">
 																{{ customer.dirnombre }}
 															</h6>
@@ -534,29 +504,23 @@
 															{{ customer.asignado ? 'Asignado' : 'No asignado' }}
 														</span>-->
 
-														<div
-															class="flex items-center gap-1 text-xs text-surface-600 dark:text-surface-400">
-															<i
-																class="pi pi-id-card w-3 text-purple-500 dark:text-purple-400 mr-0.5"></i>
+														<div class="flex items-center gap-1 text-xs text-surface-600 dark:text-surface-400">
+															<i class="pi pi-id-card w-3 text-purple-500 dark:text-purple-400 mr-0.5"></i>
 															<span class="font-mono">{{ customer.dirruc }}</span>
 														</div>
-														<div
-															class="flex items-start gap-2 text-xs text-surface-600 dark:text-surface-400">
-															<i
-																class="pi pi-map-marker w-3 mt-0.5 text-purple-500 dark:text-purple-400"></i>
+														<div class="flex items-start gap-2 text-xs text-surface-600 dark:text-surface-400">
+															<i class="pi pi-map-marker w-3 mt-0.5 text-purple-500 dark:text-purple-400"></i>
 															<span class="font-mono">{{ customer.dirdirec }}</span>
 														</div>
 													</div>
 
-													
+
 												</div>
 												} @empty {
-												<div
-													class="text-center text-surface-500 dark:text-surface-400 text-sm py-5">
+												<div class="text-center text-surface-500 dark:text-surface-400 text-sm py-5">
 													<div
 														class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-surface-200 to-surface-300 dark:from-surface-700 dark:to-surface-800 rounded-2xl flex items-center justify-center border border-surface-300/60 dark:border-surface-600/60">
-														<i
-															class="pi pi-search text-2xl text-surface-500 dark:text-surface-400"></i>
+														<i class="pi pi-search text-2xl text-surface-500 dark:text-surface-400"></i>
 													</div>
 													<h6 class="font-semibold mb-2">No se encontraron clientes</h6>
 													<p class="text-xs">
@@ -566,12 +530,10 @@
 												}
 											</div>
 											} @else {
-											<div
-												class="text-center text-surface-500 dark:text-surface-400 text-sm py-12">
+											<div class="text-center text-surface-500 dark:text-surface-400 text-sm py-12">
 												<div
 													class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/40 dark:to-purple-800/60 rounded-2xl flex items-center justify-center border border-purple-200/60 dark:border-purple-700/60">
-													<i
-														class="pi pi-users text-2xl text-purple-600 dark:text-purple-400"></i>
+													<i class="pi pi-users text-2xl text-purple-600 dark:text-purple-400"></i>
 												</div>
 												<h6 class="font-semibold mb-2">No hay clientes asignados</h6>
 												<p class="text-xs">
@@ -587,8 +549,7 @@
 										<div class="flex align-items-center gap-2 w-full">
 											<div
 												class="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-blue-100 via-blue-200/60 to-blue-300/40 dark:from-blue-900/50 dark:via-blue-800/70 dark:to-blue-700/50 border border-blue-200/60 dark:border-blue-600/40 shadow-lg">
-												<i
-													class="pi pi-shopping-cart text-blue-600 dark:text-blue-300 text-sm"></i>
+												<i class="pi pi-shopping-cart text-blue-600 dark:text-blue-300 text-sm"></i>
 											</div>
 											<div class="flex-1 min-w-0">
 												<span class="text-gray-800 dark:text-white font-bold text-sm">
@@ -607,13 +568,12 @@
 										<div class="p-0 space-y-3">
 											<!-- Buscador de pedidos -->
 											<div class="relative">
-												<input type="text" [(ngModel)]="orderSearchTerm"
-													(input)="filterOrders()" placeholder="Buscar pedidos..."
+												<input type="text" [(ngModel)]="orderSearchTerm" (input)="filterOrders()"
+													placeholder="Buscar pedidos..."
 													class="w-full py-2.5 pl-10 pr-4 text-sm rounded-lg border border-surface-200/80 dark:border-surface-600/80 bg-white dark:bg-surface-800 hover:border-blue-300/60 dark:hover:border-blue-600/60 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/80 transition-all duration-200">
 
 												<div class="absolute left-3 top-1/2 transform -translate-y-1/2">
-													<i
-														class="pi pi-search text-surface-400 dark:text-surface-500 text-sm"></i>
+													<i class="pi pi-search text-surface-400 dark:text-surface-500 text-sm"></i>
 												</div>
 											</div>
 
@@ -624,14 +584,11 @@
 												<div
 													class="bg-white dark:bg-surface-800 p-4 rounded-lg border border-surface-200/60 dark:border-surface-700/60">
 													<div class="space-y-3">
-														<div
-															class="h-4 w-3/4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
+														<div class="h-4 w-3/4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
 														</div>
-														<div
-															class="h-3 w-1/2 bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
+														<div class="h-3 w-1/2 bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
 														</div>
-														<div
-															class="h-3 w-full bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
+														<div class="h-3 w-full bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
 														</div>
 													</div>
 												</div>
@@ -648,17 +605,14 @@
 																class="mr-0.5 inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700">
 																#{{ order.pdtfactura }}
 															</span>
-															<div
-																class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
-																<i
-																	class="pi pi-calendar w-3 text-blue-500 dark:text-blue-400"></i>
+															<div class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
+																<i class="pi pi-calendar w-3 text-blue-500 dark:text-blue-400"></i>
 																<span>{{ order.pdtfechaf | date:'dd/MM/yyyy HH:mm'
 																	}}</span>
 															</div>
 														</div>
 														<div class="flex justify-end">
-															<button
-																(click)="copyCoordinatesNumber(order.pdtlat,order.pdtlon)"
+															<button (click)="copyCoordinatesNumber(order.pdtlat,order.pdtlon)"
 																class="inline-flex items-center gap-2 px-1.5 py-1.5 mr-1 rounded-lg border border-blue-200/60 dark:border-blue-700/60 bg-blue-50/80 dark:bg-blue-900/40 hover:bg-blue-100/80 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 text-xs font-medium transition-all duration-200 hover:shadow-sm"
 																title="Copiar coordenadas">
 																<i class="pi pi-copy text-xs"></i>
@@ -677,16 +631,12 @@
 																{{ order.pdtnombre }}
 															</h6>
 														</div>
-														<div
-															class="flex items-center gap-1 text-xs text-surface-600 dark:text-surface-400">
-															<i
-																class="pi pi-id-card w-3 text-blue-500 dark:text-blue-400 mr-0.5"></i>
+														<div class="flex items-center gap-1 text-xs text-surface-600 dark:text-surface-400">
+															<i class="pi pi-id-card w-3 text-blue-500 dark:text-blue-400 mr-0.5"></i>
 															<span class="font-mono">{{ order.pdtclave }}</span>
 														</div>
-														<div
-															class="flex items-center gap-1 text-xs text-surface-600 dark:text-surface-400">
-															<i
-																class="pi pi-dollar w-3 text-blue-500 dark:text-blue-400"></i>
+														<div class="flex items-center gap-1 text-xs text-surface-600 dark:text-surface-400">
+															<i class="pi pi-dollar w-3 text-blue-500 dark:text-blue-400"></i>
 															<span class="font-mono">{{ order.pdttotal | number:'1.3-3'
 																}}</span>
 														</div>
@@ -694,12 +644,10 @@
 
 												</div>
 												} @empty {
-												<div
-													class="text-center text-surface-500 dark:text-surface-400 text-sm py-12">
+												<div class="text-center text-surface-500 dark:text-surface-400 text-sm py-12">
 													<div
 														class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-surface-200 to-surface-300 dark:from-surface-700 dark:to-surface-800 rounded-2xl flex items-center justify-center border border-surface-300/60 dark:border-surface-600/60">
-														<i
-															class="pi pi-search text-2xl text-surface-500 dark:text-surface-400"></i>
+														<i class="pi pi-search text-2xl text-surface-500 dark:text-surface-400"></i>
 													</div>
 													<h6 class="font-semibold mb-2">No se encontraron pedidos</h6>
 													<p class="text-xs">
@@ -709,12 +657,10 @@
 												}
 											</div>
 											} @else {
-											<div
-												class="text-center text-surface-500 dark:text-surface-400 text-sm py-12">
+											<div class="text-center text-surface-500 dark:text-surface-400 text-sm py-12">
 												<div
 													class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/40 dark:to-blue-800/60 rounded-2xl flex items-center justify-center border border-blue-200/60 dark:border-blue-700/60">
-													<i
-														class="pi pi-shopping-cart text-2xl text-blue-600 dark:text-blue-400"></i>
+													<i class="pi pi-shopping-cart text-2xl text-blue-600 dark:text-blue-400"></i>
 												</div>
 												<h6 class="font-semibold mb-2">No hay pedidos registrados</h6>
 												<p class="text-xs">
@@ -730,8 +676,7 @@
 										<div class="flex align-items-center gap-2 w-full">
 											<div
 												class="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-emerald-100 via-emerald-200/60 to-emerald-300/40 dark:from-emerald-900/50 dark:via-emerald-800/70 dark:to-emerald-700/50 border border-emerald-200/60 dark:border-emerald-600/40 shadow-lg">
-												<i
-													class="pi pi-dollar text-emerald-600 dark:text-emerald-300 text-sm"></i>
+												<i class="pi pi-dollar text-emerald-600 dark:text-emerald-300 text-sm"></i>
 											</div>
 											<div class="flex-1 min-w-0">
 												<span class="text-gray-800 dark:text-white font-bold text-sm">
@@ -750,13 +695,12 @@
 										<div class="p-0 space-y-3">
 											<!-- Buscador de cobros -->
 											<div class="relative">
-												<input type="text" [(ngModel)]="chargeSearchTerm"
-													(input)="filterCharges()" placeholder="Buscar cobros..."
+												<input type="text" [(ngModel)]="chargeSearchTerm" (input)="filterCharges()"
+													placeholder="Buscar cobros..."
 													class="w-full py-2.5 pl-10 pr-4 text-sm rounded-lg border border-surface-200/80 dark:border-surface-600/80 bg-white dark:bg-surface-800 hover:border-emerald-300/60 dark:hover:border-emerald-600/60 focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/80 transition-all duration-200">
 
 												<div class="absolute left-3 top-1/2 transform -translate-y-1/2">
-													<i
-														class="pi pi-search text-surface-400 dark:text-surface-500 text-sm"></i>
+													<i class="pi pi-search text-surface-400 dark:text-surface-500 text-sm"></i>
 												</div>
 											</div>
 
@@ -767,14 +711,11 @@
 												<div
 													class="bg-white dark:bg-surface-800 p-4 rounded-lg border border-surface-200/60 dark:border-surface-700/60">
 													<div class="space-y-3">
-														<div
-															class="h-4 w-3/4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
+														<div class="h-4 w-3/4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
 														</div>
-														<div
-															class="h-3 w-1/2 bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
+														<div class="h-3 w-1/2 bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
 														</div>
-														<div
-															class="h-3 w-full bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
+														<div class="h-3 w-full bg-surface-200 dark:bg-surface-700 rounded animate-pulse">
 														</div>
 													</div>
 												</div>
@@ -792,17 +733,14 @@
 																#{{ charge.cobning }}
 															</span>
 
-															<div
-																class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
-																<i
-																	class="pi pi-calendar w-3 text-emerald-500 dark:text-emerald-400"></i>
+															<div class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
+																<i class="pi pi-calendar w-3 text-emerald-500 dark:text-emerald-400"></i>
 																<span>{{ charge.cabfecha | date:'dd/MM/yyyy HH:mm'
 																	}}</span>
 															</div>
 														</div>
 														<div class="flex justify-end">
-															<button
-																(click)="copyCoordinatesNumber(charge.cablat,charge.cablon)"
+															<button (click)="copyCoordinatesNumber(charge.cablat,charge.cablon)"
 																class="inline-flex items-center gap-2 px-1.5 py-1.5 mr-1 rounded-lg border border-emerald-200/60 dark:border-emerald-700/60 bg-emerald-50/80 dark:bg-emerald-900/40 hover:bg-emerald-100/80 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 text-xs font-medium transition-all duration-200 hover:shadow-sm"
 																title="Copiar coordenadas">
 																<i class="pi pi-copy text-xs"></i>
@@ -816,21 +754,18 @@
 
 													<div class="space-y-1 mb-0">
 														<div class="flex-1 pr-1">
-															<h6 class="font-semibold text-surface-900 dark:text-surface-100 text-sm m-0 leading-tight m-1"
+															<h6
+																class="font-semibold text-surface-900 dark:text-surface-100 text-sm m-0 leading-tight m-1"
 																style="margin-bottom: 0;">
 																{{ charge.cobnombre }}
 															</h6>
 														</div>
-														<div
-															class="flex items-center gap-1 text-xs text-surface-600 dark:text-surface-400">
-															<i
-																class="pi pi-id-card w-3 text-emerald-500 dark:text-emerald-400 mr-0.5"></i>
+														<div class="flex items-center gap-1 text-xs text-surface-600 dark:text-surface-400">
+															<i class="pi pi-id-card w-3 text-emerald-500 dark:text-emerald-400 mr-0.5"></i>
 															<span class="font-mono">{{ charge.cobclave }}</span>
 														</div>
-														<div
-															class="flex items-center gap-1 text-xs text-surface-600 dark:text-surface-400">
-															<i
-																class="pi pi-dollar w-3 mt-0.5 text-emerald-500 dark:text-emerald-400"></i>
+														<div class="flex items-center gap-1 text-xs text-surface-600 dark:text-surface-400">
+															<i class="pi pi-dollar w-3 mt-0.5 text-emerald-500 dark:text-emerald-400"></i>
 															<span class="font-mono">{{ charge.total |
 																number:'1.3-3'}}</span>
 														</div>
@@ -840,12 +775,10 @@
 
 												</div>
 												} @empty {
-												<div
-													class="text-center text-surface-500 dark:text-surface-400 text-sm py-12">
+												<div class="text-center text-surface-500 dark:text-surface-400 text-sm py-12">
 													<div
 														class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-surface-200 to-surface-300 dark:from-surface-700 dark:to-surface-800 rounded-2xl flex items-center justify-center border border-surface-300/60 dark:border-surface-600/60">
-														<i
-															class="pi pi-search text-2xl text-surface-500 dark:text-surface-400"></i>
+														<i class="pi pi-search text-2xl text-surface-500 dark:text-surface-400"></i>
 													</div>
 													<h6 class="font-semibold mb-2">No se encontraron cobros</h6>
 													<p class="text-xs">
@@ -855,12 +788,10 @@
 												}
 											</div>
 											} @else {
-											<div
-												class="text-center text-surface-500 dark:text-surface-400 text-sm py-12">
+											<div class="text-center text-surface-500 dark:text-surface-400 text-sm py-12">
 												<div
 													class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-900/40 dark:to-emerald-800/60 rounded-2xl flex items-center justify-center border border-emerald-200/60 dark:border-emerald-700/60">
-													<i
-														class="pi pi-dollar text-2xl text-emerald-600 dark:text-emerald-400"></i>
+													<i class="pi pi-dollar text-2xl text-emerald-600 dark:text-emerald-400"></i>
 												</div>
 												<h6 class="font-semibold mb-2">No hay cobros registrados</h6>
 												<p class="text-xs">
@@ -914,7 +845,8 @@
 						[class]="paginatedUsers.length > 8 ? 'max-h-[60rem] overflow-y-auto' : ''">
 
 						@for (user of paginatedUsers; track user) {
-						<div class="relative overflow-hidden rounded-xl border border-surface-200/80 dark:border-surface-600/80 bg-gradient-to-br from-white via-surface-50/60 to-surface-100/30 dark:from-surface-700 dark:via-surface-700/90 dark:to-surface-800/60 hover:from-primary-50/30 hover:via-white hover:to-primary-100/20 dark:hover:from-surface-600/80 dark:hover:via-surface-700/60 dark:hover:to-primary-900/20 transition-all duration-300 group hover:shadow-lg hover:border-primary-200/60 dark:hover:border-primary-600/60 hover:-translate-y-0.5 cursor-pointer"
+						<div
+							class="relative overflow-hidden rounded-xl border border-surface-200/80 dark:border-surface-600/80 bg-gradient-to-br from-white via-surface-50/60 to-surface-100/30 dark:from-surface-700 dark:via-surface-700/90 dark:to-surface-800/60 hover:from-primary-50/30 hover:via-white hover:to-primary-100/20 dark:hover:from-surface-600/80 dark:hover:via-surface-700/60 dark:hover:to-primary-900/20 transition-all duration-300 group hover:shadow-lg hover:border-primary-200/60 dark:hover:border-primary-600/60 hover:-translate-y-0.5 cursor-pointer"
 							(click)="CentrarUsuario(user)" (dblclick)="selectUser(user)">
 
 							<!-- Background pattern sutil -->
@@ -952,7 +884,8 @@
 										</div>
 										}
 										}
-										<h6 class="font-bold text-surface-900 dark:text-surface-0 mb-1 group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors leading-tight m-2"
+										<h6
+											class="font-bold text-surface-900 dark:text-surface-0 mb-1 group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors leading-tight m-2"
 											style="margin: 0.1rem 0 0.1rem 0;">
 											{{ user.usunombre }}
 										</h6>
@@ -971,8 +904,7 @@
 										<!-- Indicadores de estado -->
 										@if (!user.fechasiguales || !user.latitud || !user.longitud) {
 										@if (user.fechaultimaconex) {
-										<div
-											class="flex items-center gap-2 text-xs text-surface-500 dark:text-surface-500">
+										<div class="flex items-center gap-2 text-xs text-surface-500 dark:text-surface-500">
 											<i class="pi pi-clock text-blue-500 w-3"></i>
 											<span>Ultima Conexion: {{ user.fechaultimaconex | date:'dd/MM/yyyy HH:mm:ss'
 												}}</span>
@@ -988,14 +920,12 @@
 												flex items-center gap-1.5 mt-2">
 
 
-												<div
-													class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
+												<div class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
 													<i class="pi pi-map-marker mt-0.5 text-green-500 w-3"></i>
 													<span class="font-mono">{{ user.latitud | number:'1.6-6' }},{{
 														user.longitud | number:'1.6-6' }}</span>
 												</div>
-												<div
-													class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
+												<div class="flex items-center gap-2 text-xs text-surface-600 dark:text-surface-400">
 													<i class="pi pi-clock text-blue-500 w-3"></i>
 													<span>{{ user.fechaubicacion | date:'dd/MM/yyyy HH:mm' }}</span>
 													<!--<span>{{ formatLocationDate(user.fechaubicacion) }}</span>-->
@@ -1060,8 +990,7 @@
 									<h6 class="text-surface-700 dark:text-surface-300 font-bold mb-2 text-sm">
 										No se encontraron usuarios
 									</h6>
-									<p
-										class="text-surface-500 dark:text-surface-500 text-xs max-w-sm mx-auto leading-relaxed">
+									<p class="text-surface-500 dark:text-surface-500 text-xs max-w-sm mx-auto leading-relaxed">
 										Intenta ajustar los filtros de búsqueda
 									</p>
 								</div>
@@ -1104,13 +1033,11 @@
 								<i class="pi pi-users text-primary-600 dark:text-primary-300 text-xl"></i>
 							</div>
 							<div class="min-w-0 ">
-								<p
-									class="text-gray-800 dark:text-white text-xl sm:text-2xl font-bold leading-snug tracking-tight">
+								<p class="text-gray-800 dark:text-white text-xl sm:text-2xl font-bold leading-snug tracking-tight">
 									Usuarios
 								</p>
 
-								<p style="margin-top:-15px;"
-									class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm leading-snug">
+								<p style="margin-top:-15px;" class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm leading-snug">
 									Mapa de geolocalización de usuarios activos
 								</p>
 							</div>
@@ -1134,8 +1061,7 @@
 							<!-- Header personalizado del accordion -->
 							<p-accordion-header>
 								<div class="flex align-items-center gap-2 w-full">
-									<div
-										class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 dark:bg-indigo-900/50">
+									<div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 dark:bg-indigo-900/50">
 										<i class="pi pi-filter text-indigo-600 dark:text-indigo-300 text-sm"></i>
 									</div>
 									<div class="flex-1">
@@ -1158,22 +1084,18 @@
 									<div class="mb-4">
 										<div class="flex align-items-center gap-2 mb-3">
 											<i class="pi pi-clock text-blue-600 dark:text-blue-400 text-sm"></i>
-											<span
-												class="font-medium text-surface-700 dark:text-surface-200 text-sm">Período</span>
-											<div
-												class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700">
+											<span class="font-medium text-surface-700 dark:text-surface-200 text-sm">Período</span>
+											<div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700">
 											</div>
 										</div>
 
 										<div class="grid grid-cols-12 gap-2">
 											<!-- Fecha desde -->
 											<div class="col-span-12 sm:col-span-7">
-												<label
-													class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
+												<label class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
 													Desde
 												</label>
-												<p-datepicker inputId="filter-datetime-compact" [(ngModel)]="filterFrom"
-													dateFormat="dd/mm/yy"
+												<p-datepicker inputId="filter-datetime-compact" [(ngModel)]="filterFrom" dateFormat="dd/mm/yy"
 													placeholder="Fecha ..." class="w-full">
 												</p-datepicker>
 												<!--<p-datepicker inputId="filter-datetime-compact" [(ngModel)]="filterFrom"
@@ -1207,10 +1129,8 @@
 									<div class="mb-4">
 										<div class="flex align-items-center gap-2 mb-3">
 											<i class="pi pi-map text-purple-600 dark:text-purple-400 text-sm"></i>
-											<span
-												class="font-medium text-surface-700 dark:text-surface-200 text-sm">Geocerca</span>
-											<div
-												class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700">
+											<span class="font-medium text-surface-700 dark:text-surface-200 text-sm">Geocerca</span>
+											<div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700">
 											</div>
 										</div>
 
@@ -1219,14 +1139,11 @@
 											<div class="col-span-12 sm:col-span-4">
 												<div
 													class="flex align-items-center gap-2 p-2 bg-surface-50 dark:bg-surface-800 border-round mt-3">
-													<p-toggleswitch [(ngModel)]="geofenceEnabled" size="small"
-														(onChange)="onToggleChange()">
+													<p-toggleswitch [(ngModel)]="geofenceEnabled" size="small" (onChange)="onToggleChange()">
 													</p-toggleswitch>
 													<div>
-														<span
-															class="block text-xs font-medium text-surface-700 dark:text-surface-200">Activa</span>
-														<span class="text-xs"
-															[ngClass]="geofenceEnabled ? 'text-green-600' : 'text-surface-500'">
+														<span class="block text-xs font-medium text-surface-700 dark:text-surface-200">Activa</span>
+														<span class="text-xs" [ngClass]="geofenceEnabled ? 'text-green-600' : 'text-surface-500'">
 															{{ geofenceEnabled ? 'Sí' : 'No' }}
 														</span>
 													</div>
@@ -1235,16 +1152,13 @@
 											<!-- Selector compacto -->
 											@if (geofenceEnabled) {
 											<div class="col-span-12 sm:col-span-8">
-												<label
-													class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
+												<label class="block text-xs font-medium text-surface-600 dark:text-surface-300 mb-1">
 													Seleccionar Geocercas
 												</label>
-												<p-multiSelect [(ngModel)]="selectedGeofence"
-													[options]="geofenceOptions" optionLabel="label" optionValue="value"
-													placeholder="Elegir geocercas..." [filter]="true" filterBy="label"
-													[disabled]="!geofenceEnabled" [showToggleAll]="true"
-													[showHeader]="true" [maxSelectedLabels]="2"
-													selectedItemsLabel="{0} geocercas seleccionadas" class="w-full"
+												<p-multiSelect [(ngModel)]="selectedGeofence" [options]="geofenceOptions" optionLabel="label"
+													optionValue="value" placeholder="Elegir geocercas..." [filter]="true" filterBy="label"
+													[disabled]="!geofenceEnabled" [showToggleAll]="true" [showHeader]="true"
+													[maxSelectedLabels]="2" selectedItemsLabel="{0} geocercas seleccionadas" class="w-full"
 													(onChange)="onGeofencesChange($event)">
 
 													<!-- Template personalizado para mostrar más información -->
@@ -1275,18 +1189,15 @@
 									<div class="mb-4">
 										<div class="flex align-items-center gap-2 mb-3">
 											<i class="pi pi-database text-green-600 dark:text-green-400 text-sm"></i>
-											<span
-												class="font-medium text-surface-700 dark:text-surface-200 text-sm">Tipo
+											<span class="font-medium text-surface-700 dark:text-surface-200 text-sm">Tipo
 												de Transacción</span>
-											<div
-												class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700">
+											<div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700">
 											</div>
 										</div>
 
 										<div class="flex gap-4 p-2 bg-surface-50 dark:bg-surface-800 border-round">
 											<div class="flex align-items-center gap-2">
-												<p-checkbox inputId="pedidos-compact" [(ngModel)]="pedidosEnabled"
-													[binary]="true"></p-checkbox>
+												<p-checkbox inputId="pedidos-compact" [(ngModel)]="pedidosEnabled" [binary]="true"></p-checkbox>
 												<label for="pedidos-compact"
 													class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
 													<i class="pi pi-shopping-cart mr-1"></i>Pedidos
@@ -1307,29 +1218,26 @@
 									<div class="mb-4">
 										<div class="flex align-items-center gap-2 mb-3">
 											<i class="pi pi-users text-green-600 dark:text-green-400 text-sm"></i>
-											<span
-												class="font-medium text-surface-700 dark:text-surface-200 text-sm">Clientes</span>
-											<div
-												class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700">
+											<span class="font-medium text-surface-700 dark:text-surface-200 text-sm">Clientes</span>
+											<div class="flex-1 border-bottom-1 border-surface-200 dark:border-surface-700">
 											</div>
 										</div>
 
 										<div class="flex gap-4 p-2 bg-surface-50 dark:bg-surface-800 border-round">
 											<div class="flex align-items-center gap-2">
-												<p-checkbox inputId="clientes-all" [(ngModel)]="clientesAll"
-													[binary]="true" (onChange)="clientesAll?clientesAssigned=false:true">
+												<p-checkbox inputId="clientes-all" [(ngModel)]="clientesAll" [binary]="true"
+													(onChange)="clientesAll?clientesAssigned=false:true">
 												</p-checkbox>
 												<!--<p-checkbox inputId="clientes-all" [(ngModel)]="clientesAll"
 													[binary]="true" (onChange)="onClientFilterChange('all')">
 												</p-checkbox>-->
-												<label for="clientes-all"
-													class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
+												<label for="clientes-all" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
 													<i class="pi pi-users mr-1"></i>Todos
 												</label>
 											</div>
 											<div class="flex align-items-center gap-2">
-												<p-checkbox inputId="clientes-assigned" [(ngModel)]="clientesAssigned"
-													[binary]="true" (onChange)="clientesAssigned?clientesAll=false:true">
+												<p-checkbox inputId="clientes-assigned" [(ngModel)]="clientesAssigned" [binary]="true"
+													(onChange)="clientesAssigned?clientesAll=false:true">
 												</p-checkbox>
 												<!--<p-checkbox inputId="clientes-assigned" [(ngModel)]="clientesAssigned"
 													[binary]="true" (onChange)="onClientFilterChange('assigned')">
@@ -1346,8 +1254,7 @@
 										<p-button label="Limpiar" icon="pi pi-refresh" severity="secondary" size="small"
 											(onClick)="clearFilters()" [text]="true">
 										</p-button>
-										<p-button label="Aplicar" icon="pi pi-check" size="small"
-											(onClick)="applyFilters()">
+										<p-button label="Aplicar" icon="pi pi-check" size="small" (onClick)="applyFilters()">
 										</p-button>
 									</div>
 
@@ -1365,14 +1272,12 @@
 									<i class="pi pi-map-marker"></i>
 								</p-inputIcon>
 								<input pInputText type="text" placeholder="Buscar ubicación (ej: Quito, Ecuador)"
-									[(ngModel)]="searchLocation" (keyup.enter)="searchLocationOnMap()"
-									class="w-full text-sm">
+									[(ngModel)]="searchLocation" (keyup.enter)="searchLocationOnMap()" class="w-full text-sm">
 							</p-iconField>
 						</div>
 						<div class="flex gap-2 flex-shrink-0">
-							<p-button icon="pi pi-search" severity="primary" size="small"
-								(click)="searchLocationOnMap()" [loading]="searchingLocation"
-								pTooltip="Buscar ubicación" tooltipPosition="bottom">
+							<p-button icon="pi pi-search" severity="primary" size="small" (click)="searchLocationOnMap()"
+								[loading]="searchingLocation" pTooltip="Buscar ubicación" tooltipPosition="bottom">
 							</p-button>
 							<p-button icon="pi pi-times" severity="secondary" size="small" [text]="true"
 								(click)="clearLocationSearch()" pTooltip="Limpiar búsqueda" tooltipPosition="bottom">
@@ -1388,7 +1293,8 @@
 						</div>
 						<div class="space-y-1">
 							@for (result of searchResults.slice(0, 3); track result) {
-							<div class="flex items-center justify-between p-2 hover:bg-surface-100 dark:hover:bg-surface-700 rounded cursor-pointer transition-colors"
+							<div
+								class="flex items-center justify-between p-2 hover:bg-surface-100 dark:hover:bg-surface-700 rounded cursor-pointer transition-colors"
 								(click)="selectSearchResult(result)">
 								<div class="flex items-center gap-2 min-w-0 flex-1">
 									<i class="pi pi-map-marker text-primary text-sm flex-shrink-0"></i>
@@ -1416,8 +1322,7 @@
 					</div>
 					}
 					<!-- Mapa de Leaflet -->
-					<div #mapContainer class="w-full h-full rounded-lg"
-						style="min-height: 700px; height: 100%; width: 100%;">
+					<div #mapContainer class="w-full h-full rounded-lg" style="min-height: 700px; height: 100%; width: 100%;">
 					</div>
 				</div>
 			</div>

@@ -67,7 +67,8 @@ export class MapService {
   private geocercasMarkers: Map<string, L.Layer> = new Map();
 
   // Propiedades para customers
-  private customerMarkers: Map<string, L.Marker> = new Map();
+  //private customerMarkers: Map<string, L.Marker>()= new Map();
+  private customerMarkers = new Map<string, L.Marker>();
   private customerClusterGroup: L.MarkerClusterGroup | null = null;
 
   private map: L.Map | null = null;
@@ -370,8 +371,8 @@ export class MapService {
       spiderfyOnMaxZoom: true,
       showCoverageOnHover: false,
       zoomToBoundsOnClick: true,
-      spiderfyDistanceMultiplier: 1.5,
-      maxClusterRadius: 80
+      spiderfyDistanceMultiplier: 1.0,
+      maxClusterRadius: 15
     });
 
     this.map.addLayer(this.combinedClusterGroup!);
@@ -388,9 +389,6 @@ export class MapService {
       this.initializeCombinedCluster();
 
       const { combinedCoords, isolatedCustomers } = this.detectCoincidentMarkers(charges, orders, customers);
-
-      //console.log(combinedCoords);
-      //console.log(isolatedCustomers );
       combinedCoords.forEach((items, coordKey) => {
         const { chargeList = [], orderList = [], customerList = [] } = items;
 
@@ -401,8 +399,9 @@ export class MapService {
           combinations.forEach((combo, idx) => {
             const offset = this.calculateOffset(idx);
             const marker = this.createDynamicMarker(combo, offset);
-            this.combinedMarkers.set(`${coordKey}_${combo.type}_${idx}`, marker);
+            //this.combinedMarkers.set(`${coordKey}_${combo.type}_${idx}`, marker);
             this.combinedClusterGroup?.addLayer(marker);
+
           });
 
         } else {
@@ -412,7 +411,7 @@ export class MapService {
             this.chargeMarkers.set(charge.cobning.toString(), marker);
             marker.options.markerType = 'charge';
             marker.setLatLng([charge.cablat + offset.lat, charge.cablon + offset.lng]);
-            this.combinedMarkers.set(`${coordKey}_charge_${idx}`, marker);
+            //this.combinedMarkers.set(`${coordKey}_charge_${idx}`, marker);
             this.combinedClusterGroup?.addLayer(marker);
           });
 
@@ -422,20 +421,22 @@ export class MapService {
             this.orderMarkers.set(order.pdtfactura.toString(), marker);
             marker.options.markerType = 'order';
             marker.setLatLng([order.pdtlat + offset.lat, order.pdtlon + offset.lng]);
-            this.combinedMarkers.set(`${coordKey}_order_${idx}`, marker);
+            //this.combinedMarkers.set(`${coordKey}_order_${idx}`, marker);
             this.combinedClusterGroup?.addLayer(marker);
           });
 
           customerList.forEach((customer, idx) => {
             const offset = this.calculateOffset(idx);
             const marker = this.createCustomerMarker(customer);
+            this.customerMarkers.set((customer.dirclave.toString() + customer.numdire.toString()), marker);
             marker.options.markerType = 'customer';
             marker.setLatLng([customer.latitud + offset.lat, customer.longitud + offset.lng]);
-            this.combinedMarkers.set(`${coordKey}_customer_${idx}`, marker);
+            //this.combinedMarkers.set(`${coordKey}_customer_${idx}`, marker);
             this.combinedClusterGroup?.addLayer(marker);
           });
         }
-      });
+      }
+      );
 
       if (isolatedCustomers.length > 0) {
         this.addCustomerMarkers(isolatedCustomers);
@@ -463,7 +464,7 @@ export class MapService {
     const pedidocoordMap = new Map<string, { chargeList?: Mpa_GEO_Cobros[], orderList?: Mpa_GEO_Pedidos[], customerList?: Mpa_GEO_Clientes[] }>();
     const clientecoordMap = new Map<string, { chargeList?: Mpa_GEO_Cobros[], orderList?: Mpa_GEO_Pedidos[], customerList?: Mpa_GEO_Clientes[] }>();
 
-    const proximityThreshold = 0.0008;
+    const proximityThreshold = 0.00006;
 
     charges.forEach(charge => {
       if (charge.cablat && charge.cablon) {
@@ -587,8 +588,6 @@ export class MapService {
         isolatedCustomers.push(c);
       }
     });
-    console.log(customers);
-    console.log(isolatedCustomers);
     return { combinedCoords: coordMap, isolatedCustomers };
   }
   private detectCoincidentMarkers2(charges: Mpa_GEO_Cobros[], orders: Mpa_GEO_Pedidos[], customers: Mpa_GEO_Clientes[]): {
@@ -949,7 +948,6 @@ export class MapService {
     if (!this.L) {
       throw new Error('Leaflet no está cargado');
     }
-    console.log(combo);
     let cantidad = combo.data.charges.length + combo.data.orders.length + combo.data.customers.length;
     const customIcon = this.createDynamicIcon(combo.type, cantidad);
     const marker = this.L.marker(
@@ -1087,6 +1085,134 @@ export class MapService {
       iconAnchor: [24, 24]
     });
   }
+private createDynamicPopupContentAuxCliente(customer: Mpa_GEO_Clientes): string {
+    const sectionsclientes: string[] = [];
+      sectionsclientes.push(`<div class="max-w-[13rem]  max-h-[20rem] overflow-y-auto  space-y-1 custom-scrollbar p-1">`);
+      
+        const statusColor = customer.asignado ? 'text-blue-600' : 'text-gray-600';
+        const statusText = customer.asignado ? 'Asignado' : 'No asignado';
+        const statusIcon = customer.asignado ? 'text-green-500' : 'text-yellow-500';
+        sectionsclientes.push(`
+            <div class="bg-blue-50 rounded-lg p-2 border border-blue-200">
+                <div class="flex items-center space-x-1 mb-1">
+                    <svg class="w-3.5 h-3.5 text-blue-600" viewBox="0 0 24 24" style="fill: currentColor;">
+                        <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                    </svg>
+                    <span class="font-semibold text-xs text-blue-700 whitespace-nowrap">Cliente</span>
+                    <span class="text-xs ${statusColor} font-medium whitespace-nowrap"> - ${statusText}</span>
+                </div>
+                <div class="space-y-1">
+                    <div class="text-xs text-gray-700">${customer.dirnombre}</div>
+                    <div class="text-xs text-gray-600">${customer.dirclave}</div>
+                    <div class="text-xs text-gray-600 leading-tight">${customer.dirdirec}</div>
+                    
+                </div>
+            </div>
+        `);
+      
+      sectionsclientes.push(`</div>`);
+    const titleText ='Cliente';
+    return `
+    <div class="bg-white rounded-lg shadow-sm border-0 overflow-hidden">
+      <div class="bg-gradient-to-r from-blue-600 to-blue-600 px-2 py-1">
+          <div class="flex items-center space-x-1 text-white">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" style="fill: currentColor;">
+                  <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M11,7V13H13V7H11M11,15V17H13V15H11Z"/>
+              </svg>
+              <span class="font-semibold text-sm">${titleText}</span>
+          </div>
+      </div>
+      <div class="flex">
+            ${sectionsclientes.join('')}
+      </div>    
+    </div>
+    `;
+  }
+  private createDynamicPopupContentAuxPedido(order: Mpa_GEO_Pedidos): string {
+    const sectionspedidos: string[] = [];
+      sectionspedidos.push(`<div class="max-w-[16rem]  max-h-[20rem] overflow-y-auto  space-y-1 custom-scrollbar p-1">`);
+      
+        const totalpedido = order.pdttotal.toFixed(3);
+        const orderDate = new Date(order.pdtfechaf).toLocaleDateString('es-ES');
+        const orderTime = new Date(order.pdtfechaf).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        sectionspedidos.push(`
+            <div class="bg-purple-50 rounded-lg p-2 border border-purple-200">
+                <div class="flex items-center space-x-1 mb-1">
+                    <svg class="w-3.5 h-3.5 text-purple-600" viewBox="0 0 24 24" style="fill: currentColor;">
+                        <path d="M17 18C15.89 18 15 18.89 15 20C15 21.11 15.89 22 17 22C18.11 22 19 21.11 19 20C19 18.89 18.11 18 17 18ZM1 2V4H3L6.6 11.59L5.25 14.04C5.09 14.32 5 14.65 5 15C5 16.11 5.89 17 7 17H19V15H7.42C7.28 15 7.17 14.89 7.17 14.75L7.2 14.63L8.1 13H15.55C16.3 13 16.96 12.59 17.3 11.97L20.88 5H5.21L4.27 2H1ZM7 18C5.89 18 5 18.89 5 20C5 21.11 5.89 22 7 22C8.11 22 9 21.11 9 20C9 18.89 8.11 18 7 18Z"/>
+                    </svg>
+                    <span class="font-semibold text-xs text-purple-700 whitespace-nowrap ">Pedido #${order.pdtfactura}</span>
+                    <div class="font-semibold text-xs text-purple-700  whitespace-nowrap"> - ${order.pdtclave1}</div>
+                </div>
+                <div class="space-y-1">
+                    <div class="text-xs text-gray-700">${order.pdtnombre}</div>
+                    <div class="text-xs text-gray-600">Total: $ ${totalpedido}</div>
+                    <div class="text-xs text-gray-600">${orderDate} - ${orderTime}</div>
+                </div>
+            </div>
+        `);
+      
+      sectionspedidos.push(`</div>`);
+    const titleText ='Pedido';
+    return `
+    <div class="bg-white rounded-lg shadow-sm border-0 overflow-hidden">
+      <div class="bg-gradient-to-r from-purple-600 to-purple-600 px-2 py-1">
+          <div class="flex items-center space-x-1 text-white">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" style="fill: currentColor;">
+                  <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M11,7V13H13V7H11M11,15V17H13V15H11Z"/>
+              </svg>
+              <span class="font-semibold text-sm">${titleText}</span>
+          </div>
+      </div>
+      <div class="flex">
+            ${sectionspedidos.join('')}
+      </div>    
+    </div>
+    `;
+  }
+private createDynamicPopupContentAuxCobro(charge: Mpa_GEO_Cobros): string {
+    const sectionscobros: string[] = [];
+      sectionscobros.push(`<div class="max-w-[16rem] max-h-[20rem] overflow-y-auto  space-y-1 custom-scrollbar p-1">`);
+      const totalcobro = charge.total.toFixed(3);
+        const chargeDate = new Date(charge.cabfecha).toLocaleDateString('es-ES');
+        const orderTime = new Date(charge.cabfecha).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        sectionscobros.push(`
+            <div class="bg-green-50 rounded-lg p-2 border border-green-200">
+                <div class="flex items-center space-x-1 mb-1">
+                    <svg class="w-3.5 h-3.5 text-green-600" viewBox="0 0 24 24" style="fill: currentColor;">
+                        <path d="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z"/>
+                    </svg>
+                    <span class="font-semibold text-xs text-green-700 whitespace-nowrap">Cobro #${charge.cobning}</span>
+                    <div class="font-semibold text-xs text-green-700 whitespace-nowrap"> - ${charge.cobclave1}</div>
+                </div>
+                <div class="space-y-1">
+                    <div class="text-xs text-gray-600">${charge.cobnombre}</div>
+                    <div class="text-xs text-gray-600">Total: $ ${totalcobro}</div>
+                    <div class="text-xs text-gray-600">${chargeDate} - ${orderTime}</div>
+                </div>
+            </div>
+        `);
+      
+      sectionscobros.push(`</div>`);
+    const titleText ='Cobro';
+    return `
+    <div class="bg-white rounded-lg shadow-sm border-0 overflow-hidden">
+      <div class="bg-gradient-to-r from-green-600 to-green-600 px-2 py-1">
+          <div class="flex items-center space-x-1 text-white">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" style="fill: currentColor;">
+                  <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M11,7V13H13V7H11M11,15V17H13V15H11Z"/>
+              </svg>
+              <span class="font-semibold text-sm">${titleText}</span>
+          </div>
+      </div>
+      <div class="flex">
+            ${sectionscobros.join('')}
+      </div>    
+    </div>
+    `;
+  }
+
+
 
   private createDynamicPopupContent(combo: any): string {
     const sectionscobros: string[] = [];
@@ -1119,7 +1245,6 @@ export class MapService {
       });
       sectionscobros.push(`</div>`);
     }
-
     if (combo.data.orders.length > 0) {
       sectionspedidos.push(`<div class="max-w-[16rem]  max-h-[20rem] overflow-y-auto  space-y-1 custom-scrollbar p-1">`);
       combo.data.orders.forEach((a: Mpa_GEO_Pedidos) => {
@@ -1146,7 +1271,6 @@ export class MapService {
       });
       sectionspedidos.push(`</div>`);
     }
-
     if (combo.data.customers.length > 0) {
       sectionsclientes.push(`<div class="max-w-[13rem]  max-h-[20rem] overflow-y-auto  space-y-1 custom-scrollbar p-1">`);
       combo.data.customers.forEach((a: Mpa_GEO_Clientes) => {
@@ -1325,13 +1449,24 @@ export class MapService {
     if (!this.map || !customer.latitud || !customer.longitud) return;
 
     this.map.flyTo([customer.latitud, customer.longitud], zoom, {
-      duration: 1.5
+      duration: 1
     });
-
+    const map = this.map;
     this.map.once('moveend', () => {
-      const marker = this.customerMarkers.get(customer.dirclave.toString());
-      console.log(this.customerMarkers);
-      marker?.openPopup();
+      const marker = this.customerMarkers.get(customer.dirclave.toString() + customer.numdire.toString());
+      if (marker != undefined) {
+        marker?.openPopup();
+        return
+      }else{
+        const popupContent = this.createDynamicPopupContentAuxCliente(customer);
+      L.popup({
+        maxWidth: 360,
+      className: 'custom-combined-popup'
+      })
+        .setLatLng([customer.latitud, customer.longitud])
+        .setContent(popupContent)
+        .openOn(map);
+      }
     });
   }
 
@@ -1342,10 +1477,22 @@ export class MapService {
       duration: 1.5
     });
 
+    const map = this.map;
     this.map.once('moveend', () => {
       const marker = this.orderMarkers.get(order.pdtfactura.toString());
-      console.log(marker);
+      if (marker != undefined) {
       marker?.openPopup();
+        return
+      }else{
+        const popupContent = this.createDynamicPopupContentAuxPedido(order);
+      L.popup({
+        maxWidth: 360,
+      className: 'custom-combined-popup'
+      })
+        .setLatLng([order.pdtlat, order.pdtlon])
+        .setContent(popupContent)
+        .openOn(map);
+      }
     });
   }
 
@@ -1356,13 +1503,50 @@ export class MapService {
       duration: 1.5
     });
 
+    const map = this.map;
     this.map.once('moveend', () => {
       const marker = this.chargeMarkers.get(charge.cobning.toString());
-      console.log(marker);
+      if (marker != undefined) {
+      marker?.openPopup();
+        return
+      }else{
+        const popupContent = this.createDynamicPopupContentAuxCobro(charge);
+      L.popup({
+        maxWidth: 360,
+      className: 'custom-combined-popup'
+      })
+        .setLatLng([charge.cablat, charge.cablon])
+        .setContent(popupContent)
+        .openOn(map);
+      }
+    });
+
+  }
+
+ focusRecorridoUltimo(recorridoultimo: Mpa_UltUbi, zoom: number = 19): void {
+    if (!this.map || !recorridoultimo.geublat || !recorridoultimo.geublon) return;
+
+    this.map.flyTo([recorridoultimo.geublat, recorridoultimo.geublon], zoom, {
+      duration: 1
+    });
+    const map = this.map;
+    this.map.once('moveend', () => {
+      const marker = this.trackingMarkers.get( `${recorridoultimo.geublat}-${recorridoultimo.geublon}-${recorridoultimo.geubfech}`);
       marker?.openPopup();
     });
   }
+focusRecorrido(recorrido: Mpa_UltUbi, zoom: number = 19): void {
+    if (!this.map || !recorrido.geublat || !recorrido.geublon) return;
 
+    this.map.flyTo([recorrido.geublat, recorrido.geublon], zoom, {
+      duration: 1
+    });
+    const map = this.map;
+    this.map.once('moveend', () => {
+      const marker = this.trackingMarkers.get(`${recorrido.geublat}-${recorrido.geublon}-${recorrido.geubfech}`);
+      marker?.openPopup();
+    });
+  }
 
   /**
    * Crea icono para cliente
@@ -2353,6 +2537,7 @@ export class MapService {
     }
 
     const customIcon = this.createChargeIcon();
+    //const customIcon = this.createChargeIconVacio();
     const marker = this.L.marker([charge.cablat, charge.cablon], {
       icon: customIcon
     });
@@ -2431,6 +2616,20 @@ export class MapService {
   /**
    * Crea icono para cobro
    */
+  private createChargeIconVacio(): any {
+    if (!this.L) {
+      throw new Error('Leaflet no está cargado');
+    }
+
+    return this.L.divIcon({
+      html: `
+        <div class="relative">
+        </div>`,
+      className: 'custom-charge-marker',
+      iconSize: [1, 1],
+      iconAnchor: [1, 1]
+    });
+  }
   private createChargeIcon(): any {
     if (!this.L) {
       throw new Error('Leaflet no está cargado');
@@ -2494,8 +2693,8 @@ export class MapService {
     });
 
     const headerColor = isLastLocation ? 'bg-green-600' : 'bg-blue-600';
-    const title = isLastLocation ? 'Ubicación Actual' : `Ubicación ${index + 1}`;
-    const timeLabel = isLastLocation ? 'Última actualización' : 'Registro';
+    const title = isLastLocation ? 'Última actualización' : `Ubicación ${index + 1}`;
+    //const timeLabel = isLastLocation ? 'Última actualización' : 'Registro';
 
     return `
         <div class="bg-white rounded-lg shadow-sm border-0 overflow-hidden">
@@ -2508,16 +2707,10 @@ export class MapService {
       }
                     </svg>
                     <span class="font-semibold text-sm">${title}</span>
-                    ${isLastLocation ? '<div class="w-2 h-2 bg-green-300 rounded-full animate-pulse ml-1"></div>' : ''}
+                    ${isLastLocation ? '' : ''}
                 </div>
             </div>
             <div class="p-3 space-y-2">
-                <div class="flex items-center space-x-2 text-sm">
-                    <svg class="w-3 h-3 text-gray-400" viewBox="0 0 20 20">
-                        <path fill="currentColor" d="M10 2L3 7v11h4v-6h6v6h4V7l-7-5z"/>
-                    </svg>
-                    <span class="font-medium text-gray-800">Vendedor</span>
-                </div>
                 <div class="flex items-center space-x-2 text-xs text-gray-600">
                     <svg class="w-2.5 h-2.5 text-gray-400" viewBox="0 0 20 20">
                         <path fill="currentColor" d="M10 2a6 6 0 00-6 6c0 4.314 5.686 9.32 5.814 9.45a.5.5 0 00.372 0C10.314 17.32 16 12.314 16 8a6 6 0 00-6-6z"/>
@@ -2528,7 +2721,7 @@ export class MapService {
                     <svg class="w-2.5 h-2.5 text-gray-400" viewBox="0 0 20 20">
                         <path fill="currentColor" d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/>
                     </svg>
-                    <span>${timeLabel}: ${formattedDate} - ${formattedTime}</span>
+                    <span>${formattedDate} - ${formattedTime}</span>
                 </div>
             </div>
         </div>
@@ -2540,7 +2733,7 @@ export class MapService {
    */
   private createChargePopupContent(charge: Mpa_GEO_Cobros): string {
     const date = new Date(charge.cabfecha);
-    const formattedDate = date.toLocaleDateString('es-ES');
+    //const formattedDate = date.toLocaleDateString('es-ES');
     const totalcobro = charge.total.toFixed(3);
     const chargeDate = new Date(charge.cabfecha).toLocaleDateString('es-ES');
     const orderTime = new Date(charge.cabfecha).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });

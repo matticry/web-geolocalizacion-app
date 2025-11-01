@@ -575,7 +575,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
     this.searchCustomersInCurrentArea(bounds);
     this.loadVendorGeocercas(user.usucodv);
     this.setDefaultValues();
-    //console.log(user.usucodv);
     this.applyFiltersDefault(user.usucodv);
   }
 
@@ -586,6 +585,14 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
   focusPointRecorrido(user: CUltimoRegxUsu, latitud: number, longitud: number): void {
     //this.selectedUser = user;
     this.mapService.focusPoint(user.usucod, latitud, longitud);
+  }
+  focusRecorridoUltimo(user: Mpa_UltUbi): void {
+    //this.selectedUser = user;
+    this.mapService.focusRecorridoUltimo(user);
+  }
+  focusRecorrido(user: Mpa_UltUbi): void {
+    //this.selectedUser = user;
+    this.mapService.focusRecorrido(user);
   }
 
 
@@ -605,9 +612,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
       .subscribe({
         next: (response: VendedoresResponse) => {
           const vendorData = this.findVendorByCode(response.data, vendorCode);
-          //console.log("--------");
-          //console.log(vendorData);
-          //console.log(response);
           if (vendorData && vendorData.geocercas.length > 0) {
             this.selectedVendor = vendorData;
             this.vendorGeocercas = vendorData.geocercas;
@@ -717,7 +721,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
   }
   //=============================================================================================//
   focusCustomerOnMap(customer: Mpa_GEO_Clientes): void {
-    //console.log(customer);
     this.mapService.focusOnCustomer(customer);
 
     this.msgService.add({
@@ -904,7 +907,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
       ifcobros: this.collectionsEnabled,
       clientes: this.clientesAll?1:this.clientesAssigned?2:0,
     };
-    console.log(_CFiltroHistorialxDia);
     this.customerService
       .POSTHistorialxDia(_CFiltroHistorialxDia)
       .pipe(
@@ -956,9 +958,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
       ifcobros: true,
       clientes: 1,
     };
-
-    console.log(_CFiltroHistorialxDia);
-    //return;
     this.customerService
       .POSTHistorialxDia(_CFiltroHistorialxDia)
       .pipe(
@@ -972,7 +971,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
       )
       .subscribe({
         next: (response: RWebHistorialxDia) => {
-          console.log(response);
           if (!response.usuarios) {
             return;
           }
@@ -1096,7 +1094,6 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
 
     if (response.recorrido && response.recorrido.length > 0) {
       this.mapService.addTrackingMarkers(response.recorrido.sort((a, b) => a.geubid - b.geubid));
-      //console.log(response.recorrido.sort((a, b) => a.geubid - b.geubid))
     }
 
     this.mapService.addCombinedMarkers(this.charges, this.orders, this.customers);
