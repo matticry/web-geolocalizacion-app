@@ -573,9 +573,9 @@ export class GeocercasListComponent implements OnInit, AfterViewInit, OnDestroy 
 
     const bounds = this.mapService.getCurrentBounds();
     this.searchCustomersInCurrentArea(bounds);
-    this.loadVendorGeocercas(user.usucodv);
+    this.loadVendorGeocercas(user.usucod);
     this.setDefaultValues();
-    this.applyFiltersDefault(user.usucodv);
+    this.applyFiltersDefault(user.usucod);
   }
 
   selectOnlyUser(user: CUltimoRegxUsu): void {

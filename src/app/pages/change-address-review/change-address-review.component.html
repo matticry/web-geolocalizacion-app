@@ -314,29 +314,9 @@
                             @if (selectedCustomerDetail$ | async; as detail) {
                                 <div class="bg-white/80 dark:bg-surface-700/40 rounded-lg p-3 border border-surface-300/50 dark:border-surface-600/40 shadow-sm">
 
-                                    <!-- Información del Cliente -->
-                                    <div class="mb-3">
-                                        <div class="flex items-center gap-1.5 mb-1.5">
-                                            <i class="pi pi-user text-green-600 dark:text-green-400 text-xs"></i>
-                                            <span class="text-xs font-medium text-green-700 dark:text-green-400">Cliente</span>
-                                        </div>
 
-                                        <div class="flex items-start justify-between gap-3">
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center gap-3 flex-wrap">
-                                                    <p class="text-sm font-semibold text-surface-900 dark:text-surface-0 leading-tight">
-                                                        {{ detail.solnombre }}
-                                                    </p>
-                                                    <div class="flex items-center gap-1 mb-5">
-                                                        <i class="pi pi-hashtag text-surface-500 dark:text-surface-400 text-xs"></i>
-                                                        <p class="text-xs font-mono text-surface-600 dark:text-surface-400">
-                                                            {{ detail.solruc }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            @if (!detail.solapli) {
+<div class="mb-3">
+ @if (!detail.solapli) {
                                                 <!-- Botones de acciones -->
                                                 <div class="flex items-center gap-1.5 flex-shrink-0">
                                                     <p-button
@@ -366,6 +346,35 @@
                                                     </p-button>
                                                 </div>
                                             }
+
+
+
+</div>
+
+
+                                    <!-- Información del Cliente -->
+                                    <div class="mb-3">
+                                        <div class="flex items-center gap-1.5 mb-1.5">
+                                            <i class="pi pi-user text-green-600 dark:text-green-400 text-xs"></i>
+                                            <span class="text-xs font-medium text-green-700 dark:text-green-400">Cliente</span>
+                                        </div>
+
+                                        <div class="flex items-start justify-between gap-3">
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center gap-3 flex-wrap">
+                                                    <p class="text-sm font-semibold text-surface-900 dark:text-surface-0 leading-tight">
+                                                        {{ detail.solnombre }}
+                                                    </p>
+                                                    <div class="flex items-center gap-1 mb-5">
+                                                        <i class="pi pi-hashtag text-surface-500 dark:text-surface-400 text-xs"></i>
+                                                        <p class="text-xs font-mono text-surface-600 dark:text-surface-400">
+                                                            {{ detail.solruc }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                           
                                         </div>
                                     </div>
 

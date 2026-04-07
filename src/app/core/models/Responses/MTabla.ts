@@ -1,6 +1,9 @@
 export interface MTabla {
     id: number;
     fecha: string;
+    codigoubicacion: string;
+    nomubicacion: string;
+    ubicacion: string;
     tiempoinicio: string;
     tiempofinal: string;
     codcliente: string;
@@ -16,4 +19,5 @@ export interface MTabla {
     montocobro: number;
     latitud: number;
     longitud: number;
+
 }

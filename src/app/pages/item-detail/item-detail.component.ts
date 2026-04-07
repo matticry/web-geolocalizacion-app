@@ -270,7 +270,7 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   private mapUsersToVendorOptions(users: CUltimoRegxUsu[]): void {
     this.vendorOptions = users.map((user) => ({
       label: user.usunombre,
-      value: user.usucodv,
+      value: user.usucod,
       user: user, // Guardar referencia completa del usuario
       subtitle: `${user.usuemail || 'Sin correo electrónico'}`
     }));
@@ -703,11 +703,16 @@ export class ItemDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     const exportData = this.tableData.map(item => ({
       'ID': item.id,
       'FECHA': item.fecha,
+
+      'COD UBICACION': item.codigoubicacion,
+      'UBICACION': item.nomubicacion,
+      'DIRECCION UBICACION': item.ubicacion,
+
       'HORA INICIO': item.tiempoinicio,
       'HORA FINAL': item.tiempofinal,
       'CODIGO CLIENTE': item.codcliente,
       'CLIENTE': item.nomcliente,
-      'DIRECCION': item.dircliente,
+      'DIRECCION CLIENTE': item.dircliente,
       'CODIGO VENDEDOR': item.vendedor,
       'VENDEDOR': item.nomvendedor,
       'NUMERO PEDIDO': item.numeropedido,

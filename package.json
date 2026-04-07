@@ -10,7 +10,7 @@
         "format": "prettier --write \"**/*.{js,mjs,ts,mts,d.ts,html}\" --cache",
         "test": "ng test"
     },
-    "private": true,
+    "private": false,
     "dependencies": {
         "@angular/animations": "^20",
         "@angular/cdk": "^20.2.4",
