@@ -9,6 +9,9 @@ import { OnlyGeocercasComponent } from '@/pages/onlygeocercas/only-geocercas.com
 import { ItemDetailComponent } from '@/pages/item-detail/item-detail.component';
 import { ChangeAddressReviewComponent } from '@/pages/change-address-review/change-address-review.component';
 
+//import { LugaresComponent } from '@/pages/lugar/lugar.component';
+import { MotivosComponent } from '@/pages/motivo/motivo.component';
+
 export default [
     { path: 'documentation', component: Documentation },
     { path: 'crud', component: Crud },
@@ -16,6 +19,8 @@ export default [
     { path: 'geocercas', component: UserListComponent },
     { path: 'vendedores', component: GeocercasListComponent },
     { path: 'geocercas-vendedores', component: VendedoresComponent },
+    //{ path: 'lugares', component: LugaresComponent },
+    { path: 'motivos', component: MotivosComponent },
     { path: 'only-geocercas', component: OnlyGeocercasComponent },
     { path: 'item-detail', component: ItemDetailComponent },
     { path: 'change-address-review', component: ChangeAddressReviewComponent },

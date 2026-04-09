@@ -51,6 +51,8 @@ export class AppMenu {
                         expanded: true, // ← Agregado aquí
                         items: [
                             { label: 'Crear Geocercas ', isAuthenticated: true, icon: 'pi pi-fw pi-map-marker', routerLink: ['/pages/only-geocercas'] },
+                            { label: 'Crear Lugares', isAuthenticated: true, icon: 'pi pi-fw pi-building', routerLink: ['/pages/lugares'] },
+                            { label: 'Crear Motivos', isAuthenticated: true, icon: 'pi pi-fw pi-clipboard', routerLink: ['/pages/motivos'] },
                         ]
                     },
                 ]

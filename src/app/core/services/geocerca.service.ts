@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
 import { CreateGeofenceDto, GeocercaValidationResponse } from '@/core/models/Geocercas/GeocercaValidationResponseDto';
 import { AsignarGeocercaDto } from '@/core/models/AsignarGeocercaDto';
+import { MotivoResponse } from '../models/Motivo/Motivo';
 
 @Injectable({
     providedIn: 'root'
@@ -96,7 +97,6 @@ export class GeocercaService {
             { headers, params }
         );
     }
-
     createOnlyGeocerca(geocerca: CreateGeofenceDto): Observable<CreateGeofenceDto> {
         const token = this.authService.getToken();
         const headers = new HttpHeaders({
